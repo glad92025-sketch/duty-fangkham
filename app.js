@@ -568,11 +568,32 @@ function logoutUser() {
 }
 
 // -------------------------------------------------------------
-// สร้างข้อมูลตารางเวร 31 วัน ประจำเดือนตุลาคม 2569
+// ระบบจัดเก็บข้อมูลการปรับเปลี่ยนเวรยาม (Custom Roster Storage)
+// -------------------------------------------------------------
+function getCustomRoster() {
+    try {
+        const saved = localStorage.getItem('fangkham_custom_roster_v1');
+        return saved ? JSON.parse(saved) : {};
+    } catch(e) {
+        return {};
+    }
+}
+
+function saveCustomRoster(customData) {
+    try {
+        localStorage.setItem('fangkham_custom_roster_v1', JSON.stringify(customData));
+    } catch(e) {
+        console.error('Failed to save custom roster', e);
+    }
+}
+
+// -------------------------------------------------------------
+// สร้างข้อมูลตารางเวร 31 วัน ประจำเดือนตุลาคม 2569 (พร้อมข้อมูลปรับแต่ง)
 // -------------------------------------------------------------
 function buildOctober2569Schedules() {
     const schedules = [];
     const daysInMonth = 31;
+    const customRoster = getCustomRoster();
 
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `2026-10-${String(day).padStart(2, '0')}`;
@@ -582,22 +603,22 @@ function buildOctober2569Schedules() {
         const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
         const isHoliday = isWeekend || day === 13 || day === 23; // 13 ต.ค. นวมินทรมหาราช, 23 ต.ค. ปิยมหาราช
 
-        // เวรกลางวัน (เฉพาะวันหยุดเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์)
+        // 1. ค่าเริ่มต้นเวรกลางวัน (เฉพาะวันหยุดเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์)
         let dayDuty = null;
         if (ROSTER_OCT_2569.day[day]) {
             dayDuty = {
                 shift: 'day',
                 shiftName: 'กะกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.)',
-                staff: ROSTER_OCT_2569.day[day].staff,
+                staff: [...ROSTER_OCT_2569.day[day].staff],
                 inspector: ROSTER_OCT_2569.day[day].inspector,
                 isHoliday: true
             };
         }
 
-        // เวรกลางคืน (มีทุกคืน 1-31 ต.ค.)
+        // 2. ค่าเริ่มต้นเวรกลางคืน (มีทุกคืน 1-31 ต.ค.)
         const nightIdx = (day - 1) % ROSTER_OCT_2569.nightCycle.length;
         const nightItem = ROSTER_OCT_2569.nightCycle[nightIdx];
-        const nightDuty = {
+        let nightDuty = {
             shift: 'night',
             shiftName: 'กะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)',
             staff: [nightItem.staff],
@@ -605,13 +626,32 @@ function buildOctober2569Schedules() {
             isHoliday: isHoliday
         };
 
+        // 3. นำข้อมูลที่มีการปรับแก้ (Custom Roster) มาทับค่าเริ่มต้น
+        let isCustomized = false;
+        let customReason = null;
+        if (customRoster[day]) {
+            isCustomized = true;
+            const c = customRoster[day];
+            if (c.dayDuty !== undefined) {
+                dayDuty = c.dayDuty;
+            }
+            if (c.nightDuty !== undefined) {
+                nightDuty = c.nightDuty;
+            }
+            if (c.reason) {
+                customReason = c.reason;
+            }
+        }
+
         schedules.push({
             day,
             dateStr,
             dayOfWeek,
             isHoliday,
             dayDuty,
-            nightDuty
+            nightDuty,
+            isCustomized,
+            customReason
         });
     }
     appState.schedules = schedules;
@@ -828,12 +868,20 @@ function renderCalendar() {
             </div>
         `;
 
+        let customTagHtml = '';
+        if (item.isCustomized) {
+            customTagHtml = '<span class="text-[9px] px-1 py-0.2 rounded bg-purple-100 text-purple-700 font-bold ml-1" title="มีการปรับปรุงเวร">✏️ ปรับแก้</span>';
+        }
+
         cell.innerHTML = `
             <div>
                 <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold ${item.dayOfWeek === 0 || item.dayOfWeek === 6 ? 'text-rose-600' : 'text-slate-800'} ${isToday ? 'px-1.5 py-0.5 rounded-full bg-emerald-600 text-white' : ''}">
-                        ${item.day} ${isToday ? '(วันนี้)' : ''}
-                    </span>
+                    <div class="flex items-center">
+                        <span class="text-xs font-bold ${item.dayOfWeek === 0 || item.dayOfWeek === 6 ? 'text-rose-600' : 'text-slate-800'} ${isToday ? 'px-1.5 py-0.5 rounded-full bg-emerald-600 text-white' : ''}">
+                            ${item.day} ${isToday ? '(วันนี้)' : ''}
+                        </span>
+                        ${customTagHtml}
+                    </div>
                     ${item.isHoliday ? '<span class="text-[9px] px-1 py-0.2 rounded bg-rose-100 text-rose-700 font-bold">หยุด</span>' : ''}
                 </div>
                 ${dayDutyHtml}
@@ -848,24 +896,453 @@ function renderCalendar() {
     });
 }
 
+// -------------------------------------------------------------
+// หน้าต่างแสดงรายละเอียดเวรยามประจำวัน (Day Duty Detail Modal)
+// -------------------------------------------------------------
+let currentDetailDay = 2;
+let currentEditingDay = 2;
+
 function showDayDetail(day) {
+    openDayDetailModal(day);
+}
+
+function openDayDetailModal(day) {
+    currentDetailDay = day;
     const sched = appState.schedules.find(s => s.day === day);
     if (!sched) return;
 
-    let content = `📅 รายละเอียดเวรยาม วันที่ ${day} ตุลาคม ๒๕๖๙\n\n`;
-    if (sched.dayDuty) {
-        content += `☀️ เวรกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.):\n`;
-        content += `  • ผู้อยู่เวร: ${sched.dayDuty.staff.join(', ')}\n`;
-        content += `  • ผู้ตรวจเวร: ${sched.dayDuty.inspector}\n\n`;
-    } else {
-        content += `☀️ เวรกลางวัน: วันทำการปกติ (ไม่มีเวรกลางวัน)\n\n`;
+    const modal = document.getElementById('day-detail-modal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('day-detail-title');
+    const subTitleEl = document.getElementById('day-detail-subtitle');
+    const badgesEl = document.getElementById('day-detail-badges');
+    const customTagEl = document.getElementById('day-detail-custom-tag');
+    const customReasonBox = document.getElementById('day-detail-custom-reason-box');
+    const customReasonText = document.getElementById('day-detail-custom-reason-text');
+    const dayPillEl = document.getElementById('day-detail-day-status-pill');
+    const dayContentEl = document.getElementById('day-detail-day-content');
+    const nightContentEl = document.getElementById('day-detail-night-content');
+
+    const dayName = THAI_DAY_NAMES[sched.dayOfWeek];
+    if (titleEl) titleEl.textContent = `ข้อมูลเวรยาม: ${dayName}ที่ ${sched.day} ต.ค. ๒๕๖๙`;
+    if (subTitleEl) subTitleEl.textContent = `คำสั่ง อบต.ฝางคำ ที่ ๕๑๒/๒๕๖๙ ประจำเดือน ตุลาคม ๒๕๖๙`;
+
+    if (badgesEl) {
+        let badgeHtml = '';
+        if (sched.isHoliday) {
+            badgeHtml += `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">วันหยุดราชการ</span>`;
+        } else {
+            badgeHtml += `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">วันทำการปกติ</span>`;
+        }
+        if (sched.day === (appState.currentSystemDay || 2)) {
+            badgeHtml += `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">วันนี้</span>`;
+        }
+        badgesEl.innerHTML = badgeHtml;
     }
 
-    content += `🌙 เวรกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.):\n`;
-    content += `  • ผู้อยู่เวร: ${sched.nightDuty.staff.join(', ')}\n`;
-    content += `  • ผู้ตรวจเวร: ${sched.nightDuty.inspector}\n`;
+    if (sched.isCustomized) {
+        if (customTagEl) customTagEl.classList.remove('hidden');
+        if (customReasonBox && customReasonText) {
+            customReasonBox.classList.remove('hidden');
+            customReasonText.textContent = sched.customReason || 'คำสั่งปรับเปลี่ยนเวรปฏิบัติหน้าที่เฉพาะกรณี';
+        }
+    } else {
+        if (customTagEl) customTagEl.classList.add('hidden');
+        if (customReasonBox) customReasonBox.classList.add('hidden');
+    }
 
-    alert(content);
+    // Day duty details
+    if (sched.dayDuty && sched.dayDuty.staff && sched.dayDuty.staff.length > 0) {
+        if (dayPillEl) {
+            dayPillEl.className = 'text-[11px] px-2 py-0.5 rounded-full font-semibold bg-amber-200 text-amber-900';
+            dayPillEl.textContent = 'มีเวรปฏิบัติหน้าที่';
+        }
+        if (dayContentEl) {
+            dayContentEl.innerHTML = `
+                <div><span class="font-bold text-slate-800">เจ้าหน้าที่ผู้อยู่เวร:</span> ${sched.dayDuty.staff.join(', ')}</div>
+                <div><span class="font-bold text-slate-800">ผู้ตรวจเวรประจำผลัด:</span> ${sched.dayDuty.inspector}</div>
+            `;
+        }
+    } else {
+        if (dayPillEl) {
+            dayPillEl.className = 'text-[11px] px-2 py-0.5 rounded-full font-semibold bg-slate-200 text-slate-700';
+            dayPillEl.textContent = 'วันทำการปกติ';
+        }
+        if (dayContentEl) {
+            dayContentEl.innerHTML = `
+                <div class="text-slate-500 italic">วันทำการปกติ (ไม่มีเวรยามกะกลางวัน ปฏิบัติเฉพาะวันหยุด)</div>
+            `;
+        }
+    }
+
+    // Night duty details
+    if (nightContentEl) {
+        nightContentEl.innerHTML = `
+            <div><span class="font-bold text-white">เจ้าหน้าที่ผู้อยู่เวร:</span> ${sched.nightDuty.staff.join(', ')}</div>
+            <div><span class="font-bold text-white">ผู้ตรวจเวรประจำผลัด:</span> ${sched.nightDuty.inspector}</div>
+        `;
+    }
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+}
+
+function closeDayDetailModal() {
+    const modal = document.getElementById('day-detail-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+function openEditFromDayDetail() {
+    const day = currentDetailDay;
+    closeDayDetailModal();
+    openEditRosterModal(day);
+}
+
+function jumpToCurrentDayCheckin() {
+    const day = currentDetailDay;
+    closeDayDetailModal();
+    setSystemDay(day);
+    switchTab('checkin');
+}
+
+// -------------------------------------------------------------
+// ระบบแก้ไขและปรับปรุงตารางเวรยาม (Roster Editor Modal)
+// -------------------------------------------------------------
+function openEditRosterModal(day) {
+    currentEditingDay = typeof day === 'number' ? day : (appState.currentSystemDay || 2);
+    const modal = document.getElementById('edit-roster-modal');
+    if (!modal) return;
+
+    // Populate day select options (1-31) if needed
+    const daySelect = document.getElementById('edit-roster-day-select');
+    if (daySelect && daySelect.options.length < 31) {
+        daySelect.innerHTML = '';
+        for (let d = 1; d <= 31; d++) {
+            const dateObj = new Date(2026, 9, d);
+            const dayName = THAI_DAY_NAMES[dateObj.getDay()];
+            const isHoliday = (dateObj.getDay() === 0 || dateObj.getDay() === 6 || d === 13 || d === 23);
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = `วันที่ ${d} ตุลาคม ๒๕๖๙ (${dayName}${isHoliday ? ' - วันหยุด' : ''})`;
+            daySelect.appendChild(opt);
+        }
+    }
+
+    loadEditFormDataForDay(currentEditingDay);
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+}
+
+function closeEditRosterModal() {
+    const modal = document.getElementById('edit-roster-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+function navigateEditDay(delta) {
+    let nextDay = currentEditingDay + delta;
+    if (nextDay < 1) nextDay = 31;
+    if (nextDay > 31) nextDay = 1;
+    currentEditingDay = nextDay;
+    loadEditFormDataForDay(currentEditingDay);
+}
+
+function handleEditDaySelectChange(day) {
+    currentEditingDay = parseInt(day);
+    loadEditFormDataForDay(currentEditingDay);
+}
+
+function loadEditFormDataForDay(day) {
+    const sched = appState.schedules.find(s => s.day === day);
+    if (!sched) return;
+
+    // 1. Sync dropdown selector
+    const daySelect = document.getElementById('edit-roster-day-select');
+    if (daySelect) daySelect.value = day;
+
+    // 2. Custom status badge
+    const customBadge = document.getElementById('edit-roster-is-custom-badge');
+    if (customBadge) {
+        if (sched.isCustomized) {
+            customBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-600 text-white shadow-2xs shrink-0';
+            customBadge.textContent = '✏️ มีการปรับปรุงเวรแล้ว';
+        } else {
+            customBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-purple-700 border border-purple-200 shrink-0';
+            customBadge.textContent = 'ค่าเริ่มต้นตามคำสั่ง';
+        }
+    }
+
+    // 3. Populate Night Staff options
+    const nightSelect = document.getElementById('edit-night-staff-select');
+    const nightCustomInput = document.getElementById('edit-night-staff-custom');
+    if (nightSelect) {
+        const nightStaffUsers = ALL_SYSTEM_USERS.filter(u => u.category === 'night');
+        let optionsHtml = '';
+        let foundInList = false;
+        const currentNightStaff = (sched.nightDuty && sched.nightDuty.staff && sched.nightDuty.staff[0]) ? sched.nightDuty.staff[0] : '';
+
+        nightStaffUsers.forEach(u => {
+            const isSelected = (u.name === currentNightStaff);
+            if (isSelected) foundInList = true;
+            optionsHtml += `<option value="${u.name}" ${isSelected ? 'selected' : ''}>${u.name} (${u.dept})</option>`;
+        });
+
+        // Other male/all users
+        const otherStaff = ALL_SYSTEM_USERS.filter(u => u.category !== 'night' && u.category !== 'day');
+        if (otherStaff.length > 0) {
+            optionsHtml += `<optgroup label="ผู้บริหาร / เจ้าหน้าที่อื่นๆ">`;
+            otherStaff.forEach(u => {
+                const isSelected = (u.name === currentNightStaff);
+                if (isSelected) foundInList = true;
+                optionsHtml += `<option value="${u.name}" ${isSelected ? 'selected' : ''}>${u.name}</option>`;
+            });
+            optionsHtml += `</optgroup>`;
+        }
+
+        optionsHtml += `<option value="__custom__" ${!foundInList && currentNightStaff ? 'selected' : ''}>✍️ ระบุชื่ออื่นด้วยตนเอง...</option>`;
+        nightSelect.innerHTML = optionsHtml;
+
+        if (!foundInList && currentNightStaff) {
+            if (nightCustomInput) {
+                nightCustomInput.classList.remove('hidden');
+                nightCustomInput.value = currentNightStaff;
+            }
+        } else {
+            if (nightCustomInput) {
+                nightCustomInput.classList.add('hidden');
+                nightCustomInput.value = '';
+            }
+        }
+    }
+
+    // 4. Populate Night Inspector options
+    const nightInspSelect = document.getElementById('edit-night-inspector-select');
+    if (nightInspSelect) {
+        const inspectors = ALL_SYSTEM_USERS.filter(u => u.category === 'inspector');
+        const currentInsp = (sched.nightDuty && sched.nightDuty.inspector) ? sched.nightDuty.inspector : 'นายชาญชัย อักโข';
+        nightInspSelect.innerHTML = inspectors.map(i => `
+            <option value="${i.name}" ${i.name === currentInsp ? 'selected' : ''}>${i.name} (${i.roleName})</option>
+        `).join('');
+    }
+
+    // 5. Day Shift Toggle & Checkboxes
+    const dayToggle = document.getElementById('edit-day-shift-toggle');
+    const hasDayShift = Boolean(sched.dayDuty);
+    if (dayToggle) {
+        dayToggle.checked = hasDayShift;
+    }
+    handleDayShiftToggle(hasDayShift);
+
+    // Populate female staff checkboxes
+    const dayCheckboxesContainer = document.getElementById('edit-day-staff-checkboxes');
+    const dayCustomInput = document.getElementById('edit-day-staff-custom');
+    const dayInspSelect = document.getElementById('edit-day-inspector-select');
+
+    if (dayCheckboxesContainer) {
+        const femaleStaff = ALL_SYSTEM_USERS.filter(u => u.category === 'day');
+        const activeStaffList = (sched.dayDuty && sched.dayDuty.staff) ? sched.dayDuty.staff : [];
+        const extraNames = [];
+
+        dayCheckboxesContainer.innerHTML = femaleStaff.map((u, idx) => {
+            const isChecked = activeStaffList.some(name => name.includes(u.name.split(' ')[0]) || u.name.includes(name.split(' ')[0]));
+            return `
+                <label class="flex items-center space-x-2 text-xs text-slate-700 hover:bg-amber-50/70 p-1.5 rounded-lg cursor-pointer">
+                    <input type="checkbox" name="edit-day-staff-cb" value="${u.name}" ${isChecked ? 'checked' : ''} class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
+                    <span class="truncate font-medium">${u.name}</span>
+                </label>
+            `;
+        }).join('');
+
+        // Find any extra names not in standard female list
+        activeStaffList.forEach(name => {
+            const inList = femaleStaff.some(u => name.includes(u.name.split(' ')[0]) || u.name.includes(name.split(' ')[0]));
+            if (!inList) extraNames.push(name);
+        });
+
+        if (dayCustomInput) {
+            dayCustomInput.value = extraNames.join(', ');
+        }
+    }
+
+    // Populate Day Inspector options
+    if (dayInspSelect) {
+        const inspectors = ALL_SYSTEM_USERS.filter(u => u.category === 'inspector');
+        const currentDayInsp = (sched.dayDuty && sched.dayDuty.inspector) ? sched.dayDuty.inspector : 'นางวาสนา สินทรัพย์';
+        dayInspSelect.innerHTML = inspectors.map(i => `
+            <option value="${i.name}" ${i.name === currentDayInsp ? 'selected' : ''}>${i.name} (${i.roleName})</option>
+        `).join('');
+    }
+
+    // 6. Reason field
+    const reasonInput = document.getElementById('edit-roster-reason');
+    if (reasonInput) {
+        reasonInput.value = sched.customReason || '';
+    }
+}
+
+function handleNightStaffSelectChange(val) {
+    const customInput = document.getElementById('edit-night-staff-custom');
+    if (!customInput) return;
+    if (val === '__custom__') {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+    } else {
+        customInput.classList.add('hidden');
+    }
+}
+
+function handleDayShiftToggle(isChecked) {
+    const container = document.getElementById('edit-day-shift-container');
+    const disabledMsg = document.getElementById('edit-day-shift-disabled-msg');
+    const label = document.getElementById('edit-day-shift-toggle-label');
+
+    if (isChecked) {
+        if (container) container.classList.remove('hidden');
+        if (disabledMsg) disabledMsg.classList.add('hidden');
+        if (label) {
+            label.textContent = 'มีเวรกลางวัน';
+            label.className = 'text-xs font-bold text-amber-700';
+        }
+    } else {
+        if (container) container.classList.add('hidden');
+        if (disabledMsg) disabledMsg.classList.remove('hidden');
+        if (label) {
+            label.textContent = 'ไม่มีเวร (วันปกติ)';
+            label.className = 'text-xs font-bold text-slate-500';
+        }
+    }
+}
+
+function saveRosterEditSubmit() {
+    const day = currentEditingDay;
+    const sched = appState.schedules.find(s => s.day === day);
+    if (!sched) return;
+
+    // 1. Get Night Duty details
+    const nightSelect = document.getElementById('edit-night-staff-select');
+    const nightCustom = document.getElementById('edit-night-staff-custom');
+    const nightInspSelect = document.getElementById('edit-night-inspector-select');
+
+    let nightStaff = nightSelect ? nightSelect.value : '';
+    if (nightStaff === '__custom__') {
+        nightStaff = (nightCustom && nightCustom.value.trim()) ? nightCustom.value.trim() : '';
+    }
+    const nightInspector = nightInspSelect ? nightInspSelect.value : 'นายชาญชัย อักโข';
+
+    if (!nightStaff) {
+        showToast('กรุณาระบุเจ้าหน้าที่', 'กรุณาเลือกหรือระบุเจ้าหน้าที่ผู้อยู่เวรยามกะกลางคืน', 'error');
+        return;
+    }
+
+    // 2. Get Day Duty details
+    const dayToggle = document.getElementById('edit-day-shift-toggle');
+    const hasDayShift = dayToggle ? dayToggle.checked : false;
+
+    let dayDuty = null;
+    if (hasDayShift) {
+        const checkedStaff = [];
+        document.querySelectorAll('input[name="edit-day-staff-cb"]:checked').forEach(cb => {
+            checkedStaff.push(cb.value);
+        });
+
+        const dayCustom = document.getElementById('edit-day-staff-custom');
+        if (dayCustom && dayCustom.value.trim()) {
+            const extra = dayCustom.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            checkedStaff.push(...extra);
+        }
+
+        if (checkedStaff.length === 0) {
+            showToast('กรุณาระบุเจ้าหน้าที่กะกลางวัน', 'เมื่อเปิดใช้งานเวรกลางวัน กรุณาเลือกเจ้าหน้าที่อย่างน้อย ๑ ท่าน', 'error');
+            return;
+        }
+
+        const dayInspSelect = document.getElementById('edit-day-inspector-select');
+        const dayInspector = dayInspSelect ? dayInspSelect.value : 'นางวาสนา สินทรัพย์';
+
+        dayDuty = {
+            shift: 'day',
+            shiftName: 'กะกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.)',
+            staff: checkedStaff,
+            inspector: dayInspector,
+            isHoliday: true
+        };
+    }
+
+    const nightDuty = {
+        shift: 'night',
+        shiftName: 'กะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)',
+        staff: [nightStaff],
+        inspector: nightInspector,
+        isHoliday: sched.isHoliday
+    };
+
+    const reasonInput = document.getElementById('edit-roster-reason');
+    const reason = reasonInput ? reasonInput.value.trim() : '';
+
+    // 3. Save to localStorage
+    const customRoster = getCustomRoster();
+    customRoster[day] = {
+        dayDuty,
+        nightDuty,
+        reason: reason || 'คำสั่งปรับปรุงตารางเวร อบต.ฝางคำ'
+    };
+    saveCustomRoster(customRoster);
+
+    // 4. Rebuild schedules & update all views
+    buildOctober2569Schedules();
+    renderDashboard();
+    renderCalendar();
+    renderCheckinTab();
+    renderPrintDocument();
+
+    // 5. Broadcast to LINE simulator
+    const thaiDate = getThaiDateLabel(day);
+    pushLineGroupMessage(
+        'ระบบตารางเวร อบต.ฝางคำ',
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80',
+        `📢 [ปรับปรุงคำสั่งเวรยามประจำเดือน]\nมีการปรับเปลี่ยนเวร: วันที่ ${thaiDate}\n• เวรกลางคืน: ${nightStaff} (ตรวจ: ${nightInspector})\n${hasDayShift ? `• เวรกลางวัน: ${dayDuty.staff.join(', ')} (ตรวจ: ${dayDuty.inspector})\n` : '• เวรกลางวัน: วันทำการปกติ\n'}• หมายเหตุ: ${reason || 'คำสั่งเฉพาะกรณี'}`
+    );
+
+    // 6. Close modal & show toast
+    closeEditRosterModal();
+    showToast('บันทึกการแก้ไขเรียบร้อย', `ปรับปรุงตารางเวรวันที่ ${thaiDate} เรียบร้อยแล้ว ข้อมูลอัปเดตทุกระบบทันที`, 'success');
+}
+
+function resetCurrentDayRoster() {
+    const day = currentEditingDay;
+    const customRoster = getCustomRoster();
+    if (!customRoster[day]) {
+        showToast('ข้อมูลปกติ', `วันที่ ${day} ตุลาคม เป็นค่าเริ่มต้นตามคำสั่งอยู่แล้ว`, 'info');
+        return;
+    }
+
+    delete customRoster[day];
+    saveCustomRoster(customRoster);
+
+    buildOctober2569Schedules();
+    renderDashboard();
+    renderCalendar();
+    renderCheckinTab();
+    renderPrintDocument();
+    loadEditFormDataForDay(day);
+
+    showToast('คืนค่าเริ่มต้น', `คืนค่าตารางเวรวันที่ ${day} ตุลาคม ๒๕๖๙ เรียบร้อยแล้ว`, 'success');
+}
+
+function confirmResetAllRoster() {
+    if (confirm('ท่านต้องการคืนค่าเริ่มต้นทั้งหมด 31 วัน ใช่หรือไม่? ข้อมูลการแก้ไขทั้งหมดจะถูกล้างกลับไปเป็นคำสั่งเดิมของ อบต.ฝางคำ')) {
+        localStorage.removeItem('fangkham_custom_roster_v1');
+        buildOctober2569Schedules();
+        renderDashboard();
+        renderCalendar();
+        renderCheckinTab();
+        renderPrintDocument();
+        loadEditFormDataForDay(currentEditingDay);
+        showToast('คืนค่าเริ่มต้นทั้งหมด', 'คืนค่าตารางเวรตามคำสั่งเดิมทั้ง 31 วันเรียบร้อยแล้ว', 'success');
+    }
 }
 
 // -------------------------------------------------------------

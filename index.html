@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -109,6 +109,11 @@
                     <span>ปฏิทินตารางเวร</span>
                 </button>
 
+                <button type="button" onclick="openEditRosterModal()" class="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition" title="ปรับแก้คำสั่งและตารางเวรยาม">
+                    <span class="text-base">✏️</span>
+                    <span>แก้ไข/ปรับเปลี่ยนเวร</span>
+                </button>
+
                 <button id="btn-nav-checkin" onclick="switchTab('checkin')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
                     <div class="flex items-center space-x-3">
                         <span class="text-base">📍</span>
@@ -188,6 +193,10 @@
                         <p class="text-xs text-slate-500 mt-1">อัปเดตสถานะแบบ Real-time เชื่อมต่อระบบแจ้งเตือน LINE Bot อัตโนมัติ</p>
                     </div>
                     <div class="flex items-center flex-wrap gap-2">
+                        <button onclick="openEditRosterModal(appState.currentSystemDay || 2)" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow-sm flex items-center space-x-1.5" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
+                            <span>✏️</span>
+                            <span>แก้ไขเวรวันนี้</span>
+                        </button>
                         <button onclick="simulatePushNotification('day')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-600 text-white transition shadow-sm">
                             ☀️ บอทเตือนเวรวัน
                         </button>
@@ -296,7 +305,11 @@
                         <h2 class="text-xl font-bold text-slate-900">ปฏิทินเวรยามประจำเดือน</h2>
                         <p class="text-xs text-slate-500">จัดตามกฎระเบียบ อบต.ฝางคำ: ผู้หญิง (กะกลางวัน) และ ผู้ชาย (กะกลางคืน)</p>
                     </div>
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center flex-wrap gap-2.5">
+                        <button type="button" onclick="openEditRosterModal()" class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+                            <span>✏️</span>
+                            <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
+                        </button>
                         <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">☀️ กลางวัน (หญิง)</span>
                         <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white">🌙 กลางคืน (ชาย)</span>
                     </div>
@@ -1168,7 +1181,6 @@
         องค์การบริหารส่วนตำบลฝางคำ อำเภอสิรินธร จังหวัดอุบลราชธานี • ระบบบริหารจัดการเวรยามและตรวจเวรยามดิจิทัล (Gov Tech 2026)
     </footer>
 
-    <script src="app.js"></script>
     <!-- PDF Preview Modal -->
     <div id="pdf-preview-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
         <div class="bg-white rounded-3xl max-w-4xl w-full h-[88vh] shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
@@ -1257,6 +1269,251 @@
                 <button onclick="closeLineShareModal()" class="px-4 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition">
                     ปิดหน้าต่าง
                 </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- DAY DUTY DETAIL MODAL (หน้าต่างแสดงรายละเอียดเวรยามประจำวัน & เมนูดำเนินการ) -->
+    <!-- ============================================================= -->
+    <div id="day-detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-xl backdrop-blur-xs">📅</div>
+                    <div>
+                        <h3 id="day-detail-title" class="text-base font-bold">ข้อมูลเวรยามประจำวัน</h3>
+                        <p id="day-detail-subtitle" class="text-xs text-emerald-300">ประจำเดือนตุลาคม ๒๕๖๙</p>
+                    </div>
+                </div>
+                <button onclick="closeDayDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition cursor-pointer">✕</button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <!-- Status & Date Badges -->
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div id="day-detail-badges" class="flex items-center space-x-2"></div>
+                    <span id="day-detail-custom-tag" class="hidden px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">✏️ มีการปรับปรุงเวร</span>
+                </div>
+
+                <!-- Custom Reason Alert (if customized) -->
+                <div id="day-detail-custom-reason-box" class="hidden bg-purple-50 border border-purple-200 rounded-2xl p-3 text-xs text-purple-900">
+                    <span class="font-bold">📝 หมายเหตุการปรับปรุง:</span> <span id="day-detail-custom-reason-text"></span>
+                </div>
+
+                <!-- Day Duty Card (กะกลางวัน) -->
+                <div class="rounded-2xl border border-amber-200 bg-amber-50/50 p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">☀️</span>
+                            <span class="text-xs font-bold text-amber-950">เวรกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.)</span>
+                        </div>
+                        <span id="day-detail-day-status-pill" class="text-[11px] px-2 py-0.5 rounded-full font-semibold"></span>
+                    </div>
+                    <div id="day-detail-day-content" class="text-xs text-slate-700 pl-6 space-y-1"></div>
+                </div>
+
+                <!-- Night Duty Card (กะกลางคืน) -->
+                <div class="rounded-2xl border border-slate-200 bg-slate-900 text-white p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">🌙</span>
+                            <span class="text-xs font-bold text-white">เวรกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)</span>
+                        </div>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ปฏิบัติหน้าที่ทุกคืน</span>
+                    </div>
+                    <div id="day-detail-night-content" class="text-xs text-slate-200 pl-6 space-y-1"></div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-2 flex-shrink-0">
+                <button type="button" id="day-detail-btn-checkin" onclick="jumpToCurrentDayCheckin()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <span>📍</span>
+                    <span>ไปหน้าลงเวลาเวรวันนี้</span>
+                </button>
+                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                    <button type="button" id="day-detail-btn-edit" onclick="openEditFromDayDetail()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                        <span>✏️</span>
+                        <span>แก้ไขเวรวันนี้</span>
+                    </button>
+                    <button type="button" onclick="closeDayDetailModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition cursor-pointer">
+                        ปิด
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- EDIT ROSTER MODAL (หน้าต่างปรับเปลี่ยน/แก้ไขตารางเวรยาม อบต.ฝางคำ) -->
+    <!-- ============================================================= -->
+    <div id="edit-roster-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-xl backdrop-blur-xs">✏️</div>
+                    <div>
+                        <h3 class="text-base font-bold">แก้ไขและปรับเปลี่ยนตารางเวรยาม</h3>
+                        <p class="text-xs text-purple-200">องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือนตุลาคม ๒๕๖๙</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditRosterModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition cursor-pointer">✕</button>
+            </div>
+
+            <!-- Date Selector Toolbar -->
+            <div class="bg-slate-50 border-b border-slate-200 px-6 py-3 flex items-center justify-between gap-3 flex-shrink-0">
+                <button type="button" onclick="navigateEditDay(-1)" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold transition flex items-center space-x-1 shrink-0 cursor-pointer">
+                    <span>◀</span>
+                    <span class="hidden sm:inline">วันก่อนหน้า</span>
+                </button>
+                <div class="flex-1 max-w-sm">
+                    <select id="edit-roster-day-select" onchange="handleEditDaySelectChange(parseInt(this.value))" class="w-full text-xs font-bold bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        <!-- Options 1 to 31 populated by JS -->
+                    </select>
+                </div>
+                <button type="button" onclick="navigateEditDay(1)" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold transition flex items-center space-x-1 shrink-0 cursor-pointer">
+                    <span class="hidden sm:inline">วันถัดไป</span>
+                    <span>▶</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 space-y-5 overflow-y-auto flex-1">
+                <!-- Info Status Bar -->
+                <div class="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-2xl p-3 text-xs text-purple-900">
+                    <div class="flex items-center space-x-2">
+                        <span>ℹ️</span>
+                        <span>การแก้ไขจะมีผลต่อ: <strong>ปฏิทิน, จอเวร, สิทธิ์ลงเวลา, คำสั่ง PDF และไลน์แจ้งเตือนทันที</strong></span>
+                    </div>
+                    <span id="edit-roster-is-custom-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-purple-700 border border-purple-200 shrink-0">ค่าเริ่มต้นตามคำสั่ง</span>
+                </div>
+
+                <!-- SECTION 1: NIGHT SHIFT (กะกลางคืน - มีทุกวัน) -->
+                <div class="border border-slate-200 rounded-2xl p-4.5 bg-slate-900 text-white space-y-4 shadow-xs">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl">🌙</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">เวรยามกะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)</h4>
+                                <p class="text-[11px] text-slate-400">เจ้าหน้าที่ชาย ปฏิบัติหน้าที่รักษาความปลอดภัยทุกคืน</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">มีเวรทุกวัน</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Night Staff -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">
+                                เจ้าหน้าที่ผู้อยู่เวรยามกลางคืน <span class="text-rose-400">*</span>
+                            </label>
+                            <select id="edit-night-staff-select" onchange="handleNightStaffSelectChange(this.value)" class="w-full text-xs font-semibold bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                                <!-- Populated by JS: night staff + others -->
+                            </select>
+                            <input type="text" id="edit-night-staff-custom" placeholder="ระบุยศ-ชื่อ-นามสกุล..." class="hidden mt-2 w-full text-xs bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-400 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                        </div>
+
+                        <!-- Night Inspector -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">
+                                ผู้ตรวจเวรยามกะกลางคืน <span class="text-rose-400">*</span>
+                            </label>
+                            <select id="edit-night-inspector-select" class="w-full text-xs font-semibold bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                                <!-- Populated by JS: inspectors -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: DAY SHIFT (กะกลางวัน - วันหยุด/พิเศษ) -->
+                <div class="border border-amber-200 rounded-2xl p-4.5 bg-amber-50/40 space-y-4 shadow-xs">
+                    <div class="flex items-center justify-between border-b border-amber-200 pb-2.5">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl">☀️</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-amber-950">เวรยามกะกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.)</h4>
+                                <p class="text-[11px] text-amber-800">เจ้าหน้าที่หญิง ปฏิบัติหน้าที่ในวันหยุดราชการและเสาร์-อาทิตย์</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Toggle Switch -->
+                        <label class="inline-flex items-center cursor-pointer space-x-2">
+                            <input type="checkbox" id="edit-day-shift-toggle" onchange="handleDayShiftToggle(this.checked)" class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            <span id="edit-day-shift-toggle-label" class="text-xs font-bold text-slate-700">มีเวรกลางวัน</span>
+                        </label>
+                    </div>
+
+                    <!-- Day Shift Enabled Section -->
+                    <div id="edit-day-shift-container" class="space-y-4">
+                        <!-- Day Staff Checkbox List -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="text-xs font-bold text-slate-700">
+                                    เจ้าหน้าที่ผู้อยู่เวรยามกลางวัน (ติ๊กเลือกรายชื่อ) <span class="text-rose-500">*</span>
+                                </label>
+                                <span class="text-[11px] text-slate-500">สามารถเลือกได้หลายท่าน</span>
+                            </div>
+                            <div id="edit-day-staff-checkboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white border border-amber-200 rounded-xl p-3 max-h-48 overflow-y-auto">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" id="edit-day-staff-custom" placeholder="หรือระบุรายชื่อเพิ่มเติม (หากมี ให้คั่นด้วยเครื่องหมายจุลภาค ,)" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Day Inspector -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                                ผู้ตรวจเวรยามกะกลางวัน <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="edit-day-inspector-select" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-800 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                <!-- Populated by JS: inspectors -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Day Shift Disabled Message -->
+                    <div id="edit-day-shift-disabled-msg" class="hidden bg-slate-100 border border-slate-200 rounded-xl p-3 text-center text-xs text-slate-600">
+                        🏢 วันนี้ถูกกำหนดเป็น <strong>"วันทำการปกติ"</strong> (ไม่มีเวรยามกะกลางวัน)
+                    </div>
+                </div>
+
+                <!-- SECTION 3: REASON & MEMO -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                        📝 หมายเหตุ / สาเหตุการปรับเปลี่ยนคำสั่ง (ถ้ามี)
+                    </label>
+                    <input type="text" id="edit-roster-reason" placeholder="เช่น สับเปลี่ยนเวรปฏิบัติราชการแทน, ติดราชการเร่งด่วน, คำสั่ง อบต.ฝางคำ ที่..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3 flex-shrink-0">
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                    <button type="button" onclick="resetCurrentDayRoster()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition flex items-center justify-center space-x-1 cursor-pointer" title="คืนค่าเดิมเฉพาะวันนี้">
+                        <span>🔄</span>
+                        <span>คืนค่าเริ่มต้นวันนี้</span>
+                    </button>
+                    <button type="button" onclick="confirmResetAllRoster()" class="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[11px] font-semibold transition cursor-pointer" title="ล้างค่าที่แก้ไขทั้งหมด 31 วัน">
+                        คืนค่าทั้งหมด 31 วัน
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                    <button type="button" onclick="closeEditRosterModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition cursor-pointer">
+                        ✕ ยกเลิก
+                    </button>
+                    <button type="button" onclick="saveRosterEditSubmit()" class="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                        <span>💾</span>
+                        <span>บันทึกการแก้ไข</span>
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -1363,6 +1620,11 @@
                         <span>ปฏิทินตารางเวร ๓๑ วัน</span>
                     </button>
 
+                    <button type="button" onclick="closeMobileDrawer(); openEditRosterModal();" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition">
+                        <span class="text-base">✏️</span>
+                        <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
+                    </button>
+
                     <button type="button" id="btn-mnav-checkin" onclick="switchTab('checkin')" class="mnav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
                         <div class="flex items-center space-x-3">
                             <span class="text-base">📍</span>
@@ -1427,6 +1689,8 @@
             </div>
         </div>
     </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
 
