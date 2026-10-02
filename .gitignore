@@ -1,0 +1,8 @@
+# Logs and temp
+*.log
+scratch/
+test_*.txt
+insert_modal.ps1
+line_share_modal.html
+.vscode/
+.idea/

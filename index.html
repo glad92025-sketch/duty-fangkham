@@ -1,0 +1,1174 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบเวรยามและตรวจเวรยาม - องค์การบริหารส่วนตำบลฝางคำ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gov: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo & Organization Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md font-bold text-lg">
+                        🛡️
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-base font-bold text-slate-900">ระบบเวรยามและตรวจเวร</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">อบต.ฝางคำ</span>
+                        </div>
+                        <p class="text-xs text-slate-500 hidden sm:block">กะกลางวัน (หญิง) • กะกลางคืน (ชาย) • ตรวจเวร • LINE Bot</p>
+                    </div>
+                </div>
+
+                <!-- Right Header Actions (Auth & Quick Switcher) -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <button onclick="switchTab('saraban')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-1.5 border border-slate-200">
+                        <span>📖 สารบัญคู่มือ</span>
+                    </button>
+
+                    <button onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1.5 border border-emerald-200 shadow-xs">
+                        <span>🔑 เข้าสู่ระบบ / สลับบัญชี</span>
+                    </button>
+                    <button onclick="openLoginModal('change_pwd')" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition flex items-center space-x-1 border border-amber-200 shadow-xs" title="เปลี่ยนรหัสผ่าน">
+                        <span>🔒 เปลี่ยนรหัส</span>
+                    </button>
+                    <button onclick="logoutUser()" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition flex items-center space-x-1 border border-slate-200" title="ออกจากระบบ">
+                        <span>🚪 ออก</span>
+                    </button>
+
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+
+                    <!-- Current User Profile Profile -->
+                    <div class="flex items-center space-x-2.5 bg-slate-50 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl border border-slate-200">
+                        <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover" alt="User Avatar">
+                        <div class="text-left hidden md:block leading-tight">
+                            <div class="flex items-center space-x-1.5">
+                                <span id="auth-user-name" class="text-xs font-bold text-slate-800">นาย อัครเดช สิทธิชัย</span>
+                                <span id="auth-user-role-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-100 text-purple-800 border border-purple-200">Admin</span>
+                            </div>
+                            <div id="auth-user-pos" class="text-[10px] text-slate-500">หัวหน้าฝ่ายบริหารงานทั่วไป • สำนักปลัด</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col md:flex-row gap-6 no-print">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <div class="bg-white rounded-3xl p-3 border border-slate-200 shadow-sm sticky top-24 space-y-1">
+                <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">ระบบงาน</div>
+                
+                <button id="btn-nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium transition bg-emerald-700 text-white shadow-sm">
+                    <span class="text-base">📊</span>
+                    <span>ภาพรวม & จอเวรวันนี้</span>
+                </button>
+
+                <button id="btn-nav-calendar" onclick="switchTab('calendar')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">📅</span>
+                    <span>ปฏิทินตารางเวร</span>
+                </button>
+
+                <button id="btn-nav-checkin" onclick="switchTab('checkin')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">📍</span>
+                        <span>ลงเวลาเข้าเวร (LIFF)</span>
+                    </div>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-semibold">คนเข้าเวร</span>
+                </button>
+
+                <button id="btn-nav-inspection" onclick="switchTab('inspection')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">🔍</span>
+                        <span>สมุดตรวจเวรยาม</span>
+                    </div>
+                    <span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">ผู้ตรวจเวร</span>
+                </button>
+
+                <button id="btn-nav-swap" onclick="switchTab('swap')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">🔄</span>
+                    <span>คำขอสลับเวร</span>
+                </button>
+
+                <div class="pt-3 pb-1 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">ระบบเชื่อมต่อ & เอกสาร</div>
+
+                <button id="btn-nav-line-sim" onclick="switchTab('line-sim')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">💬</span>
+                        <span>จำลองกลุ่ม LINE</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 live-badge"></span>
+                </button>
+
+                <button id="btn-nav-print" onclick="switchTab('print')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">📄</span>
+                    <span>คำสั่งเวรยามราชการ</span>
+                </button>
+
+                <button id="btn-nav-saraban" onclick="switchTab('saraban')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">📖</span>
+                        <span>สารบัญคู่มือการใช้งาน</span>
+                    </div>
+                    <span class="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">คู่มือ</span>
+                </button>
+
+                <button id="btn-nav-settings" onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">⚙️</span>
+                    <span>ตั้งค่าระบบต่างๆ</span>
+                </button>
+            </div>
+
+            <!-- Current Role Quick Notice -->
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-4 mt-4 shadow-sm text-xs space-y-2">
+                <div class="font-bold text-emerald-900 flex items-center space-x-1.5">
+                    <span>📌 กฎระเบียบเวร อบต.ฝางคำ</span>
+                </div>
+                <div class="text-emerald-800 space-y-1">
+                    <p>• <strong>หญิง (กะกลางวัน):</strong> 08.00 - 16.30 น. (วันหยุด)</p>
+                    <p>• <strong>ชาย (กะกลางคืน):</strong> 16.30 - 08.00 น. (ทุกวัน)</p>
+                    <p>• <strong>ผู้ตรวจเวร:</strong> หัวหน้าสำนักปลัด / ผอ.กอง</p>
+                    <p>• <strong>Geofencing:</strong> ล็อกพิกัดในรัศมี 150 ม.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 min-w-0">
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <!-- Personalized Duty Reminder Banner -->
+                <div id="personal-duty-banner" class="hidden"></div>
+                <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h2 class="text-xl font-bold text-slate-900">ตารางเวรยามประจำวันนี้</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">ที่ทำการ อบต.ฝางคำ</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">อัปเดตสถานะแบบ Real-time เชื่อมต่อระบบแจ้งเตือน LINE Bot อัตโนมัติ</p>
+                    </div>
+                    <div class="flex items-center flex-wrap gap-2">
+                        <button onclick="simulatePushNotification('day')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-600 text-white transition shadow-sm">
+                            ☀️ บอทเตือนเวรวัน
+                        </button>
+                        <button onclick="simulatePushNotification('night')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm">
+                            🌙 บอทเตือนเวรค่ำ
+                        </button>
+                        <button onclick="shareDutyToLineOpenChat()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#06C755] hover:bg-[#05b04c] text-white transition shadow-sm flex items-center space-x-1.5" title="ส่งสรุปเวรวันนี้เข้าห้อง LINE OpenChat อบต.ฝางคำ">
+                            <span class="text-sm">💬</span>
+                            <span>แชร์เข้า OpenChat</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Duty Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Day Shift Card -->
+                    <div class="bg-white rounded-3xl border-2 border-amber-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="bg-amber-500 px-5 py-3.5 text-white flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-2xl">☀️</span>
+                                <div>
+                                    <h3 class="font-bold text-sm">เวรกลางวัน (08.00 - 16.30 น.)</h3>
+                                    <span class="text-[11px] opacity-90">ข้าราชการ/พนักงานหญิง (เฉพาะวันหยุด)</span>
+                                </div>
+                            </div>
+                            <span id="dash-day-status"></span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">เจ้าหน้าที่ผู้เข้าเวร</div>
+                                <div id="dash-day-staff" class="text-base font-bold text-slate-900 mt-0.5">กำลังโหลดข้อมูล...</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">ผู้ตรวจเวรประจำผลัด</div>
+                                <div id="dash-day-inspector" class="text-sm font-semibold text-slate-700 mt-0.5">กำลังโหลดข้อมูล...</div>
+                            </div>
+                            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+                                <span class="text-xs text-slate-500">สถานที่: ที่ทำการ อบต.ฝางคำ</span>
+                                <button onclick="switchTab('checkin')" class="text-xs font-semibold text-amber-700 hover:text-amber-800 flex items-center space-x-1">
+                                    <span>ลงเวลาเวรนี้</span> ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Night Shift Card -->
+                    <div class="bg-white rounded-3xl border-2 border-blue-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="bg-slate-900 px-5 py-3.5 text-white flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-2xl">🌙</span>
+                                <div>
+                                    <h3 class="font-bold text-sm">เวรกลางคืน (16.30 - 08.00 น.)</h3>
+                                    <span class="text-[11px] opacity-90">ข้าราชการ/พนักงานชาย (ปฏิบัติทุกคืน)</span>
+                                </div>
+                            </div>
+                            <span id="dash-night-status"></span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">เจ้าหน้าที่ผู้เข้าเวร</div>
+                                <div id="dash-night-staff" class="text-base font-bold text-slate-900 mt-0.5">กำลังโหลดข้อมูล...</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">ผู้ตรวจเวรประจำผลัด</div>
+                                <div id="dash-night-inspector" class="text-sm font-semibold text-slate-700 mt-0.5">กำลังโหลดข้อมูล...</div>
+                            </div>
+                            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+                                <span class="text-xs text-slate-500">สถานที่: ที่ทำการ อบต.ฝางคำ</span>
+                                <button onclick="switchTab('checkin')" class="text-xs font-semibold text-blue-700 hover:text-blue-800 flex items-center space-x-1">
+                                    <span>ลงเวลาเวรนี้</span> ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Statistics Row -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="text-xs text-slate-500 font-medium">ผลัดเวรทั้งหมดเดือนนี้</div>
+                        <div id="stat-total-shifts" class="text-2xl font-bold text-slate-800 mt-1">0</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">ตารางเวรประจำเดือน</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl border border-amber-200 shadow-sm">
+                        <div class="text-xs text-amber-700 font-medium">กะกลางวัน (หญิง)</div>
+                        <div id="stat-female-shifts" class="text-2xl font-bold text-amber-700 mt-1">0</div>
+                        <div class="text-[10px] text-amber-600/80 mt-0.5">ผลัดเสาร์-อาทิตย์</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl border border-blue-200 shadow-sm">
+                        <div class="text-xs text-blue-700 font-medium">กะกลางคืน (ชาย)</div>
+                        <div id="stat-male-shifts" class="text-2xl font-bold text-blue-800 mt-1">0</div>
+                        <div class="text-[10px] text-blue-600/80 mt-0.5">ผลัดทุกค่ำคืน</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl border border-emerald-200 shadow-sm">
+                        <div class="text-xs text-emerald-700 font-medium">ตรวจเวรเรียบร้อย</div>
+                        <div id="stat-inspections" class="text-2xl font-bold text-emerald-800 mt-1">0</div>
+                        <div class="text-[10px] text-emerald-600/80 mt-0.5">บันทึกตรวจสมุดเวร</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: CALENDAR -->
+            <div id="tab-calendar" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">ปฏิทินเวรยามประจำเดือน</h2>
+                        <p class="text-xs text-slate-500">จัดตามกฎระเบียบ อบต.ฝางคำ: ผู้หญิง (กะกลางวัน) และ ผู้ชาย (กะกลางคืน)</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">☀️ กลางวัน (หญิง)</span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white">🌙 กลางคืน (ชาย)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-500 uppercase tracking-wider py-1">
+                    <div class="text-rose-500">อาทิตย์</div>
+                    <div>จันทร์</div>
+                    <div>อังคาร</div>
+                    <div>พุธ</div>
+                    <div>พฤหัสบดี</div>
+                    <div>ศุกร์</div>
+                    <div class="text-rose-500">เสาร์</div>
+                </div>
+
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
+            </div>
+
+            <!-- TAB 3: CHECK-IN & LIFF VIEW -->
+            <div id="tab-checkin" class="tab-content hidden space-y-6">
+                <div class="max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-4 text-white">
+                        <div class="text-xs uppercase font-semibold opacity-80">LINE LIFF Check-in</div>
+                        <h3 class="text-lg font-bold">ลงเวลาเข้าเวร - อบต.ฝางคำ</h3>
+                        <p class="text-xs opacity-90 mt-0.5">ระบบตรวจสอบพิกัด GPS และถ่ายรูปยืนยันตัวตน</p>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-700">พิกัด GPS ปัจจุบัน</span>
+                                <div class="flex space-x-1">
+                                    <button onclick="toggleLocationSim(true)" class="text-[11px] px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-semibold">จำลอง: ใน อบต.</button>
+                                    <button onclick="toggleLocationSim(false)" class="text-[11px] px-2 py-0.5 rounded bg-rose-100 hover:bg-rose-200 text-rose-800 font-semibold">จำลอง: นอกเขต</button>
+                                </div>
+                            </div>
+                            <div id="gps-status-badge" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                📍 พิกัดถูกต้อง: อยู่ในเขต อบต.ฝางคำ (ห่าง 35 ม.)
+                            </div>
+                            <p class="text-[11px] text-slate-500">ระบบจำกัดให้ลงเวลาได้เฉพาะภายในรัศมี 150 เมตร จากที่ทำการ อบต.ฝางคำ</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">เลือกรอบเวรที่ต้องการลงเวลา</label>
+                            <select id="checkin-select-schedule" class="w-full text-sm rounded-xl border-slate-300 shadow-sm py-2.5 px-3 bg-white border">
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ถ่ายภาพใบหน้ายืนยันตัวตน</label>
+                            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 transition relative cursor-pointer" onclick="document.getElementById('photo-input').click()">
+                                <input type="file" id="photo-input" accept="image/*" capture="user" class="hidden" onchange="handlePhotoUpload(event)">
+                                <div id="photo-placeholder" class="space-y-1">
+                                    <div class="text-2xl">📸</div>
+                                    <div class="text-xs font-medium text-slate-600">กดที่นี่เพื่อถ่ายภาพหรือเลือกรูป</div>
+                                    <div class="text-[10px] text-slate-400">รูปภาพจะถูกส่งไปยังกลุ่ม LINE อบต.ฝางคำ</div>
+                                </div>
+                                <img id="checkin-photo-preview" class="max-h-48 mx-auto rounded-xl shadow-sm hidden object-cover" alt="Preview">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">บันทึกเหตุการณ์ / สภาพทั่วไปก่อนรับเวร</label>
+                            <textarea id="checkin-notes" rows="2" class="w-full text-sm rounded-xl border border-slate-300 p-2.5" placeholder="เช่น ทรัพย์สินราชการเรียบร้อย ปิดล็อกประตูหน้าต่าง"></textarea>
+                        </div>
+
+                        <button id="btn-submit-checkin" onclick="submitCheckin()" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                            <span>✅ ยืนยันการลงเวลาเข้าเวร</span>
+                        </button>
+                        <button type="button" onclick="shareCheckinToLineOpenChat()" class="w-full py-2.5 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] text-white font-bold text-xs shadow-sm transition flex items-center justify-center space-x-2 mt-2">
+                            <span>💬 แชร์ผลการลงเวลาเข้า LINE OpenChat</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: INSPECTION LOG -->
+            <div id="tab-inspection" class="tab-content hidden space-y-6">
+                <div class="max-w-2xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-md p-6 space-y-5">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h2 class="text-lg font-bold text-slate-900">สมุดบันทึกการตรวจเวรยาม (ผู้ตรวจเวร)</h2>
+                        <p class="text-xs text-slate-500">สำหรับ หัวหน้าสำนักปลัด, ผู้อำนวยการกอง หรือผู้ได้รับแต่งตั้ง</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ผู้ตรวจเวร</label>
+                        <select id="inspect-inspector-select" class="w-full text-sm rounded-xl border border-slate-300 p-2.5 bg-white">
+                            <option value="นาง มณีรัตน์ บุญเรือง (หัวหน้าสำนักปลัด)">นาง มณีรัตน์ บุญเรือง (หัวหน้าสำนักปลัด อบต.ฝางคำ)</option>
+                            <option value="นาย สุทธิพงษ์ ทองดี (ผอ.กองช่าง)">นาย สุทธิพงษ์ ทองดี (ผู้อำนวยการกองช่าง)</option>
+                            <option value="นาย ประสิทธิ์ สายสมบูรณ์ (ผอ.กองการศึกษา)">นาย ประสิทธิ์ สายสมบูรณ์ (ผู้อำนวยการกองการศึกษา)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+                            <input type="checkbox" id="inspect-staff-present" checked class="w-4 h-4 text-emerald-600 rounded">
+                            <span class="text-xs font-semibold text-slate-700">พบผู้เข้าเวรอยู่ปฏิบัติหน้าที่</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+                            <input type="checkbox" id="inspect-premise-normal" checked class="w-4 h-4 text-emerald-600 rounded">
+                            <span class="text-xs font-semibold text-slate-700">อาคารและทรัพย์สินปกติ</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ความเห็น / ข้อสังเกตของผู้ตรวจเวร</label>
+                        <textarea id="inspect-remark" rows="2" class="w-full text-sm rounded-xl border border-slate-300 p-2.5" placeholder="ตรวจตราบริเวณอาคารที่ทำการ อบต.ฝางคำ ความสงบเรียบร้อยดี"></textarea>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-bold text-slate-700">ลายมือชื่อผู้ตรวจเวร (เซ็นบนหน้าจอ)</label>
+                            <button onclick="clearSignature()" class="text-[11px] text-rose-600 hover:underline">ล้างลายเซ็น</button>
+                        </div>
+                        <div class="border border-slate-300 rounded-2xl overflow-hidden bg-slate-50">
+                            <canvas id="sig-canvas" width="500" height="140" class="w-full bg-white"></canvas>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-1 block">สามารถใช้นิ้วมือหรือเมาส์เซ็นลายมือชื่อดิจิทัล</span>
+                    </div>
+
+                    <button onclick="submitInspection()" class="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition">
+                        📋 บันทึกการตรวจเวรและแจ้งเตือนเข้ากลุ่ม LINE
+                    </button>
+                    <button type="button" onclick="shareInspectionToLineOpenChat()" class="w-full py-2.5 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] text-white font-bold text-xs shadow-sm transition flex items-center justify-center space-x-2 mt-2">
+                        <span>💬 แชร์ผลการตรวจเวรเข้า LINE OpenChat</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 5: SWAP DUTY -->
+            <div id="tab-swap" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h2 class="text-lg font-bold text-slate-900">ยื่นคำร้องขอสลับ/แลกเวร</h2>
+                            <p class="text-xs text-slate-500">ระบบจะตรวจสอบเงื่อนไขเพศตามระเบียบ อบต.ฝางคำ อัตโนมัติ</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ผู้ขอสลับเวร (ตนเอง)</label>
+                            <select id="swap-requester" class="w-full text-sm rounded-xl border border-slate-300 p-2.5 bg-white"></select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ผู้ปฏิบัติหน้าที่แทน (ต้องเป็นเพศเดียวกัน)</label>
+                            <select id="swap-substitute" class="w-full text-sm rounded-xl border border-slate-300 p-2.5 bg-white"></select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">เหตุผลความจำเป็น</label>
+                            <textarea id="swap-reason" rows="2" class="w-full text-sm rounded-xl border border-slate-300 p-2.5" placeholder="เช่น ติดราชการเร่งด่วน / ลาป่วยมีใบรับรองแพทย์"></textarea>
+                        </div>
+
+                        <button onclick="submitSwapRequest()" class="w-full py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-sm transition">
+                            🔄 ยื่นคำขอสลับเวร
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-3">
+                        <h3 class="text-base font-bold text-slate-900">รายการขอสลับเวรล่าสุด</h3>
+                        <div id="swap-requests-list" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- TAB 6: LINE BOT SIMULATOR -->
+            <div id="tab-line-sim" class="tab-content hidden space-y-6">
+                <div class="max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-300 flex flex-col h-[650px] bg-[#7288a2]">
+                    <div class="bg-[#243548] px-4 py-3 text-white flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="text-sm">◀</span>
+                            <div class="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-sm">
+                                อบต
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold flex items-center space-x-1">
+                                    <span>เวรยาม อบต.ฝางคำ</span>
+                                    <span class="text-[11px] font-normal opacity-75">(32)</span>
+                                </div>
+                                <div class="text-[10px] text-emerald-300">● บอทเชื่อมต่อสำเร็จ</div>
+                            </div>
+                        </div>
+                        <div class="text-base">☰</div>
+                    </div>
+
+                    <div id="line-chat-messages" class="flex-1 p-3 overflow-y-auto space-y-3"></div>
+
+                    <div class="bg-white p-2.5 flex items-center space-x-2 border-t border-slate-200">
+                        <button class="text-slate-400 text-lg">➕</button>
+                        <input type="text" placeholder="ส่งข้อความในกลุ่ม..." class="flex-1 text-xs bg-slate-100 rounded-full px-3 py-2 border-none" readonly>
+                        <button class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: OFFICIAL ORDER & PDF ATTACHMENTS -->
+            <div id="tab-print" class="tab-content hidden space-y-6">
+                
+                <!-- Section 1: PDF Attachment Box -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-2xl">📎</span>
+                                <h3 class="text-lg font-bold text-slate-900">แนบไฟล์เอกสารคำสั่งเวรยาม (PDF)</h3>
+                                <span class="text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">ระบบจัดเก็บเอกสาร</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">อัปโหลดไฟล์คำสั่ง อบต.ฝางคำ ฉบับลงนามจริง (.pdf) เพื่อจัดเก็บและเปิดดูออนไลน์</p>
+                        </div>
+                        <div>
+                            <input type="file" id="pdf-file-input" accept="application/pdf" class="hidden" onchange="handlePdfUpload(event)">
+                            <button onclick="document.getElementById('pdf-file-input').click()" class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition flex items-center space-x-2">
+                                <span>➕ แนบไฟล์คำสั่ง PDF ใหม่</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Drag & Drop Zone -->
+                    <div class="pdf-dropzone rounded-2xl p-6 text-center cursor-pointer" onclick="document.getElementById('pdf-file-input').click()">
+                        <div class="text-3xl">📑</div>
+                        <div class="text-xs font-bold text-slate-700 mt-1">คลิกที่นี่เพื่อเลือกไฟล์ หรือลากไฟล์ PDF มาวางที่นี่</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">รองรับไฟล์เอกสารนามสกุล .pdf (ขนาดไม่เกิน 25 MB)</div>
+                    </div>
+
+                    <!-- List of Attached PDFs -->
+                    <div class="space-y-3">
+                        <div class="text-xs font-bold text-slate-700 flex items-center justify-between">
+                            <span>รายการไฟล์เอกสารคำสั่งที่แนบไว้:</span>
+                            <span class="text-[11px] text-slate-400">สามารถเปิดดูตัวอย่างหรือดาวน์โหลดได้</span>
+                        </div>
+                        <div id="attached-pdf-list" class="space-y-2.5">
+                            <!-- Populated dynamically via renderAttachedPdfList() -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Printable Government Document -->
+                <div class="bg-white p-4 rounded-3xl border border-slate-200 flex justify-between items-center shadow-sm">
+                    <div>
+                        <h3 class="font-bold text-slate-800">ตัวอย่างคำสั่ง อบต.ฝางคำ สำหรับพิมพ์ลงกระดาษ</h3>
+                        <p class="text-xs text-slate-500">รูปแบบหนังสือราชการตามระเบียบงานสารบรรณ พิมพ์ลงกระดาษ A4 ได้ทันที</p>
+                    </div>
+                    <button onclick="window.print()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                        🖨️ สั่งพิมพ์เอกสารนี้ (Print)
+                    </button>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl border border-slate-300 shadow-inner max-w-4xl mx-auto paper-sarabun text-slate-900">
+                    <div class="text-center space-y-1 mb-6">
+                        <div class="text-3xl font-serif">🦅</div>
+                        <h2 class="text-lg font-bold">คำสั่งองค์การบริหารส่วนตำบลฝางคำ</h2>
+                        <h3 class="text-base font-medium">ที่ ......... / ๒๕๖๙</h3>
+                        <h3 class="text-base font-semibold">เรื่อง แต่งตั้งเจ้าหน้าที่อยู่เวรรักษาการณ์สถานที่ราชการ</h3>
+                        <p class="text-xs text-slate-500">-------------------------------------------</p>
+                    </div>
+
+                    <p class="text-sm indent-8 leading-relaxed">
+                        เพื่อรักษาความปลอดภัยสถานที่ราชการและความสงบเรียบร้อยของที่ทำการองค์การบริหารส่วนตำบลฝางคำ อำเภอสิรินธร จังหวัดอุบลราชธานี จึงแต่งตั้งข้าราชการและพนักงานส่วนตำบลอยู่เวรรักษาการณ์สถานที่ราชการ ประจำผลัดเวรกลางวัน (หญิง) และผลัดเวรกลางคืน (ชาย) พร้อมทั้งแต่งตั้งผู้ตรวจเวร ดังมีรายนามต่อไปนี้
+                    </p>
+
+                    <table class="w-full text-xs border-collapse border border-black mt-5">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-black text-center font-bold">
+                                <th class="border border-black py-2 px-1 w-12">ลำดับ</th>
+                                <th class="border border-black py-2 px-2">วัน เดือน ปี</th>
+                                <th class="border border-black py-2 px-2">ผลัดเวลา</th>
+                                <th class="border border-black py-2 px-2">ชื่อผู้เข้าเวร</th>
+                                <th class="border border-black py-2 px-2">ตำแหน่ง</th>
+                                <th class="border border-black py-2 px-2">ผู้ตรวจเวร</th>
+                                <th class="border border-black py-2 px-2 w-20">ลายมือชื่อ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="print-table-body"></tbody>
+                    </table>
+
+                    <div class="mt-8 text-right text-xs space-y-1 pr-8">
+                        <p>สั่ง ณ วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                        <div class="h-10"></div>
+                        <p>( .................................................... )</p>
+                        <p class="font-bold">นายกองค์การบริหารส่วนตำบลฝางคำ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 8: SARABAN & USER MANUAL (สารบัญคู่มือการใช้งาน) -->
+            <div id="tab-saraban" class="tab-content hidden space-y-6">
+                <!-- Header Box -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">📖</span>
+                            <h2 class="text-xl font-bold text-slate-900">สารบัญและคู่มือการใช้งานระบบเวรยาม</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">อบต.ฝางคำ</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">แนวทางปฏิบัติราชการ ขั้นตอนการลงเวลา การตรวจเวร และการดูแลระบบ</p>
+                    </div>
+
+                    <!-- Search within Manual -->
+                    <div class="w-full md:w-72">
+                        <input type="text" onkeyup="filterSaraban(this.value)" placeholder="🔍 ค้นหาในคู่มือ (เช่น สลับเวร, GPS)..." class="w-full text-xs rounded-2xl border border-slate-300 p-2.5 bg-slate-50 focus:bg-white focus:ring-1 focus:ring-emerald-500">
+                        <div id="saraban-search-status" class="text-[10px] text-emerald-600 mt-1 font-semibold"></div>
+                    </div>
+                </div>
+
+                <!-- Two-Column Layout (Left: Sticky TOC / Right: Articles) -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    
+                    <!-- Left: Table of Contents (สารบัญ) -->
+                    <div class="md:col-span-4">
+                        <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm sticky top-24 space-y-1 text-xs">
+                            <div class="px-3 py-2 font-bold text-slate-400 uppercase tracking-wider text-[11px] border-b pb-2 mb-1">สารบัญเนื้อหา</div>
+                            
+                            <a href="#saraban-rule" data-target="saraban-rule" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๑. โครงสร้างและระเบียบเวรยาม
+                            </a>
+                            <a href="#saraban-staff" data-target="saraban-staff" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๒. คู่มือสำหรับผู้เข้าเวร (ชาย/หญิง)
+                            </a>
+                            <a href="#saraban-inspector" data-target="saraban-inspector" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๓. คู่มือสำหรับผู้ตรวจเวร
+                            </a>
+                            <a href="#saraban-swap" data-target="saraban-swap" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๔. ระเบียบการสลับและแลกเปลี่ยนเวร
+                            </a>
+                            <a href="#saraban-admin" data-target="saraban-admin" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๕. คู่มือสำหรับผู้ดูแลระบบ (Admin)
+                            </a>
+                            <a href="#saraban-line" data-target="saraban-line" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๖. การทำงานของระบบ LINE Bot กลุ่ม
+                            </a>
+                            <a href="#saraban-faq" data-target="saraban-faq" class="saraban-toc-link block px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition">
+                                ๗. คำถามที่พบบ่อย & เบอร์ติดต่อ
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content Articles -->
+                    <div class="md:col-span-8 space-y-6">
+                        
+                        <!-- Section 1 -->
+                        <article id="saraban-rule" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">🏛️</span>
+                                <h3 class="font-bold text-base text-slate-900">๑. โครงสร้างและระเบียบเวรยาม อบต.ฝางคำ</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed indent-4">
+                                เพื่อให้การรักษาความปลอดภัยสถานที่ราชการและความสงบเรียบร้อยของที่ทำการองค์การบริหารส่วนตำบลฝางคำ เป็นไปตามระเบียบสำนักนายกรัฐมนตรี จึงกำหนดโครงสร้างผลัดเวรยามดังนี้:
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                                <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
+                                    <div class="font-bold text-amber-900">☀️ เวรกลางวัน (ผู้หญิง)</div>
+                                    <p class="text-amber-800 mt-1">เวลา 08.00 - 16.30 น. ปฏิบัติหน้าที่เฉพาะวันเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์ โดยบุคลากรหญิง</p>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 text-white p-3.5 rounded-2xl">
+                                    <div class="font-bold text-white">🌙 เวรกลางคืน (ผู้ชาย)</div>
+                                    <p class="text-slate-300 mt-1">เวลา 16.30 - 08.00 น. ของวันถัดไป ปฏิบัติหน้าที่ตรวจตราความปลอดภัยทุกวัน โดยบุคลากรชาย</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Section 2 -->
+                        <article id="saraban-staff" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">👮</span>
+                                <h3 class="font-bold text-base text-slate-900">๒. คู่มือสำหรับผู้เข้าเวร (ชาย / หญิง)</h3>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-600 leading-relaxed">
+                                <p><strong>ขั้นตอนที่ ๑:</strong> ตรวจสอบตารางเวรของตนเองจากปฏิทินเวรยาม หรือการแจ้งเตือนจากบอทในกลุ่ม LINE อบต.ฝางคำ</p>
+                                <p><strong>ขั้นตอนที่ ๒:</strong> เมื่อเดินทางถึงที่ทำการ อบต.ฝางคำ ให้กดเข้าเมนู <strong>"ลงเวลาเข้าเวร (LIFF)"</strong></p>
+                                <p><strong>ขั้นตอนที่ ๓:</strong> ระบบจะตรวจสอบพิกัด GPS อัตโนมัติ (ต้องอยู่ในรัศมี ๑๕๐ เมตร จากที่ทำการ อบต.ฝางคำ)</p>
+                                <p><strong>ขั้นตอนที่ ๔:</strong> ถ่ายรูปใบหน้าปัจจุบัน และบันทึกสภาพความเรียบร้อยของสถานที่ก่อนกดปุ่มยืนยัน</p>
+                            </div>
+                            <div class="pt-2">
+                                <button onclick="switchTab('checkin')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
+                                    ➔ ไปยังหน้าลงเวลาเข้าเวร
+                                </button>
+                            </div>
+                        </article>
+
+                        <!-- Section 3 -->
+                        <article id="saraban-inspector" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">🔍</span>
+                                <h3 class="font-bold text-base text-slate-900">๓. คู่มือสำหรับผู้ตรวจเวร (Inspector)</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                ผู้ตรวจเวร (หัวหน้าสำนักปลัด, ผู้อำนวยการกอง หรือผู้ได้รับแต่งตั้ง) มีหน้าที่สุ่มตรวจการณ์ความสงบเรียบร้อย โดยมีขั้นตอนดังนี้:
+                            </p>
+                            <ul class="list-disc list-inside text-xs text-slate-600 space-y-1.5 pl-2">
+                                <li>เข้าสู่เมนู <strong>"สมุดตรวจเวรยาม"</strong></li>
+                                <li>ระบุว่าพบผู้เข้าเวรอยู่ปฏิบัติหน้าที่หรือไม่ พร้อมตรวจเช็กประตู หน้าต่าง ระบบไฟฟ้า</li>
+                                <li>เซ็นลายมือชื่อดิจิทัล (Digital Signature) บนหน้าจอสัมผัสหรือเมาส์</li>
+                                <li>กดยืนยันบันทึกผล ข้อมูลจะถูกส่งเข้ากลุ่ม LINE อบต.ฝางคำ ทันที</li>
+                            </ul>
+                            <div class="pt-2">
+                                <button onclick="switchTab('inspection')" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition">
+                                    ➔ ไปยังหน้าสมุดตรวจเวร
+                                </button>
+                            </div>
+                        </article>
+
+                        <!-- Section 4 -->
+                        <article id="saraban-swap" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">🔄</span>
+                                <h3 class="font-bold text-base text-slate-900">๔. ระเบียบการสลับและแลกเปลี่ยนเวร</h3>
+                            </div>
+                            <div class="p-3 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-800">
+                                <strong>⚠️ กฎเหล็ก:</strong> การขอสลับเวรต้องเป็น <strong>"เพศเดียวกันเท่านั้น"</strong> (ข้าราชการหญิงแลกกับหญิงสำหรับกะกลางวัน, ข้าราชการชายแลกกับชายสำหรับกะกลางคืน)
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                เจ้าหน้าที่ต้องยื่นคำขอล่วงหน้าอย่างน้อย ๒๔ ชั่วโมงในระบบ และต้องได้รับการอนุมัติจากหัวหน้าสำนักปลัดก่อนการปฏิบัติหน้าที่แทน
+                            </p>
+                        </article>
+
+                        <!-- Section 5 -->
+                        <article id="saraban-admin" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">⚙️</span>
+                                <h3 class="font-bold text-base text-slate-900">๕. คู่มือสำหรับผู้ดูแลระบบ (Admin)</h3>
+                            </div>
+                            <div class="space-y-1.5 text-xs text-slate-600">
+                                <p>• <strong>การจัดตารางเวรอัตโนมัติ:</strong> เข้าหน้าปฏิทิน ระบบจะกระจายเวรให้สอดคล้องตามเพศและจำนวนวันอย่างเท่าเทียม</p>
+                                <p>• <strong>การพิมพ์คำสั่งราชการ:</strong> เข้าหน้าคำสั่งเวรยามราชการเพื่อตรวจสอบรายชื่อและสั่งพิมพ์ A4</p>
+                                <p>• <strong>การส่งแจ้งเตือน:</strong> สามารถกดส่งแจ้งเตือนผ่านบอทกลุ่ม LINE ได้ทันที</p>
+                            </div>
+                        </article>
+
+                        <!-- Section 6 -->
+                        <article id="saraban-line" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">💬</span>
+                                <h3 class="font-bold text-base text-slate-900">๖. การทำงานของระบบ LINE Bot ประจำกลุ่ม</h3>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-600">
+                                <p>• <strong>รอบเวลา ๐๗:๓๐ น.:</strong> บอทส่ง Flex Message แจ้งเตือนเวรกลางวัน (หญิง) เข้ากลุ่ม</p>
+                                <p>• <strong>รอบเวลา ๑๖:๐๐ น.:</strong> บอทส่ง Flex Message แจ้งเตือนเวรกลางคืน (ชาย) เข้ากลุ่ม</p>
+                                <p>• <strong>การแจ้งเตือน Real-time:</strong> เมื่อมีเจ้าหน้าที่กดเช็กอิน หรือผู้ตรวจเวรบันทึกผล บอทจะแจ้งเข้ากลุ่มทันที</p>
+                            </div>
+                        </article>
+
+                        <!-- Section 7 -->
+                        <article id="saraban-faq" class="saraban-article bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center space-x-2 border-b border-slate-100 pb-2">
+                                <span class="text-lg">❓</span>
+                                <h3 class="font-bold text-base text-slate-900">๗. คำถามที่พบบ่อย (FAQ) และเบอร์ติดต่อ</h3>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-600">
+                                <p><strong>ถาม: ทำไมกดลงเวลาเข้าเวรไม่ได้?</strong><br>ตอบ: กรุณาตรวจสอบว่าท่านอยู่ในรัศมี ๑๕๐ เมตร ของที่ทำการ อบต.ฝางคำ และได้เปิด GPS บนมือถือแล้วหรือไม่</p>
+                                <p><strong>ถาม: ติดต่อแจ้งเหตุฉุกเฉินระหว่างเข้าเวรได้ที่ไหน?</strong><br>ตอบ: งานป้องกันและบรรเทาสาธารณภัย อบต.ฝางคำ โทร. ๐๔๕-xxxxxx หรือสายด่วน ๑๙๙</p>
+                            </div>
+                        </article>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 9: SYSTEM SETTINGS (ตั้งค่าระบบต่างๆ) -->
+            <div id="tab-settings" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-2xl">⚙️</span>
+                                <h2 class="text-xl font-bold text-slate-900">ตั้งค่าระบบเวรยาม อบต.ฝางคำ</h2>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">กำหนดข้อมูลหน่วยงาน พิกัด GPS Geofencing เวลาผลัดเวร และการเชื่อมต่อ LINE Bot</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                                🔄 คืนค่าเริ่มต้น
+                            </button>
+                            <button onclick="saveSettingsFromForm(event)" class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition flex items-center space-x-1.5">
+                                <span>💾 บันทึกการตั้งค่า</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <form onsubmit="saveSettingsFromForm(event)" class="space-y-6">
+                        <!-- Group 1: Organization Info -->
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                <span>🏛️</span>
+                                <span>ข้อมูลหน่วยงานและผู้บริหาร</span>
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อหน่วยงาน</label>
+                                    <input type="text" id="setting-org-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="องค์การบริหารส่วนตำบลฝางคำ">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ตำบล / อำเภอ / จังหวัด</label>
+                                    <div class="grid grid-cols-3 gap-1">
+                                        <input type="text" id="setting-subdistrict" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="ตำบลฝางคำ">
+                                        <input type="text" id="setting-district" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="อำเภอสิรินธร">
+                                        <input type="text" id="setting-province" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="จังหวัดอุบลราชธานี">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ที่ทำการ</label>
+                                    <input type="text" id="setting-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-123">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">สายด่วนฉุกเฉิน / กู้ชีพ</label>
+                                    <input type="text" id="setting-emergency-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-199">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อนายก อบต. (ผู้ลงนามคำสั่ง)</label>
+                                    <input type="text" id="setting-mayor-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="นายกองค์การบริหารส่วนตำบลฝางคำ">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อปลัด อบต.</label>
+                                    <input type="text" id="setting-clerk-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="ปลัดองค์การบริหารส่วนตำบลฝางคำ">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Geofencing GPS -->
+                        <div class="pt-4 border-t border-slate-100">
+                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                <span>📍</span>
+                                <span>พิกัด GPS Geofencing (ตรวจสอบการลงเวลา)</span>
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ละติจูด (Latitude)</label>
+                                    <input type="number" step="0.000001" id="setting-lat" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="15.228500">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">ลองจิจูด (Longitude)</label>
+                                    <input type="number" step="0.000001" id="setting-lng" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="104.387100">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">รัศมีที่อนุญาตให้ลงเวลา (เมตร)</label>
+                                    <input type="number" id="setting-radius" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="150">
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-2">พิกัดนี้ใช้สำหรับคำนวณระยะห่างระหว่างจุดที่เจ้าหน้าที่กดเช็กอิน กับอาคารที่ทำการ อบต.ฝางคำ</p>
+                        </div>
+
+                        <!-- Group 3: Shift Hours -->
+                        <div class="pt-4 border-t border-slate-100">
+                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                <span>⏰</span>
+                                <span>กำหนดช่วงเวลาผลัดเวร</span>
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div class="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
+                                    <label class="block font-bold text-amber-900 mb-1">☀️ กะกลางวัน (ผู้หญิง - วันหยุด)</label>
+                                    <input type="text" id="setting-day-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="08.00 - 16.30 น.">
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-slate-900/5 border border-slate-300">
+                                    <label class="block font-bold text-slate-900 mb-1">🌙 กะกลางคืน (ผู้ชาย - ทุกวัน)</label>
+                                    <input type="text" id="setting-night-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="16.30 - 08.00 น.">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 4: LINE Messaging API Bot -->
+                        <div class="pt-4 border-t border-slate-100">
+                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                <span>💬</span>
+                                <span>การเชื่อมต่อ LINE Messaging API (กลุ่ม อบต.ฝางคำ)</span>
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">Channel Access Token</label>
+                                    <input type="password" id="setting-line-token" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">LINE Group ID</label>
+                                    <input type="text" id="setting-line-group-id" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="C894a73129fbc923847192837419">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรเช้า</label>
+                                    <input type="time" id="setting-line-morning-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="07:30">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรค่ำ</label>
+                                    <input type="time" id="setting-line-evening-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="16:00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
+                            <button type="submit" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">
+                                💾 บันทึกการเปลี่ยนแปลงทั้งหมด
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Login & Password Modal (ระบบ Username/Password, เปลี่ยนรหัสผ่าน, และดูรายชื่อ 30 ท่าน) -->
+    <div id="login-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-xl">🔐</div>
+                    <div>
+                        <h3 class="text-base font-bold">ระบบยืนยันตัวตน เวรยาม อบต.ฝางคำ</h3>
+                        <p class="text-xs opacity-90">ล็อกอินด้วย Username และ Password (รหัสผ่านเริ่มต้น: 1234)</p>
+                    </div>
+                </div>
+                <button onclick="closeLoginModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition">✕</button>
+            </div>
+
+            <!-- Modal Nav Tabs (เข้าสู่ระบบ | เปลี่ยนรหัสผ่าน | รายชื่อ Username 30 ท่าน) -->
+            <div class="flex border-b border-slate-200 bg-slate-100 p-1.5 gap-1 text-xs font-semibold flex-shrink-0">
+                <button data-view="login" onclick="switchLoginView('login')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-emerald-800 font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
+                    <span>🔐 เข้าสู่ระบบ</span>
+                </button>
+                <button data-view="change_pwd" onclick="switchLoginView('change_pwd')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5">
+                    <span>🔑 เปลี่ยนรหัสผ่าน</span>
+                </button>
+                <button data-view="directory" onclick="switchLoginView('directory')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5">
+                    <span>📋 ดู Username 30 ท่าน</span>
+                </button>
+            </div>
+
+            <!-- VIEW 1: เข้าสู่ระบบ (Username & Password) -->
+            <div id="modal-view-login" class="p-6 overflow-y-auto flex-1 space-y-4">
+                <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-200 text-xs text-emerald-900 flex items-start space-x-2.5">
+                    <span class="text-base">💡</span>
+                    <div>
+                        <span class="font-bold">เข้าสู่ระบบด้วย Username ของท่าน:</span><br>
+                        รหัสผ่านเริ่มต้นสำหรับทุกท่านคือ <strong class="font-mono bg-white px-1.5 py-0.5 rounded border border-emerald-300">1234</strong> หรือรหัสผ่านใหม่ที่ท่านเคยเปลี่ยนไว้
+                    </div>
+                </div>
+
+                <form onsubmit="handleUsernamePasswordLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อผู้ใช้งาน (Username หรือ ชื่อ-สกุล)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm">👤</span>
+                            <input type="text" id="login-username" placeholder="เช่น admin, kiattiphon, wuttisak, amporn..." class="w-full text-sm rounded-2xl border border-slate-300 pl-10 pr-4 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">รหัสผ่าน (Password)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm">🔒</span>
+                            <input type="password" id="login-password" placeholder="รหัสผ่านเริ่มต้น: 1234" class="w-full text-sm rounded-2xl border border-slate-300 pl-10 pr-10 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                            <button type="button" onclick="const p = document.getElementById('login-password'); p.type = p.type === 'password' ? 'text' : 'password';" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 text-xs">👁️</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                        <span>เข้าสู่ระบบ ➔</span>
+                    </button>
+                </form>
+
+                <!-- Quick shortcut logins for demo testing -->
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">ทางลัดทดสอบเข้าใช้งานด่วน:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <button onclick="pickUserToLogin('admin')" class="p-2 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100 text-purple-900 font-semibold text-left transition truncate">
+                            👑 Admin (ชาญชัย)
+                        </button>
+                        <button onclick="pickUserToLogin('kiattiphon')" class="p-2 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100 text-emerald-900 font-semibold text-left transition truncate">
+                            🌙 คืนนี้ (เกียรติพล)
+                        </button>
+                        <button onclick="pickUserToLogin('wuttisak')" class="p-2 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-900 font-semibold text-left transition truncate">
+                            🔍 ผู้ตรวจ (วุฒิศักดิ์)
+                        </button>
+                        <button onclick="pickUserToLogin('amporn')" class="p-2 rounded-xl border border-amber-200 bg-amber-50/70 hover:bg-amber-100 text-amber-900 font-semibold text-left transition truncate">
+                            ☀️ กลางวัน (อำพร)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-500 pt-2">
+                    <button type="button" onclick="switchLoginView('change_pwd')" class="text-emerald-700 hover:underline font-semibold">
+                        🔑 ต้องการเปลี่ยนรหัสผ่าน? คลิกที่นี่
+                    </button>
+                    <button type="button" onclick="switchLoginView('directory')" class="text-slate-600 hover:text-slate-900 underline">
+                        📋 ลืม Username / ดูรายชื่อ 30 ท่าน
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: เปลี่ยนรหัสผ่าน (Change Password) -->
+            <div id="modal-view-change-pwd" class="hidden p-6 overflow-y-auto flex-1 space-y-4">
+                <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-xs text-amber-900 flex items-start space-x-2.5">
+                    <span class="text-base">🔒</span>
+                    <div>
+                        <span class="font-bold">ระบบเปลี่ยนรหัสผ่านเจ้าหน้าที่ อบต.ฝางคำ:</span><br>
+                        เมื่อเปลี่ยนรหัสผ่านแล้ว ระบบจะบันทึกจำไว้ในอุปกรณ์ของท่าน และใช้รหัสผ่านใหม่ในการเข้าสู่ระบบครั้งถัดไป
+                    </div>
+                </div>
+
+                <form onsubmit="handleChangePasswordSubmit(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Username ของท่าน</label>
+                        <input type="text" id="chg-username" placeholder="เช่น admin, kiattiphon, amporn..." class="w-full text-sm rounded-2xl border border-slate-300 px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">รหัสผ่านปัจจุบัน (รหัสเริ่มต้นคือ 1234)</label>
+                        <input type="password" id="chg-old-password" placeholder="รหัสผ่านปัจจุบัน" class="w-full text-sm rounded-2xl border border-slate-300 px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)</label>
+                            <input type="password" id="chg-new-password" placeholder="รหัสผ่านใหม่" class="w-full text-sm rounded-2xl border border-slate-300 px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
+                            <input type="password" id="chg-confirm-password" placeholder="ยืนยันรหัสผ่านใหม่" class="w-full text-sm rounded-2xl border border-slate-300 px-3.5 py-2.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                        <span>💾 บันทึกรหัสผ่านใหม่</span>
+                    </button>
+                </form>
+
+                <div class="text-center pt-2">
+                    <button type="button" onclick="switchLoginView('login')" class="text-xs text-slate-600 hover:text-emerald-700 font-semibold underline">
+                        ➔ กลับสู่หน้าเข้าสู่ระบบ (Login)
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 3: รายชื่อ Username 30 ท่าน (Directory & Quick Pick) -->
+            <div id="modal-view-directory" class="hidden p-4 overflow-y-auto flex-1 space-y-3 flex flex-col">
+                <!-- Search & Filters -->
+                <div class="space-y-2.5 flex-shrink-0">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm">🔍</span>
+                        <input type="text" id="login-search-input" onkeyup="searchLoginUsers(this.value)" placeholder="ค้นหาชื่อเจ้าหน้าที่ เช่น เกียรติพล, วุฒิศักดิ์, อำพร..." class="w-full text-xs rounded-2xl border border-slate-300 pl-9 pr-4 py-2 bg-white focus:ring-2 focus:ring-emerald-500 shadow-xs">
+                    </div>
+
+                    <div class="flex flex-wrap gap-1 text-[11px] font-semibold">
+                        <button id="btn-logincat-all" onclick="filterLoginCategory('all')" class="login-cat-btn px-2.5 py-1 rounded-xl bg-emerald-600 text-white transition">
+                            ทั้งหมด (30)
+                        </button>
+                        <button id="btn-logincat-admin" onclick="filterLoginCategory('admin')" class="login-cat-btn px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            👑 แอดมิน/บริหาร (2)
+                        </button>
+                        <button id="btn-logincat-inspector" onclick="filterLoginCategory('inspector')" class="login-cat-btn px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            🔍 ผู้ตรวจเวร (4)
+                        </button>
+                        <button id="btn-logincat-night" onclick="filterLoginCategory('night')" class="login-cat-btn px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            🌙 กลางคืน ชาย (14)
+                        </button>
+                        <button id="btn-logincat-day" onclick="filterLoginCategory('day')" class="login-cat-btn px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            ☀️ กลางวัน หญิง (11)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable Grid -->
+                <div id="directory-users-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 overflow-y-auto flex-1 pr-1">
+                    <!-- Populated dynamically via renderDirectoryUserList() -->
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 flex-shrink-0">
+                <span>องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือน ตุลาคม ๒๕๖๙</span>
+                <button onclick="closeLoginModal()" class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden Official Document solely for @media print -->
+    <div id="official-print-document" class="hidden"></div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
+        องค์การบริหารส่วนตำบลฝางคำ อำเภอสิรินธร จังหวัดอุบลราชธานี • ระบบบริหารจัดการเวรยามและตรวจเวรยามดิจิทัล (Gov Tech 2026)
+    </footer>
+
+    <script src="app.js"></script>
+    <!-- PDF Preview Modal -->
+    <div id="pdf-preview-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-white rounded-3xl max-w-4xl w-full h-[88vh] shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+            <div class="bg-slate-900 px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <span class="text-xl">📄</span>
+                    <h3 id="pdf-preview-title" class="text-sm font-bold truncate">ตัวอย่างเอกสารคำสั่ง PDF</h3>
+                </div>
+                <button onclick="closePdfPreviewModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition">✕</button>
+            </div>
+            <div id="pdf-preview-frame-container" class="flex-1 p-4 bg-slate-100 overflow-hidden">
+                <!-- PDF iframe or sample view inserted here -->
+            </div>
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-between items-center text-xs flex-shrink-0">
+                <span class="text-slate-500">องค์การบริหารส่วนตำบลฝางคำ • ระบบแสดงตัวอย่างเอกสารสารบรรณดิจิทัล</span>
+                <button onclick="closePdfPreviewModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- LINE / OpenChat Share Modal (ระบบคัดลอกและเปิดแชร์เข้า OpenChat อบต.ฝางคำ) -->
+    <div id="line-share-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-[#06C755] to-[#04a044] px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-xl">💬</div>
+                    <div>
+                        <h3 class="text-base font-bold">แชร์ข้อความเข้า LINE OpenChat</h3>
+                        <p class="text-xs opacity-90">องค์การบริหารส่วนตำบลฝางคำ</p>
+                    </div>
+                </div>
+                <button onclick="closeLineShareModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition">✕</button>
+            </div>
+
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <!-- Status Badge -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex items-center space-x-3 text-emerald-900">
+                    <span class="text-2xl flex-shrink-0">✅</span>
+                    <div>
+                        <div class="font-bold text-xs">คัดลอกข้อความลงเครื่องเรียบร้อยแล้ว!</div>
+                        <div class="text-[11px] text-emerald-700">สามารถกด "วาง" (Ctrl+V) ในห้อง OpenChat ของ อบต.ฝางคำ ได้ทันที</div>
+                    </div>
+                </div>
+
+                <!-- Text Area / Preview -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-bold text-slate-700">ข้อความที่เตรียมส่ง:</label>
+                        <button onclick="copyCurrentShareText()" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center space-x-1">
+                            <span>📋 คัดลอกอีกครั้ง</span>
+                        </button>
+                    </div>
+                    <textarea id="line-share-text-preview" rows="8" readonly class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-2xl p-3.5 text-slate-800 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <!-- Quick Steps Guide -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs space-y-2 text-slate-600">
+                    <div class="font-bold text-slate-800 flex items-center space-x-1.5">
+                        <span>💡</span>
+                        <span>วิธีส่งข้อความเข้าห้อง OpenChat:</span>
+                    </div>
+                    <ol class="list-decimal list-inside space-y-1.5 text-[11px] text-slate-600">
+                        <li>กดปุ่มสีเขียว <strong>"เปิดแอป LINE"</strong> ด้านล่าง หรือสลับไปที่หน้าต่างแอป LINE</li>
+                        <li>เข้าไปที่ห้อง <strong>OpenChat ของ อบต.ฝางคำ</strong></li>
+                        <li>กดคลิกขวาเลือก <strong>"วาง" (Paste)</strong> หรือกดแป้น <strong>Ctrl + V</strong></li>
+                        <li>กดปุ่ม <strong>ส่ง (Enter)</strong> ได้ทันที</li>
+                    </ol>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <button onclick="openNativeLineApp()" class="w-full py-3 rounded-2xl bg-[#06C755] hover:bg-[#04a044] text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-2">
+                        <span>🟢 เปิดแอป LINE</span>
+                    </button>
+                    <button onclick="copyCurrentShareText()" class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition flex items-center justify-center space-x-2 border border-slate-300">
+                        <span>📋 คัดลอกข้อความ</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-end flex-shrink-0">
+                <button onclick="closeLineShareModal()" class="px-4 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
