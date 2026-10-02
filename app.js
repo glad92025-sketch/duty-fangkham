@@ -45,7 +45,7 @@ const ALL_SYSTEM_USERS = [
     // 2. ผู้ตรวจเวรยาม (4 ท่าน)
     { id: 'insp_1', username: 'chanchai', defaultPass: '1234', name: 'นายชาญชัย อักโข', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
     { id: 'insp_2', username: 'wuttisak', defaultPass: '1234', name: 'นายวุฒิศักดิ์ บุตรสิงห์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'กองช่าง', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ต.ค. (คืนนี้!)', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
-    { id: 'insp_3', username: 'vasana', defaultPass: '1234', name: 'นางวาสนา สินทรัพย์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองคลัง', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 3, 5, 10, 13, 17, 23, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_3', username: 'vasana', defaultPass: '1234', name: 'นางวาสนา สินทรัพย์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองคลัง', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 3, 10, 13, 17, 23, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
     { id: 'insp_4', username: 'arunrat', defaultPass: '1234', name: 'นางอรุณรัตน์ บุญกอ', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 4, 11, 18, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
 
     // 3. ผู้อยู่เวรยามกะกลางคืน (ชาย - 14 ท่าน)
@@ -65,25 +65,24 @@ const ALL_SYSTEM_USERS = [
     { id: 'night_14', username: 'wattrajira', defaultPass: '1234', name: 'นายวัตรจิระ ใสขาว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 14, 28 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
 
     // 4. ผู้อยู่เวรยามกะกลางวัน (หญิง - 11 ท่าน)
-    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 3, 17, 31 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 3, 17, 31 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', dutyDays: 'วันที่ 3, 17, 31 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_4', username: 'beena', defaultPass: '1234', name: 'นางสาวบีนา เหล็กกล้า', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_5', username: 'paphada', defaultPass: '1234', name: 'นางสาวปภาดา ประดับ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_6', username: 'phakapha', defaultPass: '1234', name: 'นางสาวผกาพา มณีจันทร์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'วันที่ 5, 13 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_7', username: 'sudarat', defaultPass: '1234', name: 'นางสาวสุดารัตน์ ริมทอง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 5, 13 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_6', username: 'phakapha', defaultPass: '1234', name: 'นางสาวผกาพา มณีจันทร์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_7', username: 'sudarat', defaultPass: '1234', name: 'นางสาวสุดารัตน์ ริมทอง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_8', username: 'niphaporn', defaultPass: '1234', name: 'นางสาวนิภาพร เที่ยงตรง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_9', username: 'nittaya', defaultPass: '1234', name: 'นางสาวนิตยา ชุมชัย', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสาธารณสุข', gender: 'female', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_10', username: 'ratchanee', defaultPass: '1234', name: 'นางรัชนี สร้อยคำ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_11', username: 'massupha', defaultPass: '1234', name: 'นางสาวมาสศุภา ดวงคำ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' }
 ];
 
-// ข้อมูลตารางเวรตามคำสั่งจริง ต.ค. 2569
+// ข้อมูลตารางเวรตามคำสั่งจริง ต.ค. 2569 (แก้ไขใหม่ล่าสุด 10 ผลัดวันหยุด)
 const ROSTER_OCT_2569 = {
     day: {
         3:  { staff: ['นางสาวอำพร ทองสวัสดิ์', 'นางสาวธิดาลักษณ์ โสแก้ว', 'นางต้องตาประภา โพธิ์งาม'], inspector: 'นางวาสนา สินทรัพย์' },
         4:  { staff: ['นางสาวบีนา เหล็กกล้า', 'นางสาวปภาดา ประดับ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
-        5:  { staff: ['นางสาวผกาพา มณีจันทร์', 'นางสาวสุดารัตน์ ริมทอง'], inspector: 'นางวาสนา สินทรัพย์' },
         10: { staff: ['นางสาวนิภาพร เที่ยงตรง', 'นางสาวนิตยา ชุมชัย'], inspector: 'นางวาสนา สินทรัพย์' },
         11: { staff: ['นางรัชนี สร้อยคำ', 'นางสาวมาสศุภา ดวงคำ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
         13: { staff: ['นางสาวผกาพา มณีจันทร์', 'นางสาวสุดารัตน์ ริมทอง'], inspector: 'นางวาสนา สินทรัพย์' },
@@ -91,7 +90,7 @@ const ROSTER_OCT_2569 = {
         18: { staff: ['นางสาวบีนา เหล็กกล้า', 'นางสาวปภาดา ประดับ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
         23: { staff: ['นางสาวนิภาพร เที่ยงตรง', 'นางสาวนิตยา ชุมชัย'], inspector: 'นางวาสนา สินทรัพย์' },
         24: { staff: ['นางรัชนี สร้อยคำ', 'นางสาวมาสศุภา ดวงคำ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
-        31: { staff: ['นางสาวอำพร ทองสวัสดิ์', 'นางสาวธิดาลักษณ์ โสแก้ว', 'นางต้องตาประภา โพธิ์งาม'], inspector: 'นางวาสนา สินทรัพย์' }
+        31: { staff: ['นางสาวผกาพา มณีจันทร์', 'นางสาวสุดารัตน์ ริมทอง'], inspector: 'นางวาสนา สินทรัพย์' }
     },
     nightCycle: [
         { staff: 'จ.ส.ท.มานิต ทองดวง', inspector: 'นายชาญชัย อักโข' },
@@ -572,7 +571,11 @@ function logoutUser() {
 // -------------------------------------------------------------
 function getCustomRoster() {
     try {
-        const saved = localStorage.getItem('fangkham_custom_roster_v1');
+        // ล้างแคชเวอร์ชันเก่า (ถ้ามี) เพื่อให้ตารางเวรทางการใหม่แสดงผลทันที
+        if (localStorage.getItem('fangkham_custom_roster_v1')) {
+            localStorage.removeItem('fangkham_custom_roster_v1');
+        }
+        const saved = localStorage.getItem('fangkham_custom_roster_v2');
         return saved ? JSON.parse(saved) : {};
     } catch(e) {
         return {};
@@ -581,7 +584,7 @@ function getCustomRoster() {
 
 function saveCustomRoster(customData) {
     try {
-        localStorage.setItem('fangkham_custom_roster_v1', JSON.stringify(customData));
+        localStorage.setItem('fangkham_custom_roster_v2', JSON.stringify(customData));
     } catch(e) {
         console.error('Failed to save custom roster', e);
     }
@@ -806,9 +809,12 @@ function renderDashboard() {
     const statMale = document.getElementById('stat-male-shifts');
     const statInsp = document.getElementById('stat-inspections');
 
-    if (statTotal) statTotal.textContent = '42 ผลัด';
-    if (statFemale) statFemale.textContent = '11 วัน';
-    if (statMale) statMale.textContent = '31 คืน';
+    const dayDutyCount = appState.schedules.filter(s => s.dayDuty).length;
+    const nightDutyCount = appState.schedules.filter(s => s.nightDuty).length;
+
+    if (statTotal) statTotal.textContent = `${dayDutyCount + nightDutyCount} ผลัด`;
+    if (statFemale) statFemale.textContent = `${dayDutyCount} วัน`;
+    if (statMale) statMale.textContent = `${nightDutyCount} คืน`;
     if (statInsp) statInsp.textContent = `${appState.inspections.length} ครั้ง`;
 }
 
@@ -1334,6 +1340,7 @@ function resetCurrentDayRoster() {
 
 function confirmResetAllRoster() {
     if (confirm('ท่านต้องการคืนค่าเริ่มต้นทั้งหมด 31 วัน ใช่หรือไม่? ข้อมูลการแก้ไขทั้งหมดจะถูกล้างกลับไปเป็นคำสั่งเดิมของ อบต.ฝางคำ')) {
+        localStorage.removeItem('fangkham_custom_roster_v2');
         localStorage.removeItem('fangkham_custom_roster_v1');
         buildOctober2569Schedules();
         renderDashboard();
