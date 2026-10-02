@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -56,27 +56,27 @@
                         <span>📖 สารบัญคู่มือ</span>
                     </button>
 
-                    <button onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1.5 border border-emerald-200 shadow-xs">
-                        <span>🔑 เข้าสู่ระบบ / สลับบัญชี</span>
+                    <button id="btn-header-login" onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 text-white transition flex items-center space-x-1.5 shadow-sm">
+                        <span>🔑 เข้าสู่ระบบ</span>
                     </button>
-                    <button onclick="openLoginModal('change_pwd')" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition flex items-center space-x-1 border border-amber-200 shadow-xs" title="เปลี่ยนรหัสผ่าน">
+                    <button id="btn-header-changepwd" onclick="openLoginModal('change_pwd')" class="hidden text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition flex items-center space-x-1 border border-amber-200 shadow-xs" title="เปลี่ยนรหัสผ่าน">
                         <span>🔒 เปลี่ยนรหัส</span>
                     </button>
-                    <button onclick="logoutUser()" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition flex items-center space-x-1 border border-slate-200" title="ออกจากระบบ">
+                    <button id="btn-header-logout" onclick="logoutUser()" class="hidden text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition flex items-center space-x-1 border border-slate-200" title="ออกจากระบบ">
                         <span>🚪 ออก</span>
                     </button>
 
                     <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
 
-                    <!-- Current User Profile Profile -->
-                    <div class="flex items-center space-x-2.5 bg-slate-50 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl border border-slate-200">
-                        <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover" alt="User Avatar">
+                    <!-- Current User Profile / Guest State -->
+                    <div class="flex items-center space-x-2.5 bg-slate-50 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl border border-slate-200 cursor-pointer" onclick="openLoginModal('login')" title="คลิกเพื่อเข้าสู่ระบบ">
+                        <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover" alt="User Avatar">
                         <div class="text-left hidden md:block leading-tight">
                             <div class="flex items-center space-x-1.5">
-                                <span id="auth-user-name" class="text-xs font-bold text-slate-800">นาย อัครเดช สิทธิชัย</span>
-                                <span id="auth-user-role-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-100 text-purple-800 border border-purple-200">Admin</span>
+                                <span id="auth-user-name" class="text-xs font-bold text-slate-700">ยังไม่ได้เข้าสู่ระบบ</span>
+                                <span id="auth-user-role-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300">ผู้เยี่ยมชม</span>
                             </div>
-                            <div id="auth-user-pos" class="text-[10px] text-slate-500">หัวหน้าฝ่ายบริหารงานทั่วไป • สำนักปลัด</div>
+                            <div id="auth-user-pos" class="text-[10px] text-slate-500">กรุณาล็อกอินเพื่อลงเวลา/ตรวจเวร</div>
                         </div>
                     </div>
                 </div>

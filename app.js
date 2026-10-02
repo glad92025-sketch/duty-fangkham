@@ -144,7 +144,7 @@ const INITIAL_ATTACHED_PDFS = [
 ];
 
 let appState = {
-    currentUser: ALL_SYSTEM_USERS[0], // เริ่มต้นด้วย Admin (นายชาญชัย อักโข)
+    currentUser: null, // เริ่มต้นแบบออกจากระบบ (Guest) ให้ผู้ใช้ล็อกอินเอง
     settings: { ...DEFAULT_SETTINGS },
     attachedPdfs: [...INITIAL_ATTACHED_PDFS],
     currentLoginTab: 'login', // 'login', 'change_pwd', 'directory'
@@ -429,13 +429,35 @@ function searchLoginUsers(query) {
 
 function updateAuthUI() {
     const u = appState.currentUser;
-    if (!u) return;
-
     const nameEl = document.getElementById('auth-user-name');
     const posEl = document.getElementById('auth-user-pos');
     const roleEl = document.getElementById('auth-user-role-badge');
     const avatarEl = document.getElementById('auth-user-avatar');
+    const btnLogout = document.getElementById('btn-header-logout');
+    const btnChangePwd = document.getElementById('btn-header-changepwd');
+    const btnLoginHeader = document.getElementById('btn-header-login');
+    const personalBanner = document.getElementById('personal-duty-banner');
 
+    // กรณีที่ยังไม่ได้เข้าสู่ระบบ (Guest / ผู้เยี่ยมชม)
+    if (!u) {
+        if (nameEl) nameEl.textContent = 'ยังไม่ได้เข้าสู่ระบบ';
+        if (posEl) posEl.textContent = 'กรุณาล็อกอินเพื่อลงเวลา/ตรวจเวร';
+        if (roleEl) {
+            roleEl.textContent = 'ผู้เยี่ยมชม';
+            roleEl.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-600 border-slate-300';
+        }
+        if (avatarEl) avatarEl.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80';
+        if (btnLogout) btnLogout.classList.add('hidden');
+        if (btnChangePwd) btnChangePwd.classList.add('hidden');
+        if (btnLoginHeader) {
+            btnLoginHeader.innerHTML = `<span>🔑 เข้าสู่ระบบ</span>`;
+            btnLoginHeader.className = 'text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm';
+        }
+        if (personalBanner) personalBanner.classList.add('hidden');
+        return;
+    }
+
+    // กรณีเข้าสู่ระบบแล้ว
     if (nameEl) nameEl.textContent = u.name;
     if (posEl) posEl.textContent = `User: ${u.username} • ${u.dept}`;
     if (roleEl) {
@@ -443,8 +465,13 @@ function updateAuthUI() {
         roleEl.className = `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${u.badge}`;
     }
     if (avatarEl) avatarEl.src = u.avatar;
+    if (btnLogout) btnLogout.classList.remove('hidden');
+    if (btnChangePwd) btnChangePwd.classList.remove('hidden');
+    if (btnLoginHeader) {
+        btnLoginHeader.innerHTML = `<span>🔄 สลับบัญชี</span>`;
+        btnLoginHeader.className = 'text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1.5 border border-emerald-200 shadow-xs';
+    }
 
-    const personalBanner = document.getElementById('personal-duty-banner');
     if (personalBanner) {
         if (u.id === 'night_2') {
             personalBanner.classList.remove('hidden');
@@ -508,8 +535,10 @@ function updateAuthUI() {
 }
 
 function logoutUser() {
-    openLoginModal('login');
-    showToast('ออกจากระบบ', 'กรุณาระบุ Username และ Password เพื่อเข้าใช้งานใหม่', 'info');
+    appState.currentUser = null;
+    updateAuthUI();
+    switchTab('dashboard');
+    showToast('ออกจากระบบเรียบร้อย', 'ท่านออกจากระบบแล้ว สามารถดูตารางเวรยามได้ตามปกติ หรือกดเข้าสู่ระบบเมื่อต้องการลงเวลา', 'info');
 }
 
 // -------------------------------------------------------------
@@ -566,6 +595,13 @@ function buildOctober2569Schedules() {
 // ระบบสลับหน้าเว็บ (Tab Navigation)
 // -------------------------------------------------------------
 function switchTab(tabId) {
+    // หากเข้าหน้าลงเวลา, ตรวจเวร, สลับเวร, หรือตั้งค่า แต่ยังไม่ได้เข้าสู่ระบบ ให้แจ้งเตือนและเปิดหน้าต่างล็อกอิน
+    if (!appState.currentUser && (tabId === 'checkin' || tabId === 'inspection' || tabId === 'swap' || tabId === 'settings')) {
+        openLoginModal('login');
+        showToast('กรุณาเข้าสู่ระบบก่อน', 'กรุณาระบุ Username และ Password ของท่านเพื่อดำเนินการ', 'info');
+        return;
+    }
+
     appState.currentTab = tabId;
 
     // ซ่อนเนื้อหาทุกแท็บ
