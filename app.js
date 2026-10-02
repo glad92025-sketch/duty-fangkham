@@ -459,6 +459,10 @@ function updateAuthUI() {
     const btnChangePwd = document.getElementById('btn-header-changepwd');
     const btnLoginHeader = document.getElementById('btn-header-login');
     const personalBanner = document.getElementById('personal-duty-banner');
+    const drawerName = document.getElementById('drawer-user-name');
+    const drawerRole = document.getElementById('drawer-user-role');
+    const drawerAvatar = document.getElementById('drawer-user-avatar');
+    const drawerLogout = document.getElementById('drawer-btn-logout');
 
     // กรณีที่ยังไม่ได้เข้าสู่ระบบ (Guest / ผู้เยี่ยมชม)
     if (!u) {
@@ -473,8 +477,12 @@ function updateAuthUI() {
         if (btnChangePwd) btnChangePwd.classList.add('hidden');
         if (btnLoginHeader) {
             btnLoginHeader.innerHTML = `<span>🔑 เข้าสู่ระบบ</span>`;
-            btnLoginHeader.className = 'text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm';
+            btnLoginHeader.className = 'text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1 shadow-sm';
         }
+        if (drawerName) drawerName.textContent = 'ยังไม่ได้เข้าสู่ระบบ';
+        if (drawerRole) drawerRole.textContent = 'ผู้เยี่ยมชม (กรุณาล็อกอิน)';
+        if (drawerAvatar) drawerAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80';
+        if (drawerLogout) drawerLogout.classList.add('hidden');
         if (personalBanner) personalBanner.classList.add('hidden');
         renderCheckinTab();
         return;
@@ -492,8 +500,12 @@ function updateAuthUI() {
     if (btnChangePwd) btnChangePwd.classList.remove('hidden');
     if (btnLoginHeader) {
         btnLoginHeader.innerHTML = `<span>🔄 สลับบัญชี</span>`;
-        btnLoginHeader.className = 'text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1.5 border border-emerald-200 shadow-xs';
+        btnLoginHeader.className = 'text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1 border border-emerald-200 shadow-xs';
     }
+    if (drawerName) drawerName.textContent = u.name;
+    if (drawerRole) drawerRole.textContent = `${u.roleName} • ${u.dept}`;
+    if (drawerAvatar) drawerAvatar.src = u.avatar;
+    if (drawerLogout) drawerLogout.classList.remove('hidden');
 
     if (personalBanner) {
         if (u.id === 'night_2') {
@@ -618,6 +630,9 @@ function switchTab(tabId) {
 
     appState.currentTab = tabId;
 
+    // ปิดเมนูสไลด์บนมือถือทันทีเมื่อเลือกแท็บ
+    closeMobileDrawer();
+
     // ซ่อนเนื้อหาทุกแท็บ
     document.querySelectorAll('.tab-content').forEach(section => {
         section.classList.add('hidden');
@@ -629,16 +644,39 @@ function switchTab(tabId) {
         targetSection.classList.remove('hidden');
     }
 
-    // อัปเดตปุ่มเมนูด้านข้าง
+    // 1. อัปเดตปุ่มเมนูด้านข้าง (Sidebar - Desktop)
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('bg-emerald-700', 'text-white', 'shadow-sm');
         btn.classList.add('text-slate-600', 'hover:bg-slate-100');
     });
-
     const activeBtn = document.getElementById(`btn-nav-${tabId}`);
     if (activeBtn) {
         activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
         activeBtn.classList.add('bg-emerald-700', 'text-white', 'shadow-sm');
+    }
+
+    // 2. อัปเดตปุ่มเมนูด้านล่างบนมือถือ (Bottom Navigation Bar)
+    document.querySelectorAll('.bnav-btn').forEach(btn => {
+        if (!btn.id.includes('checkin')) {
+            btn.classList.remove('text-emerald-600', 'font-bold');
+            btn.classList.add('text-slate-500', 'font-medium');
+        }
+    });
+    const activeBnav = document.getElementById(`btn-bnav-${tabId}`);
+    if (activeBnav && !activeBnav.id.includes('checkin')) {
+        activeBnav.classList.remove('text-slate-500', 'font-medium');
+        activeBnav.classList.add('text-emerald-600', 'font-bold');
+    }
+
+    // 3. อัปเดตปุ่มใน Mobile Drawer
+    document.querySelectorAll('.mnav-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-50', 'text-emerald-700', 'font-bold');
+        btn.classList.add('text-slate-700', 'hover:bg-slate-50', 'font-medium');
+    });
+    const activeMnav = document.getElementById(`btn-mnav-${tabId}`);
+    if (activeMnav) {
+        activeMnav.classList.remove('text-slate-700', 'hover:bg-slate-50', 'font-medium');
+        activeMnav.classList.add('bg-emerald-50', 'text-emerald-700', 'font-bold');
     }
 
     // เรียกฟังก์ชันเรนเดอร์เฉพาะแท็บ
@@ -649,6 +687,25 @@ function switchTab(tabId) {
     if (tabId === 'settings') loadSettingsToForm();
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// -------------------------------------------------------------
+// ระบบควบคุม Mobile Drawer Menu
+// -------------------------------------------------------------
+function openMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer-modal');
+    if (drawer) {
+        drawer.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+}
+
+function closeMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer-modal');
+    if (drawer) {
+        drawer.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
 }
 
 // -------------------------------------------------------------
