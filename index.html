@@ -310,59 +310,147 @@
 
             <!-- TAB 3: CHECK-IN & LIFF VIEW -->
             <div id="tab-checkin" class="tab-content hidden space-y-6">
-                <div class="max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
-                    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-4 text-white">
-                        <div class="text-xs uppercase font-semibold opacity-80">LINE LIFF Check-in</div>
-                        <h3 class="text-lg font-bold">ลงเวลาเข้าเวร - อบต.ฝางคำ</h3>
-                        <p class="text-xs opacity-90 mt-0.5">ระบบตรวจสอบพิกัด GPS และถ่ายรูปยืนยันตัวตน</p>
+                <!-- 1. GUEST NOTICE (Shown when not logged in) -->
+                <div id="checkin-guest-gate" class="hidden max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-md p-8 text-center space-y-4">
+                    <div class="w-16 h-16 mx-auto bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center text-3xl shadow-sm">
+                        🔒
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">กรุณาเข้าสู่ระบบเพื่อลงเวลาปฏิบัติหน้าที่</h3>
+                        <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                            ตามระเบียบ อบต.ฝางคำ ระบบจะอนุญาตให้ลงเวลาได้เฉพาะในวันที่เจ้าหน้าที่แต่ละท่านมีรายชื่อเข้าเวรจริงเท่านั้น กรุณาล็อกอินด้วย Username และ Password ของท่าน
+                        </p>
+                    </div>
+                    <button onclick="openLoginModal('login')" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition inline-flex items-center space-x-2">
+                        <span>🔑 เข้าสู่ระบบเพื่อลงเวลา</span>
+                    </button>
+                </div>
+
+                <!-- 2. MAIN CHECKIN INTERFACE (Shown when logged in) -->
+                <div id="checkin-auth-container" class="max-w-2xl mx-auto space-y-5">
+                    
+                    <!-- Top Bar: System Date & Fast Date Switcher -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">📅</span>
+                            <div>
+                                <div class="text-[11px] text-slate-400 font-semibold uppercase">วันที่ของระบบ (System Date)</div>
+                                <div id="checkin-system-date-label" class="text-sm font-bold text-slate-800">วันศุกร์ที่ ๒ ตุลาคม ๒๕๖๙</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0">
+                            <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap">ทดสอบเปลี่ยนวัน:</span>
+                            <button type="button" onclick="setSystemDay(2)" id="btn-day-sim-2" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-emerald-500 bg-emerald-50 text-emerald-700 shadow-2xs">๒ ต.ค.</button>
+                            <button type="button" onclick="setSystemDay(3)" id="btn-day-sim-3" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๓ ต.ค.</button>
+                            <button type="button" onclick="setSystemDay(4)" id="btn-day-sim-4" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๔ ต.ค.</button>
+                            <button type="button" onclick="setSystemDay(5)" id="btn-day-sim-5" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๕ ต.ค.</button>
+                        </div>
                     </div>
 
-                    <div class="p-6 space-y-5">
-                        <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-slate-700">พิกัด GPS ปัจจุบัน</span>
-                                <div class="flex space-x-1">
-                                    <button onclick="toggleLocationSim(true)" class="text-[11px] px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-semibold">จำลอง: ใน อบต.</button>
-                                    <button onclick="toggleLocationSim(false)" class="text-[11px] px-2 py-0.5 rounded bg-rose-100 hover:bg-rose-200 text-rose-800 font-semibold">จำลอง: นอกเขต</button>
-                                </div>
-                            </div>
-                            <div id="gps-status-badge" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                📍 พิกัดถูกต้อง: อยู่ในเขต อบต.ฝางคำ (ห่าง 35 ม.)
-                            </div>
-                            <p class="text-[11px] text-slate-500">ระบบจำกัดให้ลงเวลาได้เฉพาะภายในรัศมี 150 เมตร จากที่ทำการ อบต.ฝางคำ</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">เลือกรอบเวรที่ต้องการลงเวลา</label>
-                            <select id="checkin-select-schedule" class="w-full text-sm rounded-xl border-slate-300 shadow-sm py-2.5 px-3 bg-white border">
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">ถ่ายภาพใบหน้ายืนยันตัวตน</label>
-                            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 transition relative cursor-pointer" onclick="document.getElementById('photo-input').click()">
-                                <input type="file" id="photo-input" accept="image/*" capture="user" class="hidden" onchange="handlePhotoUpload(event)">
-                                <div id="photo-placeholder" class="space-y-1">
-                                    <div class="text-2xl">📸</div>
-                                    <div class="text-xs font-medium text-slate-600">กดที่นี่เพื่อถ่ายภาพหรือเลือกรูป</div>
-                                    <div class="text-[10px] text-slate-400">รูปภาพจะถูกส่งไปยังกลุ่ม LINE อบต.ฝางคำ</div>
-                                </div>
-                                <img id="checkin-photo-preview" class="max-h-48 mx-auto rounded-xl shadow-sm hidden object-cover" alt="Preview">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">บันทึกเหตุการณ์ / สภาพทั่วไปก่อนรับเวร</label>
-                            <textarea id="checkin-notes" rows="2" class="w-full text-sm rounded-xl border border-slate-300 p-2.5" placeholder="เช่น ทรัพย์สินราชการเรียบร้อย ปิดล็อกประตูหน้าต่าง"></textarea>
-                        </div>
-
-                        <button id="btn-submit-checkin" onclick="submitCheckin()" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
-                            <span>✅ ยืนยันการลงเวลาเข้าเวร</span>
-                        </button>
-                        <button type="button" onclick="shareCheckinToLineOpenChat()" class="w-full py-2.5 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] text-white font-bold text-xs shadow-sm transition flex items-center justify-center space-x-2 mt-2">
-                            <span>💬 แชร์ผลการลงเวลาเข้า LINE OpenChat</span>
-                        </button>
+                    <!-- Dynamic Duty Verification Banner -->
+                    <div id="checkin-duty-status-card" class="rounded-3xl border border-slate-200 p-5 shadow-sm transition bg-white">
+                        <!-- Populated by JS -->
                     </div>
+
+                    <!-- Main Check-in / Check-out Form -->
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-4 text-white flex justify-between items-center">
+                            <div>
+                                <div class="text-[10px] uppercase font-bold tracking-wider opacity-80">SMART DUTY VERIFICATION</div>
+                                <h3 id="checkin-form-title" class="text-base sm:text-lg font-bold">บันทึกการลงเวลาปฏิบัติหน้าที่</h3>
+                            </div>
+                            <!-- Mode Switcher Pill: Check-in vs Check-out -->
+                            <div class="flex bg-white/20 p-1 rounded-xl text-xs font-semibold backdrop-blur-xs">
+                                <button type="button" id="btn-mode-checkin" onclick="setCheckinActionType('checkin')" class="px-3 py-1 rounded-lg transition bg-white text-emerald-800 shadow-xs">
+                                    เข้าเวร
+                                </button>
+                                <button type="button" id="btn-mode-checkout" onclick="setCheckinActionType('checkout')" class="px-3 py-1 rounded-lg transition text-white hover:bg-white/10">
+                                    ออกเวร
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-6 space-y-5">
+                            <!-- GPS Location Section -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-slate-700">พิกัด GPS ปัจจุบัน</span>
+                                    <div class="flex space-x-1">
+                                        <button type="button" onclick="toggleLocationSim(true)" class="text-[11px] px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-semibold">จำลอง: ใน อบต.</button>
+                                        <button type="button" onclick="toggleLocationSim(false)" class="text-[11px] px-2 py-0.5 rounded bg-rose-100 hover:bg-rose-200 text-rose-800 font-semibold">จำลอง: นอกเขต</button>
+                                    </div>
+                                </div>
+                                <div id="gps-status-badge" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    📍 พิกัดถูกต้อง: อยู่ในเขต อบต.ฝางคำ (ห่าง 35 ม.)
+                                </div>
+                                <p class="text-[11px] text-slate-500">ระบบจำกัดให้ลงเวลาได้เฉพาะภายในรัศมี 150 เมตร จากที่ทำการ อบต.ฝางคำ</p>
+                            </div>
+
+                            <!-- Shift Selection -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-slate-700">รอบเวรที่บันทึก</label>
+                                    <span id="shift-match-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                        ✓ ตรวจสอบสิทธิ์แล้ว
+                                    </span>
+                                </div>
+                                <select id="checkin-select-schedule" class="w-full text-sm rounded-xl border-slate-300 shadow-xs py-2.5 px-3 bg-white border">
+                                </select>
+                                <p id="shift-select-hint" class="text-[11px] text-slate-500 mt-1">ระบบจำกัดให้ลงเวลาได้เฉพาะวันที่ท่านมีรายชื่อเข้าเวรจริงเท่านั้น</p>
+                            </div>
+
+                            <!-- Selfie Photo Capture -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">ถ่ายภาพใบหน้ายืนยันตัวตน ณ จุดปฏิบัติหน้าที่</label>
+                                <div id="photo-upload-area" class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 transition relative cursor-pointer" onclick="document.getElementById('photo-input').click()">
+                                    <input type="file" id="photo-input" accept="image/*" capture="user" class="hidden" onchange="handlePhotoUpload(event)">
+                                    <div id="photo-placeholder" class="space-y-1">
+                                        <div class="text-3xl">📸</div>
+                                        <div class="text-xs font-semibold text-slate-700">กดที่นี่เพื่อเปิดกล้องถ่ายภาพ หรือเลือกรูป</div>
+                                        <div class="text-[10px] text-slate-400">รูปภาพจะถูกประทับเวลาและส่งเข้ากลุ่ม LINE อบต.ฝางคำ</div>
+                                    </div>
+                                    <img id="checkin-photo-preview" class="max-h-48 mx-auto rounded-xl shadow-sm hidden object-cover" alt="Preview">
+                                </div>
+                            </div>
+
+                            <!-- Notes / Handover log -->
+                            <div>
+                                <label id="checkin-notes-label" class="block text-xs font-bold text-slate-700 mb-1">บันทึกเหตุการณ์ / สภาพทั่วไปก่อนรับเวร</label>
+                                <textarea id="checkin-notes" rows="2" class="w-full text-sm rounded-xl border border-slate-300 p-2.5 focus:ring-2 focus:ring-emerald-500" placeholder="เช่น ทรัพย์สินราชการเรียบร้อย ปิดล็อกประตูหน้าต่าง"></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button id="btn-submit-checkin" onclick="submitCheckin()" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                                <span id="btn-submit-checkin-text">✅ ยืนยันการลงเวลาเข้าเวร</span>
+                            </button>
+
+                            <!-- LINE Share Button -->
+                            <button type="button" id="btn-share-checkin-line" onclick="shareCheckinToLineOpenChat()" class="w-full py-2.5 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-2">
+                                <span>💬 แชร์รายงานนี้เข้า LINE OpenChat</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Personal Monthly Roster & History List -->
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xl">📋</span>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900">ตารางเวรและประวัติการลงเวลาของท่านในเดือนนี้</h4>
+                                    <p class="text-[11px] text-slate-500">อ้างอิงคำสั่งแต่งตั้งเวรยาม ประจำเดือน ตุลาคม ๒๕๖๙</p>
+                                </div>
+                            </div>
+                            <span id="user-duty-total-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
+                                รวม 0 ผลัด
+                            </span>
+                        </div>
+
+                        <div id="user-duty-schedule-list" class="space-y-2.5">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
