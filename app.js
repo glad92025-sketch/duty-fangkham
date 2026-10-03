@@ -818,23 +818,23 @@ function renderDashboard() {
                 if (checkData) {
                     anyStaffCheckedIn = true;
                     const cTime = checkData.checkinTime || checkData.time || 'เรียบร้อย';
-                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ ลงเวลา ${cTime}</span>`;
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">✓ ลงเวลา ${cTime}</span>`;
                 } else if (currentTimeVal >= 480 && currentTimeVal <= 990) {
-                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">● ปฏิบัติหน้าที่</span>`;
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse whitespace-nowrap">● ปฏิบัติหน้าที่</span>`;
                 } else {
-                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">รอลงเวลา</span>`;
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 whitespace-nowrap">รอลงเวลา</span>`;
                 }
 
                 return `
-                    <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-amber-50/40 border border-slate-100 transition">
-                        <div class="flex items-center space-x-3 min-w-0">
+                    <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-amber-50/40 border border-slate-100 transition gap-2">
+                        <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
                             <img src="${avatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${s}">
                             <div class="min-w-0">
                                 <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${s}</div>
-                                <div class="text-[10px] text-slate-500 mt-0.5">${dept}</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5 truncate">${dept}</div>
                             </div>
                         </div>
-                        <div class="shrink-0 ml-2">
+                        <div class="shrink-0">
                             ${checkBadge}
                         </div>
                     </div>
@@ -848,15 +848,15 @@ function renderDashboard() {
             const inspDept = inspUser ? inspUser.dept : 'อบต.ฝางคำ';
 
             dayInspEl.innerHTML = `
-                <div class="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50/60 border border-amber-200/80">
-                    <div class="flex items-center space-x-3 min-w-0">
+                <div class="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50/60 border border-amber-200/80 gap-2">
+                    <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
                         <img src="${inspAvatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${inspName}">
                         <div class="min-w-0">
                             <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${inspName}</div>
-                            <div class="text-[10px] text-amber-800 font-medium mt-0.5">${inspDept} • ผู้ตรวจเวร</div>
+                            <div class="text-[10px] text-amber-800 font-medium mt-0.5 truncate">${inspDept} • ผู้ตรวจเวร</div>
                         </div>
                     </div>
-                    <span class="shrink-0 ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                    <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200 whitespace-nowrap">
                         🔍 ตรวจเวร
                     </span>
                 </div>
@@ -864,15 +864,15 @@ function renderDashboard() {
 
             // Status Badge in Day Card Header (Non-wrapping, concise)
             if (currentTimeVal < 480) {
-                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30 backdrop-blur-xs">⏳ รอเข้าเวร 08:00</span>`;
+                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30 backdrop-blur-xs whitespace-nowrap">⏳ รอเข้าเวร 08:00</span>`;
             } else if (currentTimeVal <= 990) {
                 if (anyStaffCheckedIn) {
-                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-emerald-800 shadow-xs">✓ ลงเวลาแล้ว</span>`;
+                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-emerald-800 shadow-xs whitespace-nowrap">✓ ลงเวลาแล้ว</span>`;
                 } else {
-                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-amber-700 shadow-xs animate-pulse">● กำลังปฏิบัติหน้าที่</span>`;
+                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-amber-700 shadow-xs animate-pulse whitespace-nowrap">● กำลังปฏิบัติหน้าที่</span>`;
                 }
             } else {
-                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white/90">ครบผลัด 16.30 น.</span>`;
+                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white/90 whitespace-nowrap">ครบผลัด 16.30 น.</span>`;
             }
         } else {
             // วันทำการปกติ ไม่มีเวรกลางวัน (ค้นหาผลัดวันหยุดถัดไปแบบอัตโนมัติ)
@@ -908,7 +908,7 @@ function renderDashboard() {
                     ${nextInfoHtml}
                 </div>
             `;
-            dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">วันทำการปกติ</span>`;
+            dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white whitespace-nowrap">วันทำการปกติ</span>`;
         }
     }
 
@@ -933,23 +933,23 @@ function renderDashboard() {
         let checkBadge = '';
         if (isChecked) {
             const cTime = isChecked.checkinTime || isChecked.time || 'เรียบร้อย';
-            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ ลงเวลา ${cTime}</span>`;
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">✓ ลงเวลา ${cTime}</span>`;
         } else if (isDuringNightShift) {
-            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse">● ปฏิบัติหน้าที่</span>`;
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse whitespace-nowrap">● ปฏิบัติหน้าที่</span>`;
         } else {
-            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">รอลงเวลา</span>`;
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 whitespace-nowrap">รอลงเวลา</span>`;
         }
 
         nightStaffEl.innerHTML = `
-            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/40 border border-slate-100 transition">
-                <div class="flex items-center space-x-3 min-w-0">
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/40 border border-slate-100 transition gap-2">
+                <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
                     <img src="${avatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${nightStaffName}">
                     <div class="min-w-0">
                         <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${nightStaffName}</div>
-                        <div class="text-[10px] text-slate-500 mt-0.5">${dept}</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5 truncate">${dept}</div>
                     </div>
                 </div>
-                <div class="shrink-0 ml-2">
+                <div class="shrink-0">
                     ${checkBadge}
                 </div>
             </div>
@@ -962,15 +962,15 @@ function renderDashboard() {
         const inspDept = inspUser ? inspUser.dept : 'สำนักปลัด';
 
         nightInspEl.innerHTML = `
-            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-indigo-50/60 border border-indigo-200/80">
-                <div class="flex items-center space-x-3 min-w-0">
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-indigo-50/60 border border-indigo-200/80 gap-2">
+                <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
                     <img src="${inspAvatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${inspName}">
                     <div class="min-w-0">
                         <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${inspName}</div>
-                        <div class="text-[10px] text-indigo-900 font-medium mt-0.5">${inspDept} • ผู้ตรวจเวร</div>
+                        <div class="text-[10px] text-indigo-900 font-medium mt-0.5 truncate">${inspDept} • ผู้ตรวจเวร</div>
                     </div>
                 </div>
-                <span class="shrink-0 ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 whitespace-nowrap">
                     🔍 ตรวจเวร
                 </span>
             </div>
@@ -978,11 +978,11 @@ function renderDashboard() {
 
         // Status Badge in Night Card Header
         if (isChecked) {
-            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-400 text-slate-950 shadow-xs">✓ ลงเวลาแล้ว</span>`;
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-400 text-slate-950 shadow-xs whitespace-nowrap">✓ ลงเวลาแล้ว</span>`;
         } else if (isDuringNightShift) {
-            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-400 text-slate-950 shadow-xs animate-pulse">● กำลังปฏิบัติหน้าที่</span>`;
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-400 text-slate-950 shadow-xs animate-pulse whitespace-nowrap">● กำลังปฏิบัติหน้าที่</span>`;
         } else {
-            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-slate-200 border border-white/20">⏳ รอเข้าเวร 16:30</span>`;
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-slate-200 border border-white/20 whitespace-nowrap">⏳ รอเข้าเวร 16:30</span>`;
         }
     }
 

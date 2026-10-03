@@ -51,9 +51,9 @@
                 </div>
 
                 <!-- Right Header Actions (Auth & Quick Switcher) -->
-                <div class="flex items-center space-x-2 sm:space-x-3">
-                    <!-- Real-time Live Clock Badge -->
-                    <div class="hidden lg:flex items-center space-x-2.5 text-xs font-semibold px-3.5 py-1.5 rounded-2xl bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs">
+                <div class="flex items-center space-x-1.5 sm:space-x-2.5">
+                    <!-- Real-time Live Clock Badge (Desktop) -->
+                    <div class="hidden lg:flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-2xl bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span id="header-live-date" class="font-medium text-slate-800">วันเสาร์ที่ 3 ต.ค. 2569</span>
                         <span class="text-slate-300">|</span>
@@ -64,23 +64,26 @@
                         <span>📖 คู่มือ</span>
                     </button>
 
-                    <button id="btn-header-login" type="button" onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm cursor-pointer">
-                        <span>🔑</span>
-                        <span>เข้าสู่ระบบ</span>
-                    </button>
-                    <button id="btn-header-changepwd" type="button" onclick="openLoginModal('change_pwd')" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition items-center space-x-1 border border-amber-200 shadow-2xs cursor-pointer" title="เปลี่ยนรหัสผ่าน">
-                        <span>🔒</span>
-                        <span>เปลี่ยนรหัส</span>
-                    </button>
-                    <button id="btn-header-logout" type="button" onclick="logoutUser()" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition items-center space-x-1 border border-slate-200 cursor-pointer" title="ออกจากระบบ">
-                        <span>🚪</span>
-                        <span>ออก</span>
-                    </button>
+                    <!-- Desktop Auth Buttons Group (Hidden on mobile to prevent overflow) -->
+                    <div class="hidden md:flex items-center space-x-1.5">
+                        <button id="btn-header-login" type="button" onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm cursor-pointer whitespace-nowrap">
+                            <span>🔑</span>
+                            <span>เข้าสู่ระบบ</span>
+                        </button>
+                        <button id="btn-header-changepwd" type="button" onclick="openLoginModal('change_pwd')" class="hidden text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition items-center space-x-1 border border-amber-200 shadow-2xs cursor-pointer whitespace-nowrap" title="เปลี่ยนรหัสผ่าน">
+                            <span>🔒</span>
+                            <span>เปลี่ยนรหัส</span>
+                        </button>
+                        <button id="btn-header-logout" type="button" onclick="logoutUser()" class="hidden text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition items-center space-x-1 border border-slate-200 cursor-pointer whitespace-nowrap" title="ออกจากระบบ">
+                            <span>🚪</span>
+                            <span>ออก</span>
+                        </button>
+                    </div>
 
                     <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
 
                     <!-- Current User Profile / Guest State -->
-                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200/80 cursor-pointer transition" onclick="openLoginModal('login')" title="คลิกเพื่อจัดการบัญชี/เข้าสู่ระบบ">
+                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200/80 cursor-pointer transition shrink-0" onclick="openLoginModal('login')" title="คลิกเพื่อจัดการบัญชี/เข้าสู่ระบบ">
                         <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover shrink-0" alt="User Avatar">
                         <div class="text-left hidden xl:block leading-tight pr-1">
                             <div class="flex items-center space-x-1.5">
@@ -92,7 +95,7 @@
                     </div>
 
                     <!-- Hamburger Button for Mobile (Opens Drawer) -->
-                    <button type="button" onclick="openMobileDrawer()" class="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition flex items-center justify-center border border-slate-200 bg-white shadow-2xs" aria-label="เปิดเมนู">
+                    <button type="button" onclick="openMobileDrawer()" class="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition flex items-center justify-center border border-slate-200 bg-white shadow-2xs shrink-0 cursor-pointer" aria-label="เปิดเมนู">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -189,44 +192,46 @@
                 <div id="personal-duty-banner" class="hidden"></div>
 
                 <!-- Executive Dashboard Header -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-                    <div>
+                <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-5">
+                    <div class="min-w-0">
                         <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
-                            <h2 class="text-xl font-bold text-slate-900 tracking-tight">ตารางเวรยามประจำวันนี้</h2>
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">ที่ทำการ อบต.ฝางคำ</span>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">ตารางเวรยามประจำวันนี้</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">ที่ทำการ อบต.ฝางคำ</span>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2.5 mt-2.5">
-                            <span id="dash-today-label" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white shadow-xs">
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <span id="dash-today-label" class="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-700 text-white shadow-xs shrink-0">
                                 <span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span>
                                 กำลังโหลดวันที่...
                             </span>
-                            <span id="dash-clock-time" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200/80 font-mono">
+                            <span id="dash-clock-time" class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200/80 font-mono shrink-0">
                                 ⏰ --:--:-- น.
                             </span>
-                            <span class="text-[11px] text-slate-400 flex items-center gap-1.5 ml-1">
+                            <span class="text-[10px] sm:text-[11px] text-slate-400 flex items-center gap-1.5">
                                 <span class="text-emerald-500 font-bold">●</span> เปลี่ยนวันอัตโนมัติ 00:00 น.
                             </span>
                         </div>
                     </div>
 
-                    <!-- Consolidated Executive Action Bar -->
-                    <div class="flex items-center flex-wrap gap-2.5 pt-2 xl:pt-0 border-t xl:border-t-0 border-slate-100">
-                        <button onclick="shareDutyToLineOpenChat()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#06C755] hover:bg-[#05b04c] text-white transition shadow-xs flex items-center space-x-2 cursor-pointer" title="ส่งสรุปเวรวันนี้เข้าห้อง LINE OpenChat อบต.ฝางคำ">
-                            <span class="text-sm">💬</span>
-                            <span>แชร์เข้า OpenChat</span>
-                        </button>
-                        <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs flex items-center space-x-1.5 cursor-pointer" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
-                            <span>✏️</span>
-                            <span>แก้ไขเวรวันนี้</span>
-                        </button>
+                    <!-- Consolidated Executive Action Bar (Responsive, Zero Overflow) -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full xl:w-auto pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100 shrink-0">
+                        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+                            <button onclick="shareDutyToLineOpenChat()" class="w-full sm:w-auto px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-semibold bg-[#06C755] hover:bg-[#05b04c] text-white transition shadow-xs flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap" title="ส่งสรุปเวรวันนี้เข้าห้อง LINE OpenChat อบต.ฝางคำ">
+                                <span class="text-sm">💬</span>
+                                <span>แชร์เข้า OpenChat</span>
+                            </button>
+                            <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="w-full sm:w-auto px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
+                                <span>✏️</span>
+                                <span>แก้ไขเวรวันนี้</span>
+                            </button>
+                        </div>
                         
                         <!-- Notification Trigger Group -->
-                        <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 bg-slate-50 p-0.5">
-                            <button onclick="simulatePushNotification('day')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-amber-700 transition flex items-center space-x-1 cursor-pointer" title="ทดสอบส่งแจ้งเตือนกะกลางวัน">
+                        <div class="grid grid-cols-2 sm:inline-flex rounded-xl shadow-2xs border border-slate-200 bg-slate-50 p-0.5 w-full sm:w-auto">
+                            <button onclick="simulatePushNotification('day')" class="px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-amber-700 transition flex items-center justify-center space-x-1 cursor-pointer whitespace-nowrap" title="ทดสอบส่งแจ้งเตือนกะกลางวัน">
                                 <span>☀️</span>
                                 <span>บอทกะวัน</span>
                             </button>
-                            <button onclick="simulatePushNotification('night')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-indigo-700 transition flex items-center space-x-1 cursor-pointer" title="ทดสอบส่งแจ้งเตือนกะค่ำ">
+                            <button onclick="simulatePushNotification('night')" class="px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-indigo-700 transition flex items-center justify-center space-x-1 cursor-pointer whitespace-nowrap" title="ทดสอบส่งแจ้งเตือนกะค่ำ">
                                 <span>🌙</span>
                                 <span>บอทกะค่ำ</span>
                             </button>
@@ -239,17 +244,17 @@
                     <!-- Day Shift Card -->
                     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
                         <!-- Card Header -->
-                        <div class="bg-gradient-to-r from-amber-500 via-amber-500 to-orange-500 px-5 py-4 text-white flex justify-between items-center gap-3">
-                            <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-r from-amber-500 via-amber-500 to-orange-500 px-4 sm:px-5 py-3.5 sm:py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                            <div class="flex items-center space-x-3 min-w-0">
                                 <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-xl shrink-0 shadow-inner">
                                     ☀️
                                 </div>
-                                <div>
-                                    <h3 class="font-bold text-sm tracking-tight">กะกลางวัน (08.00 - 16.30 น.)</h3>
-                                    <p class="text-[11px] text-amber-100">ข้าราชการ/พนักงานหญิง (เฉพาะวันหยุด)</p>
+                                <div class="min-w-0">
+                                    <h3 class="font-bold text-sm tracking-tight truncate">กะกลางวัน (08.00 - 16.30 น.)</h3>
+                                    <p class="text-[11px] text-amber-100 truncate">ข้าราชการ/พนักงานหญิง (เฉพาะวันหยุด)</p>
                                 </div>
                             </div>
-                            <div id="dash-day-status" class="shrink-0"></div>
+                            <div id="dash-day-status" class="shrink-0 self-start sm:self-auto"></div>
                         </div>
 
                         <!-- Card Body -->
@@ -277,10 +282,10 @@
 
                             <!-- Card Footer -->
                             <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                                <span class="text-slate-400 flex items-center gap-1">
+                                <span class="text-slate-400 flex items-center gap-1 truncate mr-2">
                                     <span>📍</span> ที่ทำการ อบต.ฝางคำ
                                 </span>
-                                <button onclick="switchTab('checkin')" class="font-semibold text-amber-700 hover:text-amber-800 flex items-center space-x-1 transition cursor-pointer">
+                                <button onclick="switchTab('checkin')" class="font-semibold text-amber-700 hover:text-amber-800 flex items-center space-x-1 transition cursor-pointer shrink-0 whitespace-nowrap">
                                     <span>ลงเวลาเวรนี้</span>
                                     <span>➔</span>
                                 </button>
@@ -291,17 +296,17 @@
                     <!-- Night Shift Card -->
                     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
                         <!-- Card Header -->
-                        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 px-5 py-4 text-white flex justify-between items-center gap-3">
-                            <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 px-4 sm:px-5 py-3.5 sm:py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                            <div class="flex items-center space-x-3 min-w-0">
                                 <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-xs flex items-center justify-center text-xl shrink-0 shadow-inner">
                                     🌙
                                 </div>
-                                <div>
-                                    <h3 class="font-bold text-sm tracking-tight">กะกลางคืน (16.30 - 08.00 น.)</h3>
-                                    <p class="text-[11px] text-slate-300">ข้าราชการ/พนักงานชาย (ปฏิบัติหน้าที่ทุกคืน)</p>
+                                <div class="min-w-0">
+                                    <h3 class="font-bold text-sm tracking-tight truncate">กะกลางคืน (16.30 - 08.00 น.)</h3>
+                                    <p class="text-[11px] text-slate-300 truncate">ข้าราชการ/พนักงานชาย (ปฏิบัติหน้าที่ทุกคืน)</p>
                                 </div>
                             </div>
-                            <div id="dash-night-status" class="shrink-0"></div>
+                            <div id="dash-night-status" class="shrink-0 self-start sm:self-auto"></div>
                         </div>
 
                         <!-- Card Body -->
@@ -329,10 +334,10 @@
 
                             <!-- Card Footer -->
                             <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                                <span class="text-slate-400 flex items-center gap-1">
+                                <span class="text-slate-400 flex items-center gap-1 truncate mr-2">
                                     <span>📍</span> ที่ทำการ อบต.ฝางคำ
                                 </span>
-                                <button onclick="switchTab('checkin')" class="font-semibold text-indigo-700 hover:text-indigo-800 flex items-center space-x-1 transition cursor-pointer">
+                                <button onclick="switchTab('checkin')" class="font-semibold text-indigo-700 hover:text-indigo-800 flex items-center space-x-1 transition cursor-pointer shrink-0 whitespace-nowrap">
                                     <span>ลงเวลาเวรนี้</span>
                                     <span>➔</span>
                                 </button>
@@ -385,13 +390,15 @@
                         <h2 class="text-xl font-bold text-slate-900">ปฏิทินเวรยามประจำเดือน</h2>
                         <p class="text-xs text-slate-500">จัดตามกฎระเบียบ อบต.ฝางคำ: ผู้หญิง (กะกลางวัน) และ ผู้ชาย (กะกลางคืน)</p>
                     </div>
-                    <div class="flex items-center flex-wrap gap-2.5">
-                        <button type="button" onclick="openEditRosterModal()" class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+                        <button type="button" onclick="openEditRosterModal()" class="w-full sm:w-auto px-3.5 py-2 sm:py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap">
                             <span>✏️</span>
                             <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
                         </button>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">☀️ กลางวัน (หญิง)</span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white">🌙 กลางคืน (ชาย)</span>
+                        <div class="grid grid-cols-2 sm:flex sm:items-center gap-1.5 w-full sm:w-auto">
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">☀️ กลางวัน (หญิง)</span>
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white whitespace-nowrap">🌙 กลางคืน (ชาย)</span>
+                        </div>
                     </div>
                 </div>
 
@@ -1095,15 +1102,18 @@
             </div>
 
             <!-- Modal Nav Tabs (เข้าสู่ระบบ | เปลี่ยนรหัสผ่าน | รายชื่อ Username 30 ท่าน) -->
-            <div class="flex border-b border-slate-200 bg-slate-100 p-1.5 gap-1 text-xs font-semibold flex-shrink-0">
-                <button data-view="login" onclick="switchLoginView('login')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-white text-emerald-800 font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
-                    <span>🔐 เข้าสู่ระบบ</span>
+            <div class="grid grid-cols-3 border-b border-slate-200 bg-slate-100 p-1.5 gap-1 text-xs font-semibold flex-shrink-0">
+                <button data-view="login" onclick="switchLoginView('login')" class="login-modal-tab-btn py-2 px-1 sm:px-3 rounded-xl bg-white text-emerald-800 font-bold shadow-xs transition flex items-center justify-center space-x-1 min-w-0">
+                    <span>🔐</span>
+                    <span class="truncate">เข้าสู่ระบบ</span>
                 </button>
-                <button data-view="change_pwd" onclick="switchLoginView('change_pwd')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5">
-                    <span>🔑 เปลี่ยนรหัสผ่าน</span>
+                <button data-view="change_pwd" onclick="switchLoginView('change_pwd')" class="login-modal-tab-btn py-2 px-1 sm:px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1 min-w-0">
+                    <span>🔑</span>
+                    <span class="truncate">เปลี่ยนรหัส</span>
                 </button>
-                <button data-view="directory" onclick="switchLoginView('directory')" class="login-modal-tab-btn flex-1 py-2 px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5">
-                    <span>📋 ดู Username 30 ท่าน</span>
+                <button data-view="directory" onclick="switchLoginView('directory')" class="login-modal-tab-btn py-2 px-1 sm:px-3 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1 min-w-0">
+                    <span>📋</span>
+                    <span class="truncate">รายชื่อ 30 ท่าน</span>
                 </button>
             </div>
 
@@ -1135,16 +1145,16 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                    <button type="submit" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2 cursor-pointer">
                         <span>เข้าสู่ระบบ ➔</span>
                     </button>
                 </form>
 
-                <div class="flex justify-between items-center text-xs text-slate-500 pt-2">
-                    <button type="button" onclick="switchLoginView('change_pwd')" class="text-emerald-700 hover:underline font-semibold">
+                <div class="flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 pt-2 gap-2 text-center sm:text-left">
+                    <button type="button" onclick="switchLoginView('change_pwd')" class="text-emerald-700 hover:underline font-semibold cursor-pointer">
                         🔑 ต้องการเปลี่ยนรหัสผ่าน? คลิกที่นี่
                     </button>
-                    <button type="button" onclick="switchLoginView('directory')" class="text-slate-600 hover:text-slate-900 underline">
+                    <button type="button" onclick="switchLoginView('directory')" class="text-slate-600 hover:text-slate-900 underline cursor-pointer">
                         📋 ลืม Username / ดูรายชื่อ 30 ท่าน
                     </button>
                 </div>
@@ -1561,21 +1571,21 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3 flex-shrink-0">
-                <div class="flex items-center space-x-2 w-full sm:w-auto">
-                    <button type="button" onclick="resetCurrentDayRoster()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition flex items-center justify-center space-x-1 cursor-pointer" title="คืนค่าเดิมเฉพาะวันนี้">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-2.5 sm:gap-3 flex-shrink-0">
+                <div class="grid grid-cols-2 gap-2 w-full sm:flex sm:w-auto sm:items-center">
+                    <button type="button" onclick="resetCurrentDayRoster()" class="w-full sm:w-auto px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition flex items-center justify-center space-x-1 cursor-pointer whitespace-nowrap" title="คืนค่าเดิมเฉพาะวันนี้">
                         <span>🔄</span>
-                        <span>คืนค่าเริ่มต้นวันนี้</span>
+                        <span class="truncate">คืนค่าวันนี้</span>
                     </button>
-                    <button type="button" onclick="confirmResetAllRoster()" class="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[11px] font-semibold transition cursor-pointer" title="ล้างค่าที่แก้ไขทั้งหมด 31 วัน">
-                        คืนค่าทั้งหมด 31 วัน
+                    <button type="button" onclick="confirmResetAllRoster()" class="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[11px] font-semibold transition cursor-pointer whitespace-nowrap" title="ล้างค่าที่แก้ไขทั้งหมด 31 วัน">
+                        <span class="truncate">คืนค่าทั้งหมด 31 วัน</span>
                     </button>
                 </div>
-                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                    <button type="button" onclick="closeEditRosterModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition cursor-pointer">
+                <div class="grid grid-cols-2 gap-2 w-full sm:flex sm:w-auto sm:items-center sm:justify-end">
+                    <button type="button" onclick="closeEditRosterModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition cursor-pointer whitespace-nowrap">
                         ✕ ยกเลิก
                     </button>
-                    <button type="button" onclick="saveRosterEditSubmit()" class="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <button type="button" onclick="saveRosterEditSubmit()" class="w-full sm:w-auto px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap">
                         <span>💾</span>
                         <span>บันทึกการแก้ไข</span>
                     </button>
