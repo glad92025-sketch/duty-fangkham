@@ -923,6 +923,8 @@ function updateAuthUI() {
             }
         }
     }
+}
+
 function logoutUser() {
     setLoggedInUserSession(null);
     updateAuthUI();
