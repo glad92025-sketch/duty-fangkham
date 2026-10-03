@@ -179,13 +179,220 @@ const INITIAL_ATTACHED_PDFS = [
 // -------------------------------------------------------------
 // ระบบจัดเก็บข้อมูลการลงเวลาและผลการตรวจเวร (LocalStorage)
 // -------------------------------------------------------------
+function getInitialSeedCheckins() {
+    return {
+        // วันที่ 1 ต.ค. 2569: กะกลางคืน (จ.ส.ท.มานิต ทองดวง) - เข้าและออกเวรครบ
+        'night_1_2026-10-01_night': {
+            staffId: 'night_1',
+            staffName: 'จ.ส.ท.มานิต ทองดวง',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-01',
+            time: '16:25 น.',
+            checkinTime: '16:25 น.',
+            checkoutTime: '08:02 น.',
+            distance: 18,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรตรงเวลา เหตุการณ์ปกติ ปิดล็อกประตูอาคารสำนักงานและเปิดไฟส่องสว่างครบถ้วน',
+            checkoutNotes: 'ส่งมอบหน้าที่เวรยามและกุญแจอาคาร อบต.ฝางคำ เรียบร้อย เหตุการณ์ปกติ',
+            inspector: 'นายชาญชัย อักโข'
+        },
+        'manit_2026-10-01_night': {
+            staffId: 'night_1',
+            staffName: 'จ.ส.ท.มานิต ทองดวง',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-01',
+            time: '16:25 น.',
+            checkinTime: '16:25 น.',
+            checkoutTime: '08:02 น.',
+            distance: 18,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรตรงเวลา เหตุการณ์ปกติ ปิดล็อกประตูอาคารสำนักงานและเปิดไฟส่องสว่างครบถ้วน',
+            checkoutNotes: 'ส่งมอบหน้าที่เวรยามและกุญแจอาคาร อบต.ฝางคำ เรียบร้อย เหตุการณ์ปกติ',
+            inspector: 'นายชาญชัย อักโข'
+        },
+
+        // วันที่ 2 ต.ค. 2569: กะกลางคืน (จ.ส.อ.เกียรติพล หาทรัพย์) - เข้าและออกเวรครบ
+        'night_2_2026-10-02_night': {
+            staffId: 'night_2',
+            staffName: 'จ.ส.อ.เกียรติพล หาทรัพย์',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-02',
+            time: '16:28 น.',
+            checkinTime: '16:28 น.',
+            checkoutTime: '08:05 น.',
+            distance: 25,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรเรียบร้อย ตรวจตราความปลอดภัยรอบบริเวณ อบต. อาคารและทรัพย์สินปกติ',
+            checkoutNotes: 'ส่งมอบเวรและอาคารที่ทำการ อบต.ฝางคำ เรียบร้อย ทรัพย์สินปกติ',
+            inspector: 'นายวุฒิศักดิ์ บุตรสิงห์'
+        },
+        'kiattiphon_2026-10-02_night': {
+            staffId: 'night_2',
+            staffName: 'จ.ส.อ.เกียรติพล หาทรัพย์',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-02',
+            time: '16:28 น.',
+            checkinTime: '16:28 น.',
+            checkoutTime: '08:05 น.',
+            distance: 25,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรเรียบร้อย ตรวจตราความปลอดภัยรอบบริเวณ อบต. อาคารและทรัพย์สินปกติ',
+            checkoutNotes: 'ส่งมอบเวรและอาคารที่ทำการ อบต.ฝางคำ เรียบร้อย ทรัพย์สินปกติ',
+            inspector: 'นายวุฒิศักดิ์ บุตรสิงห์'
+        },
+
+        // วันที่ 3 ต.ค. 2569: กะกลางวัน (3 ท่าน) - เข้าและออกเวรครบ
+        'day_1_2026-10-03_day': {
+            staffId: 'day_1',
+            staffName: 'นางสาวอำพร ทองสวัสดิ์',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:18 น.',
+            checkinTime: '08:18 น.',
+            checkoutTime: '16:32 น.',
+            distance: 15,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรวันหยุดราชการเรียบร้อย ปฏิบัติหน้าที่และอำนวยความสะดวกประชาชน เหตุการณ์ปกติ',
+            checkoutNotes: 'ส่งมอบหน้าที่เวรวันหยุดให้เวรกลางคืนเรียบร้อย ปิดสำนักงานปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+        'amporn_2026-10-03_day': {
+            staffId: 'day_1',
+            staffName: 'นางสาวอำพร ทองสวัสดิ์',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:18 น.',
+            checkinTime: '08:18 น.',
+            checkoutTime: '16:32 น.',
+            distance: 15,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรวันหยุดราชการเรียบร้อย ปฏิบัติหน้าที่และอำนวยความสะดวกประชาชน เหตุการณ์ปกติ',
+            checkoutNotes: 'ส่งมอบหน้าที่เวรวันหยุดให้เวรกลางคืนเรียบร้อย ปิดสำนักงานปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+        'day_2_2026-10-03_day': {
+            staffId: 'day_2',
+            staffName: 'นางสาวธิดาลักษณ์ โสแก้ว',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:22 น.',
+            checkinTime: '08:22 น.',
+            checkoutTime: '16:30 น.',
+            distance: 20,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+            notes: 'ร่วมปฏิบัติหน้าที่เวรกลางวัน เหตุการณ์ปกติ เรียบร้อย',
+            checkoutNotes: 'ส่งมอบเวรเรียบร้อย อาคารสำนักงานปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+        'thidalak_2026-10-03_day': {
+            staffId: 'day_2',
+            staffName: 'นางสาวธิดาลักษณ์ โสแก้ว',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:22 น.',
+            checkinTime: '08:22 น.',
+            checkoutTime: '16:30 น.',
+            distance: 20,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+            notes: 'ร่วมปฏิบัติหน้าที่เวรกลางวัน เหตุการณ์ปกติ เรียบร้อย',
+            checkoutNotes: 'ส่งมอบเวรเรียบร้อย อาคารสำนักงานปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+        'day_3_2026-10-03_day': {
+            staffId: 'day_3',
+            staffName: 'นางต้องตาประภา โพธิ์งาม',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:25 น.',
+            checkinTime: '08:25 น.',
+            checkoutTime: '16:35 น.',
+            distance: 22,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+            notes: 'ร่วมปฏิบัติหน้าที่เวรกลางวัน ดูแลความเรียบร้อยสถานที่ราชการ',
+            checkoutNotes: 'ส่งมอบเวรเรียบร้อย เหตุการณ์ปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+        'tongtaprapha_2026-10-03_day': {
+            staffId: 'day_3',
+            staffName: 'นางต้องตาประภา โพธิ์งาม',
+            shift: 'day',
+            shiftTitle: 'กะกลางวัน (08.00 - 16.30 น.)',
+            date: '2026-10-03',
+            time: '08:25 น.',
+            checkinTime: '08:25 น.',
+            checkoutTime: '16:35 น.',
+            distance: 22,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+            notes: 'ร่วมปฏิบัติหน้าที่เวรกลางวัน ดูแลความเรียบร้อยสถานที่ราชการ',
+            checkoutNotes: 'ส่งมอบเวรเรียบร้อย เหตุการณ์ปกติ',
+            inspector: 'นางวาสนา สินทรัพย์'
+        },
+
+        // วันที่ 3 ต.ค. 2569: กะกลางคืน (นายสิงหา ชุมชัย) - กำลังปฏิบัติหน้าที่
+        'night_3_2026-10-03_night': {
+            staffId: 'night_3',
+            staffName: 'นายสิงหา ชุมชัย',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-03',
+            time: '16:20 น.',
+            checkinTime: '16:20 น.',
+            checkoutTime: null,
+            distance: 19,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรผลัดกลางคืนเรียบร้อย ตรวจอาคารและเปิดไฟส่องสว่าง เหตุการณ์ปกติ',
+            checkoutNotes: '',
+            inspector: 'นายชาญชัย อักโข'
+        },
+        'singha_2026-10-03_night': {
+            staffId: 'night_3',
+            staffName: 'นายสิงหา ชุมชัย',
+            shift: 'night',
+            shiftTitle: 'กะกลางคืน (16.30 - 08.00 น.)',
+            date: '2026-10-03',
+            time: '16:20 น.',
+            checkinTime: '16:20 น.',
+            checkoutTime: null,
+            distance: 19,
+            verified: true,
+            photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80',
+            notes: 'เข้าเวรผลัดกลางคืนเรียบร้อย ตรวจอาคารและเปิดไฟส่องสว่าง เหตุการณ์ปกติ',
+            checkoutNotes: '',
+            inspector: 'นายชาญชัย อักโข'
+        }
+    };
+}
+
 function getSavedCheckins() {
+    const seed = getInitialSeedCheckins();
     try {
         const saved = localStorage.getItem('fangkham_checkins_v1');
-        return saved ? JSON.parse(saved) : {};
-    } catch(e) {
-        return {};
-    }
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            return { ...seed, ...parsed };
+        }
+    } catch(e) {}
+    return seed;
 }
 
 function saveCheckinRecord(recordKey, recordData) {
@@ -255,7 +462,12 @@ let appState = {
         }
     ],
     userLocation: { lat: 15.22852, lng: 104.38712, isWithin: true, distance: 35 },
-    currentCheckinPhoto: null
+    currentCheckinPhoto: null,
+    reportPeriodMode: 'day', // 'day' (เฉพาะวัน) หรือ 'month' (สรุปทั้งเดือน)
+    reportSelectedDay: 3, // เริ่มต้นที่วันปัจจุบัน (3 ต.ค.)
+    reportFilterShift: 'all', // 'all', 'day', 'night'
+    reportFilterStatus: 'all', // 'all', 'completed', 'active', 'pending'
+    reportSearchQuery: ''
 };
 
 // -------------------------------------------------------------
@@ -737,6 +949,10 @@ function switchTab(tabId) {
 
     if (tabId === 'settings') {
         renderSettingsUserList();
+    }
+    if (tabId === 'report') {
+        initReportTab();
+        renderAttendanceReport();
     }
 
     appState.currentTab = tabId;
@@ -2182,6 +2398,9 @@ function submitCheckin() {
 
     renderDashboard();
     renderCheckinTab();
+    if (typeof renderAttendanceReport === 'function') {
+        renderAttendanceReport();
+    }
 }
 
 // -------------------------------------------------------------
@@ -2869,6 +3088,573 @@ function renderPrintDocument() {
     tbody.innerHTML = rowsHtml;
 }
 
+function printOfficialOrderDocument() {
+    const doc = document.getElementById('official-print-document');
+    if (!doc) return;
+    const tbody = document.getElementById('print-table-body');
+    const tableHtml = tbody ? tbody.innerHTML : '';
+    const mayorName = appState.settings ? appState.settings.mayorName : 'นายกองค์การบริหารส่วนตำบลฝางคำ';
+
+    doc.innerHTML = `
+        <div style="font-family: 'Sarabun', sans-serif; color: #000; padding: 10px 0;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 38pt; line-height: 1;">🦅</div>
+                <h2 style="font-size: 17pt; font-weight: bold; margin: 8px 0 2px 0;">คำสั่งองค์การบริหารส่วนตำบลฝางคำ</h2>
+                <h3 style="font-size: 14pt; font-weight: normal; margin: 2px 0;">ที่ ......... / ๒๕๖๙</h3>
+                <h3 style="font-size: 15pt; font-weight: bold; margin: 4px 0 10px 0;">เรื่อง แต่งตั้งเจ้าหน้าที่อยู่เวรรักษาการณ์สถานที่ราชการ ประจำเดือน ตุลาคม ๒๕๖๙</h3>
+            </div>
+            <p style="font-size: 12pt; text-indent: 2.5em; line-height: 1.6; text-align: justify; margin-bottom: 15px;">
+                เพื่อรักษาความปลอดภัยสถานที่ราชการและความสงบเรียบร้อยของที่ทำการองค์การบริหารส่วนตำบลฝางคำ อำเภอสิรินธร จังหวัดอุบลราชธานี จึงแต่งตั้งข้าราชการและพนักงานส่วนตำบลอยู่เวรรักษาการณ์สถานที่ราชการ ประจำผลัดเวรกลางวัน (หญิง) และผลัดเวรกลางคืน (ชาย) พร้อมทั้งแต่งตั้งผู้ตรวจเวร ประจำเดือน ตุลาคม พ.ศ. ๒๕๖๙ ดังมีรายนามต่อไปนี้
+            </p>
+            <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+                <thead>
+                    <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
+                        <th style="width: 35px;">ลำดับ</th>
+                        <th style="width: 80px;">วัน เดือน ปี</th>
+                        <th style="width: 120px;">ผลัดเวลา</th>
+                        <th>ชื่อผู้เข้าเวร</th>
+                        <th style="width: 130px;">ตำแหน่ง</th>
+                        <th style="width: 140px;">ผู้ตรวจเวร</th>
+                        <th style="width: 80px;">ลายมือชื่อ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableHtml}
+                </tbody>
+            </table>
+            <div class="print-avoid-break" style="margin-top: 30px; text-align: right; font-size: 12pt; line-height: 1.8; padding-right: 30px;">
+                <p>สั่ง ณ วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                <div style="height: 45px;"></div>
+                <p>( .................................................... )</p>
+                <p style="font-weight: bold;">${mayorName}</p>
+            </div>
+        </div>
+    `;
+    window.print();
+}
+
+// -------------------------------------------------------------
+// ระบบรายงานการลงเวลาเวรยามและพิมพ์เอกสารราชการเป็น PDF (Duty Attendance Report & Government PDF)
+// -------------------------------------------------------------
+
+function toThaiNumerals(num) {
+    if (num === null || num === undefined) return '';
+    const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+    return String(num).replace(/[0-9]/g, d => thaiDigits[parseInt(d, 10)]);
+}
+
+function findStaffUserByName(name) {
+    if (!name) return null;
+    const cleanName = name.replace(/^(นาย|นาง|นางสาว|จ\.ส\.ท\.|จ\.ส\.อ\.|จ่าเอก)/g, '').trim();
+    return ALL_SYSTEM_USERS.find(u => {
+        if (u.name.trim() === name.trim()) return true;
+        const uClean = u.name.replace(/^(นาย|นาง|นางสาว|จ\.ส\.ท\.|จ\.ส\.อ\.|จ่าเอก)/g, '').trim();
+        return uClean === cleanName;
+    }) || null;
+}
+
+function getCheckinRecordForDuty(staffUser, staffName, dateStr, shift) {
+    if (!appState.todayCheckins) return null;
+    if (staffUser) {
+        const directKeys = [
+            `${staffUser.id}_${dateStr}_${shift}`,
+            `${staffUser.username}_${dateStr}_${shift}`,
+            `${staffUser.id}_${dateStr}`,
+            `${staffUser.username}_${dateStr}`
+        ];
+        for (const k of directKeys) {
+            if (appState.todayCheckins[k]) return appState.todayCheckins[k];
+        }
+    }
+    // Search in all saved checkins
+    for (const k in appState.todayCheckins) {
+        const rec = appState.todayCheckins[k];
+        if (rec && rec.date === dateStr && rec.shift === shift) {
+            if (staffUser && (rec.staffId === staffUser.id || rec.staffId === staffUser.username)) return rec;
+            if (rec.staffName && staffName && rec.staffName.trim() === staffName.trim()) return rec;
+        }
+    }
+    return null;
+}
+
+function initReportTab() {
+    const select = document.getElementById('report-select-day');
+    if (!select) return;
+
+    if (!appState.reportSelectedDay) {
+        appState.reportSelectedDay = appState.currentSystemDay || getRealTodayDay() || 3;
+    }
+
+    let optionsHtml = '';
+    const thaiDays = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+    for (let d = 1; d <= 31; d++) {
+        const dateObj = new Date(2026, 9, d);
+        const dayOfWeek = dateObj.getDay();
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+        const isHoliday = isWeekend || d === 13 || d === 23;
+        const holidayTag = isHoliday ? ' [วันหยุดราชการ]' : '';
+        const selected = (d === appState.reportSelectedDay) ? 'selected' : '';
+        optionsHtml += `<option value="${d}" ${selected}>${thaiDays[dayOfWeek]}ที่ ${d} ต.ค. ๒๕๖๙${holidayTag}</option>`;
+    }
+    select.innerHTML = optionsHtml;
+}
+
+function setReportPeriodMode(mode) {
+    appState.reportPeriodMode = mode;
+    const btnDay = document.getElementById('report-mode-day');
+    const btnMonth = document.getElementById('report-mode-month');
+    const dayControls = document.getElementById('report-day-controls');
+
+    if (mode === 'day') {
+        if (btnDay) btnDay.className = 'px-3 py-1.5 rounded-lg font-bold bg-white text-emerald-700 shadow-xs transition';
+        if (btnMonth) btnMonth.className = 'px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition';
+        if (dayControls) dayControls.classList.remove('hidden');
+    } else {
+        if (btnDay) btnDay.className = 'px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition';
+        if (btnMonth) btnMonth.className = 'px-3 py-1.5 rounded-lg font-bold bg-white text-emerald-700 shadow-xs transition';
+        if (dayControls) dayControls.classList.add('hidden');
+    }
+
+    renderAttendanceReport();
+}
+
+function changeReportDay(offset) {
+    let day = (appState.reportSelectedDay || 3) + offset;
+    if (day < 1) day = 1;
+    if (day > 31) day = 31;
+    appState.reportSelectedDay = day;
+
+    const select = document.getElementById('report-select-day');
+    if (select) select.value = day;
+
+    renderAttendanceReport();
+}
+
+function setReportDayToday() {
+    const today = appState.currentSystemDay || getRealTodayDay() || 3;
+    appState.reportSelectedDay = today;
+    const select = document.getElementById('report-select-day');
+    if (select) select.value = today;
+    renderAttendanceReport();
+}
+
+function onReportDayChange(val) {
+    const day = parseInt(val, 10);
+    if (!isNaN(day) && day >= 1 && day <= 31) {
+        appState.reportSelectedDay = day;
+        renderAttendanceReport();
+    }
+}
+
+function applyReportFilters() {
+    const shiftEl = document.getElementById('report-filter-shift');
+    const statusEl = document.getElementById('report-filter-status');
+    const searchEl = document.getElementById('report-search-input');
+
+    if (shiftEl) appState.reportFilterShift = shiftEl.value;
+    if (statusEl) appState.reportFilterStatus = statusEl.value;
+    if (searchEl) appState.reportSearchQuery = searchEl.value.trim().toLowerCase();
+
+    renderAttendanceReport();
+}
+
+function getFilteredAttendanceList() {
+    const targetDays = (appState.reportPeriodMode === 'month')
+        ? appState.schedules
+        : appState.schedules.filter(s => s.day === (appState.reportSelectedDay || 3));
+
+    const currentSystemDay = appState.currentSystemDay || getRealTodayDay() || 3;
+    const items = [];
+
+    targetDays.forEach(s => {
+        const dateStr = `2026-10-${String(s.day).padStart(2, '0')}`;
+
+        // 1. ผลัดกลางวัน (ถ้ามี)
+        if (s.dayDuty && Array.isArray(s.dayDuty.staff)) {
+            s.dayDuty.staff.forEach(staffName => {
+                const user = findStaffUserByName(staffName);
+                const rec = getCheckinRecordForDuty(user, staffName, dateStr, 'day');
+                
+                let status = 'pending';
+                let statusLabel = (s.day < currentSystemDay) ? 'ขาดเวร / ไม่พบข้อมูล' : 'รอถึงกำหนดเวลา';
+                let badgeClass = (s.day < currentSystemDay) ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-slate-100 text-slate-700 border-slate-200';
+
+                if (rec && rec.checkinTime && rec.checkoutTime) {
+                    status = 'completed';
+                    statusLabel = 'ลงเวลาครบ (เข้า-ออก)';
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                } else if (rec && rec.checkinTime) {
+                    status = 'active';
+                    statusLabel = 'อยู่ระหว่างปฏิบัติหน้าที่';
+                    badgeClass = 'bg-blue-100 text-blue-800 border-blue-200';
+                }
+
+                items.push({
+                    day: s.day,
+                    dateStr: dateStr,
+                    shift: 'day',
+                    shiftName: 'กะกลางวัน (08.00 - 16.30 น.)',
+                    shiftBadge: 'bg-amber-100 text-amber-900 border-amber-200',
+                    staffName: staffName,
+                    staffUser: user,
+                    position: user ? user.position : 'พนักงานส่วนตำบล',
+                    dept: user ? user.dept : 'อบต.ฝางคำ',
+                    avatar: user ? user.avatar : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80',
+                    inspector: s.dayDuty.inspector,
+                    record: rec,
+                    status: status,
+                    statusLabel: statusLabel,
+                    badgeClass: badgeClass
+                });
+            });
+        }
+
+        // 2. ผลัดกลางคืน
+        if (s.nightDuty && Array.isArray(s.nightDuty.staff)) {
+            s.nightDuty.staff.forEach(staffName => {
+                const user = findStaffUserByName(staffName);
+                const rec = getCheckinRecordForDuty(user, staffName, dateStr, 'night');
+
+                let status = 'pending';
+                let statusLabel = (s.day < currentSystemDay) ? 'ขาดเวร / ไม่พบข้อมูล' : 'รอถึงกำหนดเวลา';
+                let badgeClass = (s.day < currentSystemDay) ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-slate-100 text-slate-700 border-slate-200';
+
+                if (rec && rec.checkinTime && rec.checkoutTime) {
+                    status = 'completed';
+                    statusLabel = 'ลงเวลาครบ (เข้า-ออก)';
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                } else if (rec && rec.checkinTime) {
+                    status = 'active';
+                    statusLabel = 'อยู่ระหว่างปฏิบัติหน้าที่';
+                    badgeClass = 'bg-blue-100 text-blue-800 border-blue-200';
+                }
+
+                items.push({
+                    day: s.day,
+                    dateStr: dateStr,
+                    shift: 'night',
+                    shiftName: 'กะกลางคืน (16.30 - 08.00 น.)',
+                    shiftBadge: 'bg-slate-900 text-white border-slate-900',
+                    staffName: staffName,
+                    staffUser: user,
+                    position: user ? user.position : 'พนักงานส่วนตำบล',
+                    dept: user ? user.dept : 'อบต.ฝางคำ',
+                    avatar: user ? user.avatar : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80',
+                    inspector: s.nightDuty.inspector,
+                    record: rec,
+                    status: status,
+                    statusLabel: statusLabel,
+                    badgeClass: badgeClass
+                });
+            });
+        }
+    });
+
+    // Apply Filter Shifts
+    let filtered = items;
+    if (appState.reportFilterShift && appState.reportFilterShift !== 'all') {
+        filtered = filtered.filter(item => item.shift === appState.reportFilterShift);
+    }
+
+    // Apply Filter Status
+    if (appState.reportFilterStatus && appState.reportFilterStatus !== 'all') {
+        filtered = filtered.filter(item => item.status === appState.reportFilterStatus);
+    }
+
+    // Apply Search Query
+    if (appState.reportSearchQuery) {
+        const q = appState.reportSearchQuery;
+        filtered = filtered.filter(item => {
+            return item.staffName.toLowerCase().includes(q) ||
+                   item.position.toLowerCase().includes(q) ||
+                   item.dept.toLowerCase().includes(q) ||
+                   item.inspector.toLowerCase().includes(q);
+        });
+    }
+
+    return { allItems: items, filteredItems: filtered };
+}
+
+function renderAttendanceReport() {
+    const tableBody = document.getElementById('report-table-body');
+    if (!tableBody) return;
+
+    const { allItems, filteredItems } = getFilteredAttendanceList();
+
+    // 1. Calculate KPI Metrics based on full period list
+    const totalCount = allItems.length;
+    let checkedInCount = 0;
+    let checkedOutCount = 0;
+    let pendingCount = 0;
+
+    allItems.forEach(item => {
+        if (item.record && item.record.checkinTime) checkedInCount++;
+        if (item.record && item.record.checkoutTime) checkedOutCount++;
+        if (!item.record || !item.record.checkinTime) pendingCount++;
+    });
+
+    // 2. Update KPI Elements
+    const statTotalEl = document.getElementById('report-stat-total');
+    const statCheckedInEl = document.getElementById('report-stat-checkedin');
+    const statCheckedOutEl = document.getElementById('report-stat-checkedout');
+    const statPendingEl = document.getElementById('report-stat-pending');
+    const badgeCountEl = document.getElementById('report-record-count-badge');
+    const titleEl = document.getElementById('report-table-title');
+    const subTitleEl = document.getElementById('report-table-subtitle');
+
+    if (statTotalEl) statTotalEl.textContent = `${totalCount} คน`;
+    if (statCheckedInEl) statCheckedInEl.textContent = `${checkedInCount} คน`;
+    if (statCheckedOutEl) statCheckedOutEl.textContent = `${checkedOutCount} คน`;
+    if (statPendingEl) statPendingEl.textContent = `${pendingCount} คน`;
+    if (badgeCountEl) badgeCountEl.textContent = `${filteredItems.length} รายการ`;
+
+    if (appState.reportPeriodMode === 'month') {
+        if (titleEl) titleEl.textContent = 'รายงานสรุปการลงเวลาเวรยาม ประจำเดือน ตุลาคม ๒๕๖๙';
+        if (subTitleEl) subTitleEl.textContent = 'ภาพรวมผลการปฏิบัติหน้าที่ทั้ง ๓๑ วัน ณ ที่ทำการ อบต.ฝางคำ';
+    } else {
+        const thaiDate = getThaiDateLabel(appState.reportSelectedDay || 3);
+        if (titleEl) titleEl.textContent = `รายงานการลงเวลาเวรยาม ประจำ${thaiDate}`;
+        if (subTitleEl) subTitleEl.textContent = `ตรวจสอบรายชื่อ เวลาเข้าเวร-ออกเวร และผู้ตรวจเวรประจำวัน`;
+    }
+
+    // 3. Render Table Rows
+    if (filteredItems.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-10 text-slate-400">
+                    <div class="text-3xl mb-2">🔍</div>
+                    <div class="font-bold text-sm text-slate-600">ไม่พบข้อมูลการปฏิบัติหน้าที่ตามเงื่อนไขที่เลือก</div>
+                    <div class="text-xs text-slate-400 mt-1">ลองเปลี่ยนตัวกรองผลัดเวร สถานะ หรือเคลียร์ช่องค้นหา</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    let rowsHtml = '';
+    filteredItems.forEach((item, idx) => {
+        const checkinTime = (item.record && item.record.checkinTime) ? item.record.checkinTime : '<span class="text-slate-400 italic">ยังไม่ลงเวลา</span>';
+        const checkoutTime = (item.record && item.record.checkoutTime) ? item.record.checkoutTime : (item.record && item.record.checkinTime ? '<span class="text-blue-600 font-semibold">อยู่ระหว่างปฏิบัติหน้าที่</span>' : '<span class="text-slate-400 italic">-</span>');
+        
+        let gpsBadge = '';
+        if (item.record && item.record.checkinTime) {
+            const dist = item.record.distance || 25;
+            gpsBadge = `<div class="mt-1 flex items-center space-x-1 text-[11px] text-emerald-700 font-medium"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>GPS ในเขต (${dist} ม.)</span></div>`;
+        }
+
+        const noteText = item.record ? (item.record.notes || item.record.checkoutNotes || 'ปฏิบัติหน้าที่เรียบร้อย') : '-';
+
+        rowsHtml += `
+            <tr class="hover:bg-slate-50/70 transition border-b border-slate-100">
+                <td class="py-3.5 px-3 text-center font-bold text-slate-400">${idx + 1}</td>
+                <td class="py-3.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-800">${item.day} ต.ค. ๖๙</div>
+                    <span class="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.shiftBadge}">
+                        ${item.shift === 'day' ? '☀️ กลางวัน' : '🌙 กลางคืน'}
+                    </span>
+                </td>
+                <td class="py-3.5 px-3">
+                    <div class="flex items-center space-x-3">
+                        <img src="${item.avatar}" alt="" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-900 truncate">${item.staffName}</div>
+                            <div class="text-[11px] text-slate-400 font-mono">${item.staffUser ? `@${item.staffUser.username}` : ''}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="py-3.5 px-3">
+                    <div class="font-medium text-slate-800">${item.position}</div>
+                    <div class="text-[11px] text-slate-500">${item.dept}</div>
+                </td>
+                <td class="py-3.5 px-3 text-center whitespace-nowrap">
+                    <span class="inline-block px-2.5 py-1 rounded-xl text-[11px] font-bold border ${item.badgeClass}">
+                        ${item.statusLabel}
+                    </span>
+                </td>
+                <td class="py-3.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">${checkinTime}</div>
+                    ${gpsBadge}
+                </td>
+                <td class="py-3.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">${checkoutTime}</div>
+                    ${item.record && item.record.checkoutNotes ? '<div class="text-[11px] text-slate-500 truncate max-w-xs mt-0.5" title="' + item.record.checkoutNotes + '">✓ ส่งมอบเวรแล้ว</div>' : ''}
+                </td>
+                <td class="py-3.5 px-3">
+                    <div class="font-semibold text-slate-900 flex items-center space-x-1">
+                        <span>🛡️</span>
+                        <span>${item.inspector}</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-0.5 line-clamp-1" title="${noteText}">
+                        ${noteText}
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tableBody.innerHTML = rowsHtml;
+}
+
+function printAttendanceReportPDF() {
+    const doc = document.getElementById('official-print-document');
+    if (!doc) return;
+
+    const { allItems, filteredItems } = getFilteredAttendanceList();
+    const periodMode = appState.reportPeriodMode;
+    const selectedDay = appState.reportSelectedDay || 3;
+    const thaiPeriod = (periodMode === 'day')
+        ? `ประจำวันที่ ${toThaiNumerals(selectedDay)} เดือนตุลาคม พ.ศ. ๒๕๖๙ (${getThaiDateLabel(selectedDay)})`
+        : `ประจำเดือนตุลาคม พ.ศ. ๒๕๖๙ (ระหว่างวันที่ ๑ - ๓๑ ตุลาคม ๒๕๖๙)`;
+
+    // Calculate metrics
+    let checkedIn = 0;
+    let checkedOut = 0;
+    let pending = 0;
+    filteredItems.forEach(item => {
+        if (item.record && item.record.checkinTime) checkedIn++;
+        if (item.record && item.record.checkoutTime) checkedOut++;
+        if (!item.record || !item.record.checkinTime) pending++;
+    });
+
+    let tableRows = '';
+    filteredItems.forEach((item, idx) => {
+        const inTime = (item.record && item.record.checkinTime) ? toThaiNumerals(item.record.checkinTime.replace(' น.', '')) + ' น.' : '-';
+        const outTime = (item.record && item.record.checkoutTime) ? toThaiNumerals(item.record.checkoutTime.replace(' น.', '')) + ' น.' : (item.record && item.record.checkinTime ? 'อยู่ระหว่างปฏิบัติหน้าที่' : '-');
+        const shiftLabel = item.shift === 'day' ? 'กลางวัน (๐๘.๐๐-๑๖.๓๐ น.)' : 'กลางคืน (๑๖.๓๐-๐๘.๐๐ น.)';
+        const note = item.record ? (item.record.notes || 'เหตุการณ์ปกติ') : (item.day < (appState.currentSystemDay || 3) ? 'ขาดการลงเวลา' : 'รอถึงกำหนดเวลา');
+
+        tableRows += `
+            <tr>
+                <td style="text-align: center;">${toThaiNumerals(idx + 1)}</td>
+                <td style="text-align: center;">${toThaiNumerals(item.day)} ต.ค. ๖๙</td>
+                <td style="text-align: center;">${shiftLabel}</td>
+                <td style="font-weight: bold;">${item.staffName}</td>
+                <td>${item.position} (${item.dept})</td>
+                <td style="text-align: center;">${item.statusLabel}</td>
+                <td style="text-align: center;">${inTime}</td>
+                <td style="text-align: center;">${outTime}</td>
+                <td>${item.inspector}<br><span style="font-size: 9pt; color: #475569;">${note}</span></td>
+                <td style="text-align: center;">.........................</td>
+            </tr>
+        `;
+    });
+
+    const mayorName = appState.settings ? appState.settings.mayorName : 'นายกองค์การบริหารส่วนตำบลฝางคำ';
+    const clerkName = appState.settings ? appState.settings.clerkName : 'ปลัดองค์การบริหารส่วนตำบลฝางคำ';
+
+    doc.innerHTML = `
+        <div style="font-family: 'Sarabun', sans-serif; color: #000; padding: 10px 0;">
+            <!-- Official Header with Garuda -->
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="font-size: 36pt; line-height: 1;">🦅</div>
+                <h2 style="font-size: 16pt; font-weight: bold; margin: 6px 0 2px 0;">รายงานสรุปผลการปฏิบัติหน้าที่และการลงเวลาเวรยามรักษาการณ์สถานที่ราชการ</h2>
+                <h3 style="font-size: 14pt; font-weight: bold; margin: 2px 0;">องค์การบริหารส่วนตำบลฝางคำ อำเภอสิรินธร จังหวัดอุบลราชธานี</h3>
+                <p style="font-size: 12pt; margin: 4px 0 10px 0;">${thaiPeriod}</p>
+            </div>
+
+            <!-- Summary KPI Box -->
+            <div style="border: 1px solid #000; padding: 6px 12px; margin-bottom: 14px; font-size: 10.5pt; background-color: #f8fafc; -webkit-print-color-adjust: exact;">
+                <strong>สรุปการปฏิบัติหน้าที่:</strong> 
+                เจ้าหน้าที่ตามคำสั่งทั้งหมด <strong>${toThaiNumerals(filteredItems.length)}</strong> นาย | 
+                ลงเวลาเข้าเวรแล้ว <strong>${toThaiNumerals(checkedIn)}</strong> นาย | 
+                ส่งมอบเวรและออกเวรแล้ว <strong>${toThaiNumerals(checkedOut)}</strong> นาย | 
+                ยังไม่ลงเวลา/รอถึงกำหนด <strong>${toThaiNumerals(pending)}</strong> นาย
+            </div>
+
+            <!-- Official Attendance Table -->
+            <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr style="background-color: #f1f5f9; text-align: center;">
+                        <th style="width: 32px;">ลำดับ</th>
+                        <th style="width: 65px;">วันที่</th>
+                        <th style="width: 110px;">ผลัดเวลา</th>
+                        <th style="width: 140px; text-align: left;">ชื่อ - สกุล ผู้ปฏิบัติหน้าที่</th>
+                        <th style="width: 130px; text-align: left;">ตำแหน่ง / สังกัด</th>
+                        <th style="width: 85px;">สถานะ</th>
+                        <th style="width: 70px;">เวลาเข้าเวร</th>
+                        <th style="width: 70px;">เวลาออกเวร</th>
+                        <th style="text-align: left;">ผู้ตรวจเวร / บันทึกผล</th>
+                        <th style="width: 75px;">ลายมือชื่อ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+
+            <!-- Formal 4-Party Government Signatures -->
+            <div class="print-avoid-break" style="margin-top: 25px; font-size: 11pt; line-height: 1.6;">
+                <table style="width: 100%; border: none;">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; text-align: center; padding: 10px 15px;">
+                            <p>ลงชื่อ .............................................................. ผู้รายงาน</p>
+                            <p>( .............................................................. )</p>
+                            <p>ตำแหน่ง เจ้าหน้าที่ผู้รับผิดชอบงานเวรยาม</p>
+                            <p>วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                        </td>
+                        <td style="width: 50%; vertical-align: top; text-align: center; padding: 10px 15px;">
+                            <p>ลงชื่อ .............................................................. ผู้ตรวจเวรยาม</p>
+                            <p>( .............................................................. )</p>
+                            <p>ตำแหน่ง ผู้ตรวจเวรยามประจำผลัด</p>
+                            <p>วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                        </td>
+                    </tr>
+                    <tr><td colspan="2" style="height: 18px;"></td></tr>
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; text-align: center; padding: 10px 15px;">
+                            <p>ลงชื่อ .............................................................. ผู้ตรวจสอบ</p>
+                            <p>( นายชาญชัย อักโข )</p>
+                            <p>ตำแหน่ง หัวหน้าสำนักปลัด อบต.ฝางคำ</p>
+                            <p>วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                        </td>
+                        <td style="width: 50%; vertical-align: top; text-align: center; padding: 10px 15px;">
+                            <p>ลงชื่อ .............................................................. ผู้รับทราบ/สั่งการ</p>
+                            <p>( .............................................................. )</p>
+                            <p>ตำแหน่ง ${mayorName}</p>
+                            <p>วันที่ ........ เดือน ........................ พ.ศ. ๒๕๖๙</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    `;
+
+    // Trigger Print Dialog
+    window.print();
+}
+
+function exportAttendanceReportCSV() {
+    const { filteredItems } = getFilteredAttendanceList();
+    if (filteredItems.length === 0) {
+        showToast('ไม่มีข้อมูล', 'ไม่มีรายการที่จะส่งออกตามตัวกรองที่เลือก', 'warning');
+        return;
+    }
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Microsoft Excel
+    csvContent += 'ลำดับ,วันที่,ผลัดเวร,ชื่อผู้เข้าเวร,ตำแหน่ง,สังกัด,สถานะ,เวลาเข้าเวร,เวลาออกเวร,ผู้ตรวจเวร,บันทึกเหตุการณ์\n';
+
+    filteredItems.forEach((item, idx) => {
+        const inTime = item.record && item.record.checkinTime ? item.record.checkinTime : '-';
+        const outTime = item.record && item.record.checkoutTime ? item.record.checkoutTime : '-';
+        const notes = item.record ? (item.record.notes || item.record.checkoutNotes || 'ปกติ') : '-';
+        const cleanNotes = notes.replace(/"/g, '""').replace(/\n/g, ' ');
+
+        csvContent += `"${idx + 1}","${item.day} ต.ค. 2569","${item.shiftName}","${item.staffName}","${item.position}","${item.dept}","${item.statusLabel}","${inTime}","${outTime}","${item.inspector}","${cleanNotes}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    const filename = `รายงานการลงเวลาเวรยาม_อบตฝางคำ_${appState.reportPeriodMode === 'month' ? 'ทั้งเดือน_ตค2569' : 'วันที่_' + appState.reportSelectedDay + '_ตค2569'}.csv`;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast('ส่งออก CSV สำเร็จ', `ดาวน์โหลด ${filename} เรียบร้อยแล้ว`, 'success');
+}
+
 // -------------------------------------------------------------
 // ระบบตั้งค่า (Settings Management)
 // -------------------------------------------------------------
@@ -3411,13 +4197,18 @@ window.onload = function() {
     initSignaturePad();
     initLineChatDefaultMessages();
     initCheckinDatePicker();
+    initReportTab();
+    renderAttendanceReport();
     updateDateBadges();
 
     // 4. แสดงผลข้อมูลผู้ใช้งานปัจจุบัน
     updateAuthUI();
 
-    // 5. บังคับเปิดหน้าแรกที่ "หน้า Dashboard" เสมอ!
-    switchTab('dashboard');
+    // 5. บังคับเปิดหน้าแรกที่ "หน้า Dashboard" เสมอ (หรือตาม URL hash ถ้ามี)
+    const initialTab = (window.location.hash && window.location.hash.length > 1) 
+        ? window.location.hash.replace('#', '') 
+        : 'dashboard';
+    switchTab(document.getElementById(`tab-${initialTab}`) ? initialTab : 'dashboard');
 
     // 6. นาฬิกา Real-time และระบบตรวจจับการข้ามวันอัตโนมัติ (Midnight Rollover)
     let lastRolloverCheckDay = getRealTodayDay();

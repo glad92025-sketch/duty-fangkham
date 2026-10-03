@@ -145,6 +145,14 @@
 
                 <div class="pt-3 pb-1 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">ระบบเชื่อมต่อ & เอกสาร</div>
 
+                <button id="btn-nav-report" onclick="switchTab('report')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">📋</span>
+                        <span>รายงานลงเวลา & PDF</span>
+                    </div>
+                    <span class="text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">PDF รายงาน</span>
+                </button>
+
                 <button id="btn-nav-line-sim" onclick="switchTab('line-sim')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
                     <div class="flex items-center space-x-3">
                         <span class="text-base">💬</span>
@@ -731,7 +739,7 @@
                         <h3 class="font-bold text-slate-800">ตัวอย่างคำสั่ง อบต.ฝางคำ สำหรับพิมพ์ลงกระดาษ</h3>
                         <p class="text-xs text-slate-500">รูปแบบหนังสือราชการตามระเบียบงานสารบรรณ พิมพ์ลงกระดาษ A4 ได้ทันที</p>
                     </div>
-                    <button onclick="window.print()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                    <button onclick="printOfficialOrderDocument()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer">
                         🖨️ สั่งพิมพ์เอกสารนี้ (Print)
                     </button>
                 </div>
@@ -769,6 +777,168 @@
                         <div class="h-10"></div>
                         <p>( .................................................... )</p>
                         <p class="font-bold">นายกองค์การบริหารส่วนตำบลฝางคำ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: DUTY ATTENDANCE REPORT & GOVERNMENT PDF -->
+            <div id="tab-report" class="tab-content hidden space-y-6">
+                <!-- Top Action Header -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">📋</span>
+                            <h2 class="text-xl font-bold text-slate-900">รายงานการลงเวลาเวรยามและสรุปผลการปฏิบัติหน้าที่</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200">ส่งออก PDF ราชการ</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">
+                            ตรวจสอบประวัติการลงเวลาเข้าเวร-ออกเวรย้อนหลัง พิกัดสถานที่ การตรวจเวรยาม และพิมพ์รายงานราชการมาตรฐานตามระเบียบ
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="printAttendanceReportPDF()" class="px-4 py-2.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition flex items-center space-x-2 cursor-pointer">
+                            <span>🖨️</span>
+                            <span>พิมพ์รายงาน / Export PDF</span>
+                        </button>
+                        <button onclick="exportAttendanceReportCSV()" class="px-3.5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition flex items-center space-x-1.5 cursor-pointer">
+                            <span>📥</span>
+                            <span>ส่งออก CSV/Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter & Retrospective Date Bar -->
+                <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold text-slate-700">📅 เลือกช่วงเวลาตรวจสอบ:</span>
+                            <!-- Mode Toggle -->
+                            <div class="inline-flex rounded-xl bg-slate-100 p-1 text-xs">
+                                <button id="report-mode-day" onclick="setReportPeriodMode('day')" class="px-3 py-1.5 rounded-lg font-bold bg-white text-emerald-700 shadow-xs transition">
+                                    เฉพาะวันที่เลือก
+                                </button>
+                                <button id="report-mode-month" onclick="setReportPeriodMode('month')" class="px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition">
+                                    สรุปทั้งเดือน ต.ค. ๖๙
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Single Day Controls (visible when mode == 'day') -->
+                        <div id="report-day-controls" class="flex flex-wrap items-center gap-1.5">
+                            <button onclick="changeReportDay(-1)" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-600 transition" title="วันก่อนหน้า">
+                                ◀ ก่อนหน้า
+                            </button>
+                            <select id="report-select-day" onchange="onReportDayChange(this.value)" class="text-xs font-bold text-slate-800 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-emerald-500">
+                                <!-- Populated dynamically with 1-31 Oct 2569 -->
+                            </select>
+                            <button onclick="changeReportDay(1)" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-600 transition" title="วันถัดไป">
+                                ถัดไป ▶
+                            </button>
+                            <button onclick="setReportDayToday()" class="px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 text-xs font-bold transition">
+                                📅 วันนี้
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Filters: Shift, Status, Search -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">ผลัดเวรปฏิบัติหน้าที่:</label>
+                            <select id="report-filter-shift" onchange="applyReportFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">ทุกผลัด (กลางวัน & กลางคืน)</option>
+                                <option value="day">☀️ กะกลางวัน (08.30 - 16.30 น.)</option>
+                                <option value="night">🌙 กะกลางคืน (16.30 - 08.30 น.)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">สถานะการลงเวลา:</label>
+                            <select id="report-filter-status" onchange="applyReportFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">ทุกสถานะ</option>
+                                <option value="completed">✅ ลงเวลาครบ (เข้าและออกเวร)</option>
+                                <option value="active">🟢 เข้าเวรแล้ว (อยู่ระหว่างปฏิบัติหน้าที่)</option>
+                                <option value="pending">⚠️ ยังไม่ลงเวลา / ขาดเวร</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-600 mb-1">ค้นหารายชื่อ / ตำแหน่ง / ผู้ตรวจเวร:</label>
+                            <div class="relative">
+                                <input type="text" id="report-search-input" onkeyup="applyReportFilters()" placeholder="พิมพ์ชื่อ-สกุล, ตำแหน่ง หรือผู้ตรวจเวร..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-slate-700 font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500">
+                                <span class="absolute left-2.5 top-2 text-slate-400">🔍</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Summary Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                            <span>ผู้มีหน้าที่เข้าเวร</span>
+                            <span class="text-base">👥</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900 mt-2" id="report-stat-total">0</div>
+                        <p class="text-[11px] text-slate-400 mt-0.5" id="report-stat-total-label">ตามคำสั่ง อบต.ฝางคำ</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-emerald-200 bg-emerald-50/20 shadow-2xs">
+                        <div class="flex items-center justify-between text-emerald-700 text-xs font-semibold">
+                            <span>ลงเวลาเข้าเวรแล้ว</span>
+                            <span class="text-base">🟢</span>
+                        </div>
+                        <div class="text-2xl font-black text-emerald-700 mt-2" id="report-stat-checkedin">0</div>
+                        <p class="text-[11px] text-emerald-600 mt-0.5" id="report-stat-checkedin-sub">พิกัดในเขต อบต.</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-blue-200 bg-blue-50/20 shadow-2xs">
+                        <div class="flex items-center justify-between text-blue-700 text-xs font-semibold">
+                            <span>ส่งมอบเวร/ออกเวรแล้ว</span>
+                            <span class="text-base">🏁</span>
+                        </div>
+                        <div class="text-2xl font-black text-blue-700 mt-2" id="report-stat-checkedout">0</div>
+                        <p class="text-[11px] text-blue-600 mt-0.5">ลงเวลาส่งมอบหน้าที่เรียบร้อย</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-amber-200 bg-amber-50/20 shadow-2xs">
+                        <div class="flex items-center justify-between text-amber-700 text-xs font-semibold">
+                            <span>ยังไม่ลงเวลา / ขาดเวร</span>
+                            <span class="text-base">⚠️</span>
+                        </div>
+                        <div class="text-2xl font-black text-amber-700 mt-2" id="report-stat-pending">0</div>
+                        <p class="text-[11px] text-amber-600 mt-0.5">รอการรายงานตัวหรือตรวจสอบ</p>
+                    </div>
+                </div>
+
+                <!-- Attendance Records Table View (Screen) -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900" id="report-table-title">รายการบันทึกเวลาปฏิบัติหน้าที่เวรยาม</h3>
+                            <p class="text-xs text-slate-500" id="report-table-subtitle">ข้อมูลการลงเวลาเข้าเวร พิกัด GPS เวลาส่งมอบเวร และผู้ตรวจเวร</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="report-record-count-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">0 รายการ</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/80 text-slate-600 font-bold border-b border-slate-200">
+                                    <th class="py-3 px-3 w-12 text-center">ลำดับ</th>
+                                    <th class="py-3 px-3">วันที่ & ผลัดเวร</th>
+                                    <th class="py-3 px-3">เจ้าหน้าที่ผู้ปฏิบัติหน้าที่</th>
+                                    <th class="py-3 px-3">ตำแหน่ง / สังกัด</th>
+                                    <th class="py-3 px-3 text-center">สถานะ</th>
+                                    <th class="py-3 px-3">เวลาเข้าเวร (Check-in)</th>
+                                    <th class="py-3 px-3">เวลาออกเวร (Check-out)</th>
+                                    <th class="py-3 px-3">ผู้ตรวจเวร / บันทึกเหตุการณ์</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table-body" class="divide-y divide-slate-100 text-slate-700">
+                                <!-- Populated dynamically via renderAttendanceReport() -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -2010,6 +2180,14 @@
                     </button>
 
                     <div class="pt-3 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">ระบบเชื่อมต่อ & เอกสาร</div>
+
+                    <button type="button" id="btn-mnav-report" onclick="switchTab('report')" class="mnav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-base">📋</span>
+                            <span>รายงานลงเวลา & PDF</span>
+                        </div>
+                        <span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">PDF</span>
+                    </button>
 
                     <button type="button" id="btn-mnav-line-sim" onclick="switchTab('line-sim')" class="mnav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
                         <div class="flex items-center space-x-3">

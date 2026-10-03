@@ -103,7 +103,18 @@ body {
 }
 
 /* Official Government Paper Styles for Print */
+@page {
+    size: A4 portrait;
+    margin: 12mm 15mm 12mm 15mm;
+}
+
 @media print {
+    html, body {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
     body * {
         visibility: hidden !important;
     }
@@ -111,17 +122,43 @@ body {
         visibility: visible !important;
     }
     #official-print-document {
+        display: block !important;
         position: absolute;
         left: 0;
         top: 0;
         width: 100% !important;
         margin: 0 !important;
-        padding: 15mm 20mm !important;
+        padding: 0 !important;
         background: white !important;
-        color: black !important;
+        color: #000000 !important;
         font-family: var(--font-sarabun) !important;
-        font-size: 15pt !important;
-        line-height: 1.6 !important;
+        font-size: 11pt !important;
+        line-height: 1.4 !important;
+    }
+    .print-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid #000 !important;
+    }
+    .print-table th, .print-table td {
+        border: 1px solid #000 !important;
+        padding: 4px 6px !important;
+        font-size: 10pt !important;
+        color: #000 !important;
+    }
+    .print-table thead {
+        display: table-header-group !important;
+        background-color: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .print-table tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .print-avoid-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
     .no-print {
         display: none !important;
