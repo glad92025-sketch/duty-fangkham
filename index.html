@@ -33,58 +33,61 @@
     <div id="toast-container"></div>
 
     <!-- Top Navigation Header -->
-    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-xs no-print">
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-xs no-print">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo & Organization Title -->
-                <div class="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer group" onclick="switchTab('dashboard')" title="หน้าแรก">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md font-bold text-lg shrink-0 group-hover:scale-105 transition">
+                <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('dashboard')" title="หน้าแรก">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md font-bold text-lg shrink-0 group-hover:scale-105 transition-transform">
                         🛡️
                     </div>
                     <div>
-                        <div class="flex items-center space-x-1.5 sm:space-x-2">
+                        <div class="flex items-center space-x-2">
                             <span class="text-sm sm:text-base font-bold text-slate-900 leading-tight">ระบบเวรยามดิจิทัล</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-emerald-100 text-emerald-800">อบต.ฝางคำ</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">อบต.ฝางคำ</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 hidden sm:block">กะกลางวัน (หญิง) • กะกลางคืน (ชาย) • ผู้ตรวจเวร • LINE Bot</p>
+                        <p class="text-[11px] text-slate-500 hidden sm:block">กะกลางวัน (หญิง) • กะกลางคืน (ชาย) • ผู้ตรวจเวร • ระบบรายงาน LINE</p>
                     </div>
                 </div>
 
                 <!-- Right Header Actions (Auth & Quick Switcher) -->
-                <div class="flex items-center space-x-1.5 sm:space-x-2.5">
+                <div class="flex items-center space-x-2 sm:space-x-3">
                     <!-- Real-time Live Clock Badge -->
-                    <div class="hidden lg:flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+                    <div class="hidden lg:flex items-center space-x-2.5 text-xs font-semibold px-3.5 py-1.5 rounded-2xl bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span id="header-live-date">วันเสาร์ที่ ๓ ต.ค. ๒๕๖๙</span>
-                        <span class="text-emerald-300">|</span>
-                        <span id="header-live-time" class="font-mono font-bold">--:--:-- น.</span>
+                        <span id="header-live-date" class="font-medium text-slate-800">วันเสาร์ที่ 3 ต.ค. 2569</span>
+                        <span class="text-slate-300">|</span>
+                        <span id="header-live-time" class="font-mono font-bold text-emerald-700">--:--:-- น.</span>
                     </div>
 
-                    <button type="button" onclick="switchTab('saraban')" class="hidden xl:flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition items-center space-x-1.5 border border-slate-200">
-                        <span>📖 สารบัญคู่มือ</span>
+                    <button type="button" onclick="switchTab('saraban')" class="hidden xl:flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition items-center space-x-1.5 border border-slate-200">
+                        <span>📖 คู่มือ</span>
                     </button>
 
-                    <button id="btn-header-login" type="button" onclick="openLoginModal('login')" class="text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1 shadow-sm">
-                        <span>🔑 เข้าสู่ระบบ</span>
+                    <button id="btn-header-login" type="button" onclick="openLoginModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm cursor-pointer">
+                        <span>🔑</span>
+                        <span>เข้าสู่ระบบ</span>
                     </button>
-                    <button id="btn-header-changepwd" type="button" onclick="openLoginModal('change_pwd')" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition items-center space-x-1 border border-amber-200 shadow-xs" title="เปลี่ยนรหัสผ่าน">
-                        <span>🔒 เปลี่ยนรหัส</span>
+                    <button id="btn-header-changepwd" type="button" onclick="openLoginModal('change_pwd')" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 transition items-center space-x-1 border border-amber-200 shadow-2xs cursor-pointer" title="เปลี่ยนรหัสผ่าน">
+                        <span>🔒</span>
+                        <span>เปลี่ยนรหัส</span>
                     </button>
-                    <button id="btn-header-logout" type="button" onclick="logoutUser()" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition items-center space-x-1 border border-slate-200" title="ออกจากระบบ">
-                        <span>🚪 ออก</span>
+                    <button id="btn-header-logout" type="button" onclick="logoutUser()" class="hidden md:flex text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition items-center space-x-1 border border-slate-200 cursor-pointer" title="ออกจากระบบ">
+                        <span>🚪</span>
+                        <span>ออก</span>
                     </button>
 
-                    <div class="h-7 w-px bg-slate-200 hidden md:block"></div>
+                    <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
 
                     <!-- Current User Profile / Guest State -->
-                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200 cursor-pointer transition" onclick="openLoginModal('login')" title="คลิกเพื่อจัดการบัญชี/เข้าสู่ระบบ">
+                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200/80 cursor-pointer transition" onclick="openLoginModal('login')" title="คลิกเพื่อจัดการบัญชี/เข้าสู่ระบบ">
                         <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover shrink-0" alt="User Avatar">
                         <div class="text-left hidden xl:block leading-tight pr-1">
                             <div class="flex items-center space-x-1.5">
                                 <span id="auth-user-name" class="text-xs font-bold text-slate-700 truncate max-w-[130px]">ยังไม่ได้เข้าสู่ระบบ</span>
-                                <span id="auth-user-role-badge" class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-300">ผู้เยี่ยมชม</span>
+                                <span id="auth-user-role-badge" class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-slate-200/70 text-slate-600">ผู้เยี่ยมชม</span>
                             </div>
-                            <div id="auth-user-pos" class="text-[10px] text-slate-500 truncate max-w-[150px]">คลิกเพื่อล็อกอิน</div>
+                            <div id="auth-user-pos" class="text-[10px] text-slate-400 truncate max-w-[150px]">คลิกเพื่อล็อกอิน</div>
                         </div>
                     </div>
 
@@ -105,9 +108,9 @@
         <!-- Sidebar Navigation (Desktop Only) -->
         <aside class="hidden md:block w-64 flex-shrink-0">
             <div class="bg-white rounded-3xl p-3 border border-slate-200 shadow-sm sticky top-24 space-y-1">
-                <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">ระบบงาน</div>
+                <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">ระบบงานหลัก</div>
                 
-                <button id="btn-nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium transition bg-emerald-700 text-white shadow-sm">
+                <button id="btn-nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition bg-emerald-700 text-white shadow-xs">
                     <span class="text-base">📊</span>
                     <span>ภาพรวม & จอเวรวันนี้</span>
                 </button>
@@ -117,25 +120,19 @@
                     <span>ปฏิทินตารางเวร</span>
                 </button>
 
-                <button type="button" onclick="openEditRosterModal()" class="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition" title="ปรับแก้คำสั่งและตารางเวรยาม">
+                <button type="button" onclick="openEditRosterModal()" class="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-semibold text-purple-700 bg-purple-50/70 hover:bg-purple-100 border border-purple-200/80 transition" title="ปรับแก้คำสั่งและตารางเวรยาม">
                     <span class="text-base">✏️</span>
                     <span>แก้ไข/ปรับเปลี่ยนเวร</span>
                 </button>
 
-                <button id="btn-nav-checkin" onclick="switchTab('checkin')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-base">📍</span>
-                        <span>ลงเวลาเข้าเวร (LIFF)</span>
-                    </div>
-                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-semibold">คนเข้าเวร</span>
+                <button id="btn-nav-checkin" onclick="switchTab('checkin')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">📍</span>
+                    <span>ลงเวลาเข้าเวร (LIFF)</span>
                 </button>
 
-                <button id="btn-nav-inspection" onclick="switchTab('inspection')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-base">🔍</span>
-                        <span>สมุดตรวจเวรยาม</span>
-                    </div>
-                    <span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-semibold">ผู้ตรวจเวร</span>
+                <button id="btn-nav-inspection" onclick="switchTab('inspection')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">🔍</span>
+                    <span>สมุดตรวจเวรยาม</span>
                 </button>
 
                 <button id="btn-nav-swap" onclick="switchTab('swap')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
@@ -158,12 +155,9 @@
                     <span>คำสั่งเวรยามราชการ</span>
                 </button>
 
-                <button id="btn-nav-saraban" onclick="switchTab('saraban')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-base">📖</span>
-                        <span>สารบัญคู่มือการใช้งาน</span>
-                    </div>
-                    <span class="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">คู่มือ</span>
+                <button id="btn-nav-saraban" onclick="switchTab('saraban')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <span class="text-base">📖</span>
+                    <span>สารบัญคู่มือการใช้งาน</span>
                 </button>
 
                 <button id="btn-nav-settings" onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
@@ -173,15 +167,16 @@
             </div>
 
             <!-- Current Role Quick Notice -->
-            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-4 mt-4 shadow-sm text-xs space-y-2">
-                <div class="font-bold text-emerald-900 flex items-center space-x-1.5">
-                    <span>📌 กฎระเบียบเวร อบต.ฝางคำ</span>
+            <div class="bg-gradient-to-br from-slate-50 to-emerald-50/50 border border-slate-200 rounded-3xl p-4 mt-4 shadow-2xs text-xs space-y-2">
+                <div class="font-bold text-slate-900 flex items-center space-x-1.5">
+                    <span>📌</span>
+                    <span>ระเบียบเวร อบต.ฝางคำ</span>
                 </div>
-                <div class="text-emerald-800 space-y-1">
-                    <p>• <strong>หญิง (กะกลางวัน):</strong> 08.00 - 16.30 น. (วันหยุด)</p>
-                    <p>• <strong>ชาย (กะกลางคืน):</strong> 16.30 - 08.00 น. (ทุกวัน)</p>
-                    <p>• <strong>ผู้ตรวจเวร:</strong> หัวหน้าสำนักปลัด / ผอ.กอง</p>
-                    <p>• <strong>Geofencing:</strong> ล็อกพิกัดในรัศมี 150 ม.</p>
+                <div class="text-slate-600 space-y-1 leading-relaxed">
+                    <p>• <strong class="text-slate-800">กะกลางวัน (หญิง):</strong> 08.00 - 16.30 น. (วันหยุด)</p>
+                    <p>• <strong class="text-slate-800">กะกลางคืน (ชาย):</strong> 16.30 - 08.00 น. (ทุกคืน)</p>
+                    <p>• <strong class="text-slate-800">ผู้ตรวจเวร:</strong> หน.สำนักปลัด / ผอ.กอง</p>
+                    <p>• <strong class="text-slate-800">Geofencing:</strong> รัศมีที่ทำการ 150 ม.</p>
                 </div>
             </div>
         </aside>
@@ -192,100 +187,154 @@
             <div id="tab-dashboard" class="tab-content space-y-6">
                 <!-- Personalized Duty Reminder Banner -->
                 <div id="personal-duty-banner" class="hidden"></div>
-                <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+                <!-- Executive Dashboard Header -->
+                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-5">
                     <div>
-                        <div class="flex items-center space-x-2 flex-wrap gap-y-1">
-                            <h2 class="text-xl font-bold text-slate-900">ตารางเวรยามประจำวันนี้</h2>
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">ที่ทำการ อบต.ฝางคำ</span>
+                        <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                            <h2 class="text-xl font-bold text-slate-900 tracking-tight">ตารางเวรยามประจำวันนี้</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">ที่ทำการ อบต.ฝางคำ</span>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2 mt-2">
-                            <span id="dash-today-label" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
+                        <div class="flex flex-wrap items-center gap-2.5 mt-2.5">
+                            <span id="dash-today-label" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white shadow-xs">
                                 <span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span>
                                 กำลังโหลดวันที่...
                             </span>
-                            <span id="dash-clock-time" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200 font-mono">
+                            <span id="dash-clock-time" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200/80 font-mono">
                                 ⏰ --:--:-- น.
                             </span>
-                            <span class="text-[11px] text-slate-500 flex items-center gap-1">
-                                <span class="text-emerald-500 font-bold">●</span> ระบบสลับวันใหม่อัตโนมัติเวลา 00:00 น.
+                            <span class="text-[11px] text-slate-400 flex items-center gap-1.5 ml-1">
+                                <span class="text-emerald-500 font-bold">●</span> เปลี่ยนวันอัตโนมัติ 00:00 น.
                             </span>
                         </div>
                     </div>
-                    <div class="flex items-center flex-wrap gap-2">
-                        <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow-sm flex items-center space-x-1.5" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
-                            <span>✏️</span>
-                            <span>แก้ไขเวรวันนี้</span>
-                        </button>
-                        <button onclick="simulatePushNotification('day')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-600 text-white transition shadow-sm">
-                            ☀️ บอทเตือนเวรวัน
-                        </button>
-                        <button onclick="simulatePushNotification('night')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm">
-                            🌙 บอทเตือนเวรค่ำ
-                        </button>
-                        <button onclick="shareDutyToLineOpenChat()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#06C755] hover:bg-[#05b04c] text-white transition shadow-sm flex items-center space-x-1.5" title="ส่งสรุปเวรวันนี้เข้าห้อง LINE OpenChat อบต.ฝางคำ">
+
+                    <!-- Consolidated Executive Action Bar -->
+                    <div class="flex items-center flex-wrap gap-2.5 pt-2 xl:pt-0 border-t xl:border-t-0 border-slate-100">
+                        <button onclick="shareDutyToLineOpenChat()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#06C755] hover:bg-[#05b04c] text-white transition shadow-xs flex items-center space-x-2 cursor-pointer" title="ส่งสรุปเวรวันนี้เข้าห้อง LINE OpenChat อบต.ฝางคำ">
                             <span class="text-sm">💬</span>
                             <span>แชร์เข้า OpenChat</span>
                         </button>
+                        <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs flex items-center space-x-1.5 cursor-pointer" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
+                            <span>✏️</span>
+                            <span>แก้ไขเวรวันนี้</span>
+                        </button>
+                        
+                        <!-- Notification Trigger Group -->
+                        <div class="inline-flex rounded-xl shadow-2xs border border-slate-200 bg-slate-50 p-0.5">
+                            <button onclick="simulatePushNotification('day')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-amber-700 transition flex items-center space-x-1 cursor-pointer" title="ทดสอบส่งแจ้งเตือนกะกลางวัน">
+                                <span>☀️</span>
+                                <span>บอทกะวัน</span>
+                            </button>
+                            <button onclick="simulatePushNotification('night')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-white hover:text-indigo-700 transition flex items-center space-x-1 cursor-pointer" title="ทดสอบส่งแจ้งเตือนกะค่ำ">
+                                <span>🌙</span>
+                                <span>บอทกะค่ำ</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Live Duty Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Live Duty Cards (Day & Night) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                     <!-- Day Shift Card -->
-                    <div class="bg-white rounded-3xl border-2 border-amber-200 overflow-hidden shadow-sm hover:shadow-md transition">
-                        <div class="bg-amber-500 px-5 py-3.5 text-white flex justify-between items-center">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="text-2xl">☀️</span>
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+                        <!-- Card Header -->
+                        <div class="bg-gradient-to-r from-amber-500 via-amber-500 to-orange-500 px-5 py-4 text-white flex justify-between items-center gap-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-xl shrink-0 shadow-inner">
+                                    ☀️
+                                </div>
                                 <div>
-                                    <h3 class="font-bold text-sm">เวรกลางวัน (08.00 - 16.30 น.)</h3>
-                                    <span class="text-[11px] opacity-90">ข้าราชการ/พนักงานหญิง (เฉพาะวันหยุด)</span>
+                                    <h3 class="font-bold text-sm tracking-tight">กะกลางวัน (08.00 - 16.30 น.)</h3>
+                                    <p class="text-[11px] text-amber-100">ข้าราชการ/พนักงานหญิง (เฉพาะวันหยุด)</p>
                                 </div>
                             </div>
-                            <span id="dash-day-status"></span>
+                            <div id="dash-day-status" class="shrink-0"></div>
                         </div>
-                        <div class="p-5 space-y-4">
-                            <div>
-                                <div class="text-xs text-slate-400 font-medium">เจ้าหน้าที่ผู้เข้าเวร</div>
-                                <div id="dash-day-staff" class="text-base font-bold text-slate-900 mt-0.5">กำลังโหลดข้อมูล...</div>
+
+                        <!-- Card Body -->
+                        <div class="p-5 space-y-4 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3.5">
+                                <div>
+                                    <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+                                        <span>เจ้าหน้าที่ผู้ปฏิบัติหน้าที่</span>
+                                        <span class="text-[10px] text-slate-400 font-normal">กะกลางวัน</span>
+                                    </div>
+                                    <div id="dash-day-staff" class="space-y-2">
+                                        กำลังโหลดข้อมูล...
+                                    </div>
+                                </div>
+
+                                <div class="pt-2">
+                                    <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                                        ผู้ตรวจเวรประจำผลัด
+                                    </div>
+                                    <div id="dash-day-inspector">
+                                        กำลังโหลดข้อมูล...
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-xs text-slate-400 font-medium">ผู้ตรวจเวรประจำผลัด</div>
-                                <div id="dash-day-inspector" class="text-sm font-semibold text-slate-700 mt-0.5">กำลังโหลดข้อมูล...</div>
-                            </div>
-                            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
-                                <span class="text-xs text-slate-500">สถานที่: ที่ทำการ อบต.ฝางคำ</span>
-                                <button onclick="switchTab('checkin')" class="text-xs font-semibold text-amber-700 hover:text-amber-800 flex items-center space-x-1">
-                                    <span>ลงเวลาเวรนี้</span> ➔
+
+                            <!-- Card Footer -->
+                            <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <span class="text-slate-400 flex items-center gap-1">
+                                    <span>📍</span> ที่ทำการ อบต.ฝางคำ
+                                </span>
+                                <button onclick="switchTab('checkin')" class="font-semibold text-amber-700 hover:text-amber-800 flex items-center space-x-1 transition cursor-pointer">
+                                    <span>ลงเวลาเวรนี้</span>
+                                    <span>➔</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Night Shift Card -->
-                    <div class="bg-white rounded-3xl border-2 border-blue-200 overflow-hidden shadow-sm hover:shadow-md transition">
-                        <div class="bg-slate-900 px-5 py-3.5 text-white flex justify-between items-center">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="text-2xl">🌙</span>
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+                        <!-- Card Header -->
+                        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 px-5 py-4 text-white flex justify-between items-center gap-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-xs flex items-center justify-center text-xl shrink-0 shadow-inner">
+                                    🌙
+                                </div>
                                 <div>
-                                    <h3 class="font-bold text-sm">เวรกลางคืน (16.30 - 08.00 น.)</h3>
-                                    <span class="text-[11px] opacity-90">ข้าราชการ/พนักงานชาย (ปฏิบัติทุกคืน)</span>
+                                    <h3 class="font-bold text-sm tracking-tight">กะกลางคืน (16.30 - 08.00 น.)</h3>
+                                    <p class="text-[11px] text-slate-300">ข้าราชการ/พนักงานชาย (ปฏิบัติหน้าที่ทุกคืน)</p>
                                 </div>
                             </div>
-                            <span id="dash-night-status"></span>
+                            <div id="dash-night-status" class="shrink-0"></div>
                         </div>
-                        <div class="p-5 space-y-4">
-                            <div>
-                                <div class="text-xs text-slate-400 font-medium">เจ้าหน้าที่ผู้เข้าเวร</div>
-                                <div id="dash-night-staff" class="text-base font-bold text-slate-900 mt-0.5">กำลังโหลดข้อมูล...</div>
+
+                        <!-- Card Body -->
+                        <div class="p-5 space-y-4 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3.5">
+                                <div>
+                                    <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+                                        <span>เจ้าหน้าที่ผู้ปฏิบัติหน้าที่</span>
+                                        <span class="text-[10px] text-slate-400 font-normal">กะกลางคืน</span>
+                                    </div>
+                                    <div id="dash-night-staff" class="space-y-2">
+                                        กำลังโหลดข้อมูล...
+                                    </div>
+                                </div>
+
+                                <div class="pt-2">
+                                    <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                                        ผู้ตรวจเวรประจำผลัด
+                                    </div>
+                                    <div id="dash-night-inspector">
+                                        กำลังโหลดข้อมูล...
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-xs text-slate-400 font-medium">ผู้ตรวจเวรประจำผลัด</div>
-                                <div id="dash-night-inspector" class="text-sm font-semibold text-slate-700 mt-0.5">กำลังโหลดข้อมูล...</div>
-                            </div>
-                            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
-                                <span class="text-xs text-slate-500">สถานที่: ที่ทำการ อบต.ฝางคำ</span>
-                                <button onclick="switchTab('checkin')" class="text-xs font-semibold text-blue-700 hover:text-blue-800 flex items-center space-x-1">
-                                    <span>ลงเวลาเวรนี้</span> ➔
+
+                            <!-- Card Footer -->
+                            <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <span class="text-slate-400 flex items-center gap-1">
+                                    <span>📍</span> ที่ทำการ อบต.ฝางคำ
+                                </span>
+                                <button onclick="switchTab('checkin')" class="font-semibold text-indigo-700 hover:text-indigo-800 flex items-center space-x-1 transition cursor-pointer">
+                                    <span>ลงเวลาเวรนี้</span>
+                                    <span>➔</span>
                                 </button>
                             </div>
                         </div>
@@ -294,25 +343,37 @@
 
                 <!-- Monthly Statistics Row -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
-                        <div class="text-xs text-slate-500 font-medium">ผลัดเวรทั้งหมดเดือนนี้</div>
-                        <div id="stat-total-shifts" class="text-2xl font-bold text-slate-800 mt-1">0</div>
-                        <div class="text-[10px] text-slate-400 mt-0.5">ตารางเวรประจำเดือน</div>
+                    <div class="bg-white p-4 rounded-3xl border border-slate-200/90 shadow-2xs">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-xs font-medium">ผลัดเวรทั้งเดือน</span>
+                            <span class="text-base">📋</span>
+                        </div>
+                        <div id="stat-total-shifts" class="text-2xl font-bold text-slate-900 mt-1.5">0</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">ตารางเวรประจำเดือน ต.ค.</div>
                     </div>
-                    <div class="bg-white p-4 rounded-3xl border border-amber-200 shadow-sm">
-                        <div class="text-xs text-amber-700 font-medium">กะกลางวัน (หญิง)</div>
-                        <div id="stat-female-shifts" class="text-2xl font-bold text-amber-700 mt-1">0</div>
-                        <div class="text-[10px] text-amber-600/80 mt-0.5">ผลัดเสาร์-อาทิตย์</div>
+                    <div class="bg-white p-4 rounded-3xl border border-amber-200/80 shadow-2xs">
+                        <div class="flex items-center justify-between text-amber-600">
+                            <span class="text-xs font-medium">กะกลางวัน (หญิง)</span>
+                            <span class="text-base">☀️</span>
+                        </div>
+                        <div id="stat-female-shifts" class="text-2xl font-bold text-amber-700 mt-1.5">0</div>
+                        <div class="text-[10px] text-amber-600/70 mt-0.5">ผลัดเฉพาะวันหยุด</div>
                     </div>
-                    <div class="bg-white p-4 rounded-3xl border border-blue-200 shadow-sm">
-                        <div class="text-xs text-blue-700 font-medium">กะกลางคืน (ชาย)</div>
-                        <div id="stat-male-shifts" class="text-2xl font-bold text-blue-800 mt-1">0</div>
-                        <div class="text-[10px] text-blue-600/80 mt-0.5">ผลัดทุกค่ำคืน</div>
+                    <div class="bg-white p-4 rounded-3xl border border-indigo-200/80 shadow-2xs">
+                        <div class="flex items-center justify-between text-indigo-600">
+                            <span class="text-xs font-medium">กะกลางคืน (ชาย)</span>
+                            <span class="text-base">🌙</span>
+                        </div>
+                        <div id="stat-male-shifts" class="text-2xl font-bold text-indigo-900 mt-1.5">0</div>
+                        <div class="text-[10px] text-indigo-600/70 mt-0.5">ปฏิบัติหน้าที่ทุกค่ำคืน</div>
                     </div>
-                    <div class="bg-white p-4 rounded-3xl border border-emerald-200 shadow-sm">
-                        <div class="text-xs text-emerald-700 font-medium">ตรวจเวรเรียบร้อย</div>
-                        <div id="stat-inspections" class="text-2xl font-bold text-emerald-800 mt-1">0</div>
-                        <div class="text-[10px] text-emerald-600/80 mt-0.5">บันทึกตรวจสมุดเวร</div>
+                    <div class="bg-white p-4 rounded-3xl border border-emerald-200/80 shadow-2xs">
+                        <div class="flex items-center justify-between text-emerald-600">
+                            <span class="text-xs font-medium">บันทึกตรวจเวร</span>
+                            <span class="text-base">🛡️</span>
+                        </div>
+                        <div id="stat-inspections" class="text-2xl font-bold text-emerald-800 mt-1.5">0</div>
+                        <div class="text-[10px] text-emerald-600/70 mt-0.5">ลงสมุดตรวจเรียบร้อย</div>
                     </div>
                 </div>
             </div>

@@ -518,40 +518,58 @@ function updateAuthUI() {
     if (drawerLogout) drawerLogout.classList.remove('hidden');
 
     if (personalBanner) {
-        if (u.id === 'night_2') {
-            personalBanner.classList.remove('hidden');
-            personalBanner.innerHTML = `
-                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-3xl p-4 shadow-md flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-3xl">🌙</span>
-                        <div>
-                            <div class="font-bold text-sm">แจ้งเตือนเวรคืนนี้! (๒ ตุลาคม ๒๕๖๙)</div>
-                            <div class="text-xs opacity-90">ท่านมีหน้าที่อยู่เวรรักษาการณ์สถานที่ราชการ เวลา ๑๖.๓๐ - ๐๘.๐๐ น. ผู้ตรวจเวรคือ นายวุฒิศักดิ์ บุตรสิงห์</div>
-                        </div>
-                    </div>
-                    <button onclick="switchTab('checkin')" class="px-4 py-2 rounded-2xl bg-white text-emerald-800 font-bold text-xs shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
-                        📍 ลงเวลาเข้าเวรเลย
-                    </button>
-                </div>
-            `;
-        } else if (u.category === 'day' && u.dutyDays.includes('3')) {
-            personalBanner.classList.remove('hidden');
-            personalBanner.innerHTML = `
-                <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-3xl p-4 shadow-md flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-3xl">☀️</span>
-                        <div>
-                            <div class="font-bold text-sm">แจ้งเตือนเวรวันพรุ่งนี้! (เสาร์ ๓ ตุลาคม ๒๕๖๙)</div>
-                            <div class="text-xs opacity-90">ท่านมีหน้าที่อยู่เวรกลางวัน เวลา ๐๘.๐๐ - ๑๖.๓๐ น. ผู้ตรวจเวรคือ นางวาสนา สินทรัพย์</div>
-                        </div>
-                    </div>
-                    <button onclick="switchTab('checkin')" class="px-4 py-2 rounded-2xl bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-slate-100 transition whitespace-nowrap">
-                        📍 ดูรายละเอียดและลงเวลา
-                    </button>
-                </div>
-            `;
-        } else {
+        if (!u) {
             personalBanner.classList.add('hidden');
+        } else {
+            const today = appState.currentSystemDay || getRealTodayDay();
+            const sched = appState.schedules.find(s => s.day === today);
+            let userDutyToday = null;
+
+            if (sched) {
+                if (sched.dayDuty && sched.dayDuty.staff.some(s => s.includes(u.name) || u.name.includes(s))) {
+                    userDutyToday = { type: 'day', role: 'staff', time: '08.00 - 16.30 น.', inspector: sched.dayDuty.inspector };
+                } else if (sched.nightDuty && sched.nightDuty.staff.some(s => s.includes(u.name) || u.name.includes(s))) {
+                    userDutyToday = { type: 'night', role: 'staff', time: '16.30 - 08.00 น.', inspector: sched.nightDuty.inspector };
+                } else if (sched.dayDuty && sched.dayDuty.inspector && (sched.dayDuty.inspector.includes(u.name) || u.name.includes(sched.dayDuty.inspector))) {
+                    userDutyToday = { type: 'day', role: 'inspector', time: '08.00 - 16.30 น.', staff: sched.dayDuty.staff };
+                } else if (sched.nightDuty && sched.nightDuty.inspector && (sched.nightDuty.inspector.includes(u.name) || u.name.includes(sched.nightDuty.inspector))) {
+                    userDutyToday = { type: 'night', role: 'inspector', time: '16.30 - 08.00 น.', staff: sched.nightDuty.staff };
+                }
+            }
+
+            if (userDutyToday) {
+                personalBanner.classList.remove('hidden');
+                const isDay = userDutyToday.type === 'day';
+                const grad = isDay ? 'from-amber-500 to-orange-600' : 'from-slate-900 to-indigo-950 border border-indigo-900';
+                const icon = isDay ? '☀️' : '🌙';
+                const title = userDutyToday.role === 'staff' 
+                    ? `ท่านมีหน้าที่อยู่เวร ${isDay ? 'กะกลางวัน' : 'กะกลางคืน'} วันนี้ (${getThaiDateLabel(today)})`
+                    : `ท่านมีหน้าที่ตรวจเวร ${isDay ? 'กะกลางวัน' : 'กะกลางคืน'} วันนี้ (${getThaiDateLabel(today)})`;
+                const subtitle = userDutyToday.role === 'staff'
+                    ? `เวลาปฏิบัติหน้าที่ ${userDutyToday.time} • ผู้ตรวจเวรประจำผลัด: ${userDutyToday.inspector}`
+                    : `เวลาตรวจเวร ${userDutyToday.time} • เจ้าหน้าที่ผู้เข้าเวร: ${userDutyToday.staff ? userDutyToday.staff.join(', ') : '-'}`;
+                const targetTab = userDutyToday.role === 'staff' ? 'checkin' : 'inspection';
+                const btnText = userDutyToday.role === 'staff' ? '📍 ลงเวลาเข้าเวร' : '🔍 บันทึกตรวจเวร';
+
+                personalBanner.innerHTML = `
+                    <div class="bg-gradient-to-r ${grad} text-white rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3.5">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl shrink-0">
+                                ${icon}
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm sm:text-base leading-tight">${title}</div>
+                                <div class="text-xs opacity-90 mt-1">${subtitle}</div>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('${targetTab}')" class="px-4 py-2.5 rounded-2xl bg-white text-slate-900 font-bold text-xs shadow-sm hover:bg-slate-100 transition whitespace-nowrap cursor-pointer">
+                            ${btnText}
+                        </button>
+                    </div>
+                `;
+            } else {
+                personalBanner.classList.add('hidden');
+            }
         }
     }
 
@@ -786,41 +804,75 @@ function renderDashboard() {
         if (todaySched && todaySched.dayDuty) {
             // วันนี้เป็นวันหยุดที่มีเวรกลางวัน
             const staffList = todaySched.dayDuty.staff;
+            const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
+            let anyStaffCheckedIn = false;
+
             dayStaffEl.innerHTML = staffList.map(s => {
                 const u = findUserByName(s);
-                const deptStr = u ? `<span class="text-xs font-normal text-slate-500">(${u.dept})</span>` : '';
-                return `<div class="flex items-center space-x-1.5"><span class="text-amber-500 font-bold">•</span> <span class="font-bold text-slate-900">${s}</span> ${deptStr}</div>`;
-            }).join('');
-            
-            dayInspEl.textContent = todaySched.dayDuty.inspector;
+                const avatar = u && u.avatar ? u.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
+                const dept = u ? u.dept : 'อบต.ฝางคำ';
+                const key = u ? `${u.id}_${dateStr}_day` : null;
+                const checkData = (key && appState.todayCheckins[key]) || (u ? appState.todayCheckins[`${u.id}_${dateStr}`] : null);
 
-            // ตรวจสอบสถานะการลงเวลาเข้าเวร
-            const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
-            let hasCheckedIn = false;
-            let checkinTimeStr = '';
-            for (const s of staffList) {
-                const u = findUserByName(s);
-                if (u) {
-                    const key = `${u.id}_${dateStr}_day`;
-                    if (appState.todayCheckins[key]) {
-                        hasCheckedIn = true;
-                        checkinTimeStr = appState.todayCheckins[key].checkinTime || appState.todayCheckins[key].time;
-                        break;
-                    }
-                }
-            }
-
-            // คำนวณสถานะตามเวลาจริง (กะกลางวัน 08.00 - 16.30 น. -> 480 ถึง 990 นาที)
-            if (currentTimeVal < 480) {
-                dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">รอเข้าเวร 08.00 น.</span>`;
-            } else if (currentTimeVal <= 990) {
-                if (hasCheckedIn) {
-                    dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white animate-pulse">● ปฏิบัติหน้าที่ (ลงเวลา ${checkinTimeStr})</span>`;
+                let checkBadge = '';
+                if (checkData) {
+                    anyStaffCheckedIn = true;
+                    const cTime = checkData.checkinTime || checkData.time || 'เรียบร้อย';
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ ลงเวลา ${cTime}</span>`;
+                } else if (currentTimeVal >= 480 && currentTimeVal <= 990) {
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">● ปฏิบัติหน้าที่</span>`;
                 } else {
-                    dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500 text-white animate-pulse">● ช่วงเวลาปฏิบัติหน้าที่ (08.00 - 16.30 น.)</span>`;
+                    checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">รอลงเวลา</span>`;
+                }
+
+                return `
+                    <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-amber-50/40 border border-slate-100 transition">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <img src="${avatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${s}">
+                            <div class="min-w-0">
+                                <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${s}</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">${dept}</div>
+                            </div>
+                        </div>
+                        <div class="shrink-0 ml-2">
+                            ${checkBadge}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Inspector Card
+            const inspName = todaySched.dayDuty.inspector;
+            const inspUser = findUserByName(inspName);
+            const inspAvatar = inspUser && inspUser.avatar ? inspUser.avatar : 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80';
+            const inspDept = inspUser ? inspUser.dept : 'อบต.ฝางคำ';
+
+            dayInspEl.innerHTML = `
+                <div class="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <img src="${inspAvatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${inspName}">
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${inspName}</div>
+                            <div class="text-[10px] text-amber-800 font-medium mt-0.5">${inspDept} • ผู้ตรวจเวร</div>
+                        </div>
+                    </div>
+                    <span class="shrink-0 ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                        🔍 ตรวจเวร
+                    </span>
+                </div>
+            `;
+
+            // Status Badge in Day Card Header (Non-wrapping, concise)
+            if (currentTimeVal < 480) {
+                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30 backdrop-blur-xs">⏳ รอเข้าเวร 08:00</span>`;
+            } else if (currentTimeVal <= 990) {
+                if (anyStaffCheckedIn) {
+                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-emerald-800 shadow-xs">✓ ลงเวลาแล้ว</span>`;
+                } else {
+                    dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white text-amber-700 shadow-xs animate-pulse">● กำลังปฏิบัติหน้าที่</span>`;
                 }
             } else {
-                dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">ออกเวรแล้ว (ครบผลัด 16.30 น.)</span>`;
+                dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white/90">ครบผลัด 16.30 น.</span>`;
             }
         } else {
             // วันทำการปกติ ไม่มีเวรกลางวัน (ค้นหาผลัดวันหยุดถัดไปแบบอัตโนมัติ)
@@ -828,31 +880,35 @@ function renderDashboard() {
             let nextInfoHtml = '';
             if (nextDaySched) {
                 nextInfoHtml = `
-                    <div class="mt-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
-                        <div class="font-bold text-amber-900 flex items-center space-x-1">
+                    <div class="mt-2.5 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-xs space-y-1">
+                        <div class="font-bold text-amber-900 flex items-center space-x-1.5">
                             <span>☀️</span>
-                            <span>ผลัดถัดไป (${getThaiDateLabel(nextDaySched.day)}):</span>
+                            <span>ผลัดถัดไป: ${getThaiDateLabel(nextDaySched.day)}</span>
                         </div>
-                        <div class="text-amber-800 mt-1 font-medium">${nextDaySched.dayDuty.staff.join(', ')}</div>
-                        <div class="text-amber-700 text-[11px] mt-0.5">ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}</div>
+                        <div class="text-amber-800 font-medium">${nextDaySched.dayDuty.staff.join(', ')}</div>
+                        <div class="text-[11px] text-amber-700">ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}</div>
                     </div>
                 `;
-                dayInspEl.textContent = `${nextDaySched.dayDuty.inspector} (${getThaiDateLabel(nextDaySched.day)})`;
+                dayInspEl.innerHTML = `
+                    <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+                        <span class="font-medium text-slate-800">${nextDaySched.dayDuty.inspector}</span> <span class="text-slate-400">(ตรวจเวร ${getThaiDateLabel(nextDaySched.day)})</span>
+                    </div>
+                `;
             } else {
-                dayInspEl.textContent = 'ไม่มีผลัดเวรกลางวันคงเหลือในเดือนนี้';
+                dayInspEl.innerHTML = `<div class="text-xs text-slate-400">ไม่มีผลัดเวรกลางวันคงเหลือในเดือนนี้</div>`;
             }
 
             dayStaffEl.innerHTML = `
-                <div class="text-slate-600 font-normal text-xs space-y-1">
-                    <div class="flex items-center space-x-1.5 text-slate-700 font-medium">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                    <div class="flex items-center space-x-2 text-slate-800 font-bold text-xs sm:text-sm">
                         <span>🏢</span>
-                        <span>วันทำการปกติ (เจ้าหน้าที่ปฏิบัติงานตามเวลาราชการ 08.30 - 16.30 น.)</span>
+                        <span>วันทำการปกติ (เวลาราชการ 08.30 - 16.30 น.)</span>
                     </div>
-                    <div class="text-slate-400 text-[11px]">กะกลางวันปฏิบัติเฉพาะวันหยุดเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์</div>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">กะกลางวันจัดเฉพาะวันหยุดเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์</p>
                     ${nextInfoHtml}
                 </div>
             `;
-            dayStatusEl.innerHTML = `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-white/20 text-white">วันทำการปกติ</span>`;
+            dayStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">วันทำการปกติ</span>`;
         }
     }
 
@@ -864,9 +920,8 @@ function renderDashboard() {
     if (nightStaffEl && nightInspEl && nightStatusEl && todaySched && todaySched.nightDuty) {
         const nightStaffName = todaySched.nightDuty.staff[0];
         const u = findUserByName(nightStaffName);
-        const deptStr = u ? `<span class="text-xs font-normal text-slate-400">(${u.dept})</span>` : '';
-        nightStaffEl.innerHTML = `<div class="flex items-center space-x-1.5"><span class="text-indigo-400 font-bold">•</span> <span class="font-bold text-slate-900">${nightStaffName}</span> ${deptStr}</div>`;
-        nightInspEl.textContent = todaySched.nightDuty.inspector;
+        const avatar = u && u.avatar ? u.avatar : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80';
+        const dept = u ? u.dept : 'อบต.ฝางคำ';
 
         const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
         const nightKey = u ? `${u.id}_${dateStr}_night` : null;
@@ -875,12 +930,59 @@ function renderDashboard() {
         // เวรกลางคืน 16:30 - 08:00 น. วันรุ่งขึ้น (นาที >= 990 หรือ < 480)
         const isDuringNightShift = (currentTimeVal >= 990 || currentTimeVal < 480);
 
+        let checkBadge = '';
         if (isChecked) {
-            nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white animate-pulse">● ลงเวลาแล้ว (${isChecked.checkinTime || isChecked.time})</span>`;
+            const cTime = isChecked.checkinTime || isChecked.time || 'เรียบร้อย';
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ ลงเวลา ${cTime}</span>`;
         } else if (isDuringNightShift) {
-            nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-500 text-white animate-pulse">🌙 ช่วงเวลาปฏิบัติหน้าที่ (16.30 - 08.00 น.)</span>`;
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse">● ปฏิบัติหน้าที่</span>`;
         } else {
-            nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-400 text-slate-900">รอเข้าเวร 16.30 น.</span>`;
+            checkBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">รอลงเวลา</span>`;
+        }
+
+        nightStaffEl.innerHTML = `
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-indigo-50/40 border border-slate-100 transition">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <img src="${avatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${nightStaffName}">
+                    <div class="min-w-0">
+                        <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${nightStaffName}</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">${dept}</div>
+                    </div>
+                </div>
+                <div class="shrink-0 ml-2">
+                    ${checkBadge}
+                </div>
+            </div>
+        `;
+
+        // Inspector Card
+        const inspName = todaySched.nightDuty.inspector;
+        const inspUser = findUserByName(inspName);
+        const inspAvatar = inspUser && inspUser.avatar ? inspUser.avatar : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
+        const inspDept = inspUser ? inspUser.dept : 'สำนักปลัด';
+
+        nightInspEl.innerHTML = `
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-indigo-50/60 border border-indigo-200/80">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <img src="${inspAvatar}" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs shrink-0" alt="${inspName}">
+                    <div class="min-w-0">
+                        <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${inspName}</div>
+                        <div class="text-[10px] text-indigo-900 font-medium mt-0.5">${inspDept} • ผู้ตรวจเวร</div>
+                    </div>
+                </div>
+                <span class="shrink-0 ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                    🔍 ตรวจเวร
+                </span>
+            </div>
+        `;
+
+        // Status Badge in Night Card Header
+        if (isChecked) {
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-400 text-slate-950 shadow-xs">✓ ลงเวลาแล้ว</span>`;
+        } else if (isDuringNightShift) {
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-400 text-slate-950 shadow-xs animate-pulse">● กำลังปฏิบัติหน้าที่</span>`;
+        } else {
+            nightStatusEl.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-slate-200 border border-white/20">⏳ รอเข้าเวร 16:30</span>`;
         }
     }
 
@@ -1485,10 +1587,10 @@ function toThaiNum(num) {
     return String(num).split('').map(c => THAI_NUMBERS[parseInt(c)] || c).join('');
 }
 
-function getThaiDateLabel(day) {
+function getThaiDateLabel(day, formal = false) {
     const d = new Date(2026, 9, day);
     const dayName = THAI_DAY_NAMES[d.getDay()];
-    return `${dayName}ที่ ${toThaiNum(day)} ตุลาคม ๒๕๖๙`;
+    return formal ? `${dayName}ที่ ${toThaiNum(day)} ตุลาคม ๒๕๖๙` : `${dayName}ที่ ${day} ตุลาคม 2569`;
 }
 
 function findUserByName(nameStr) {
@@ -1599,8 +1701,8 @@ function updateDateBadges() {
     const dashTodayLabel = document.getElementById('dash-today-label');
     if (dashTodayLabel) {
         if (isReal) {
-            dashTodayLabel.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs';
-            dashTodayLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span> ${getThaiDateLabel(today)} (ตามเวลาจริง)`;
+            dashTodayLabel.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-700 text-white shadow-xs';
+            dashTodayLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span> ${getThaiDateLabel(today)}`;
         } else {
             dashTodayLabel.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-white shadow-xs';
             dashTodayLabel.innerHTML = `⚠️ แสดงข้อมูลวันที่ ${today} ต.ค. (โหมดเลือกดู) <button type="button" onclick="resetToRealtimeToday()" class="ml-2 underline text-white font-bold hover:text-amber-100">↺ กลับสู่วันนี้</button>`;
