@@ -52,7 +52,15 @@
 
                 <!-- Right Header Actions (Auth & Quick Switcher) -->
                 <div class="flex items-center space-x-1.5 sm:space-x-2.5">
-                    <button type="button" onclick="switchTab('saraban')" class="hidden lg:flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition items-center space-x-1.5 border border-slate-200">
+                    <!-- Real-time Live Clock Badge -->
+                    <div class="hidden lg:flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="header-live-date">วันเสาร์ที่ ๓ ต.ค. ๒๕๖๙</span>
+                        <span class="text-emerald-300">|</span>
+                        <span id="header-live-time" class="font-mono font-bold">--:--:-- น.</span>
+                    </div>
+
+                    <button type="button" onclick="switchTab('saraban')" class="hidden xl:flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition items-center space-x-1.5 border border-slate-200">
                         <span>📖 สารบัญคู่มือ</span>
                     </button>
 
@@ -186,14 +194,25 @@
                 <div id="personal-duty-banner" class="hidden"></div>
                 <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                             <h2 class="text-xl font-bold text-slate-900">ตารางเวรยามประจำวันนี้</h2>
                             <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">ที่ทำการ อบต.ฝางคำ</span>
                         </div>
-                        <p class="text-xs text-slate-500 mt-1">อัปเดตสถานะแบบ Real-time เชื่อมต่อระบบแจ้งเตือน LINE Bot อัตโนมัติ</p>
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <span id="dash-today-label" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
+                                <span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span>
+                                กำลังโหลดวันที่...
+                            </span>
+                            <span id="dash-clock-time" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200 font-mono">
+                                ⏰ --:--:-- น.
+                            </span>
+                            <span class="text-[11px] text-slate-500 flex items-center gap-1">
+                                <span class="text-emerald-500 font-bold">●</span> ระบบสลับวันใหม่อัตโนมัติเวลา 00:00 น.
+                            </span>
+                        </div>
                     </div>
                     <div class="flex items-center flex-wrap gap-2">
-                        <button onclick="openEditRosterModal(appState.currentSystemDay || 2)" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow-sm flex items-center space-x-1.5" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
+                        <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow-sm flex items-center space-x-1.5" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
                             <span>✏️</span>
                             <span>แก้ไขเวรวันนี้</span>
                         </button>
@@ -354,16 +373,21 @@
                         <div class="flex items-center space-x-3">
                             <span class="text-2xl">📅</span>
                             <div>
-                                <div class="text-[11px] text-slate-400 font-semibold uppercase">วันที่ของระบบ (System Date)</div>
-                                <div id="checkin-system-date-label" class="text-sm font-bold text-slate-800">วันศุกร์ที่ ๒ ตุลาคม ๒๕๖๙</div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="text-[11px] text-slate-400 font-semibold uppercase">วันที่ของระบบ (System Date)</div>
+                                    <span id="checkin-realtime-badge" class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">● เวลาจริง Real-time</span>
+                                </div>
+                                <div id="checkin-system-date-label" class="text-sm sm:text-base font-bold text-slate-800 mt-0.5">วันเสาร์ที่ ๓ ตุลาคม ๒๕๖๙</div>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0">
-                            <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap">ทดสอบเปลี่ยนวัน:</span>
-                            <button type="button" onclick="setSystemDay(2)" id="btn-day-sim-2" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-emerald-500 bg-emerald-50 text-emerald-700 shadow-2xs">๒ ต.ค.</button>
-                            <button type="button" onclick="setSystemDay(3)" id="btn-day-sim-3" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๓ ต.ค.</button>
-                            <button type="button" onclick="setSystemDay(4)" id="btn-day-sim-4" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๔ ต.ค.</button>
-                            <button type="button" onclick="setSystemDay(5)" id="btn-day-sim-5" class="text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100">๕ ต.ค.</button>
+                        <div class="flex items-center space-x-2 flex-wrap">
+                            <label for="checkin-date-picker" class="text-[11px] text-slate-500 font-medium whitespace-nowrap">เลือกดูวันที่:</label>
+                            <select id="checkin-date-picker" onchange="setSystemDay(this.value, true)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden">
+                                <!-- Populated dynamically 1-31 Oct 2569 -->
+                            </select>
+                            <button type="button" id="btn-reset-realtime" onclick="resetToRealtimeToday()" class="hidden text-xs font-bold px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1 shadow-2xs" title="กลับสู่วันนี้ตามเวลาจริง">
+                                <span>↺ กลับสู่วันนี้</span>
+                            </button>
                         </div>
                     </div>
 

@@ -44,13 +44,13 @@ const ALL_SYSTEM_USERS = [
 
     // 2. ผู้ตรวจเวรยาม (4 ท่าน)
     { id: 'insp_1', username: 'chanchai', defaultPass: '1234', name: 'นายชาญชัย อักโข', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
-    { id: 'insp_2', username: 'wuttisak', defaultPass: '1234', name: 'นายวุฒิศักดิ์ บุตรสิงห์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'กองช่าง', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ต.ค. (คืนนี้!)', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_2', username: 'wuttisak', defaultPass: '1234', name: 'นายวุฒิศักดิ์ บุตรสิงห์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'กองช่าง', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
     { id: 'insp_3', username: 'vasana', defaultPass: '1234', name: 'นางวาสนา สินทรัพย์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองคลัง', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 3, 10, 13, 17, 23, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
     { id: 'insp_4', username: 'arunrat', defaultPass: '1234', name: 'นางอรุณรัตน์ บุญกอ', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 4, 11, 18, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
 
     // 3. ผู้อยู่เวรยามกะกลางคืน (ชาย - 14 ท่าน)
     { id: 'night_1', username: 'manit', defaultPass: '1234', name: 'จ.ส.ท.มานิต ทองดวง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 1, 15, 29 ต.ค.', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_2', username: 'kiattiphon', defaultPass: '1234', name: 'จ.ส.อ.เกียรติพล หาทรัพย์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 2, 16, 30 ต.ค. (เวรคืนนี้ 2 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-emerald-600 text-white' },
+    { id: 'night_2', username: 'kiattiphon', defaultPass: '1234', name: 'จ.ส.อ.เกียรติพล หาทรัพย์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 2, 16, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
     { id: 'night_3', username: 'singha', defaultPass: '1234', name: 'นายสิงหา ชุมชัย', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 3, 17, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
     { id: 'night_4', username: 'thosapol', defaultPass: '1234', name: 'นายทศพล โลมรัตน์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
     { id: 'night_5', username: 'veerawat', defaultPass: '1234', name: 'นายวีระวัฒน์ จันทรคล', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 5, 19 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
@@ -65,9 +65,9 @@ const ALL_SYSTEM_USERS = [
     { id: 'night_14', username: 'wattrajira', defaultPass: '1234', name: 'นายวัตรจิระ ใสขาว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 14, 28 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
 
     // 4. ผู้อยู่เวรยามกะกลางวัน (หญิง - 11 ท่าน)
-    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค. (เวรเสาร์ 3 ต.ค.!)', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_4', username: 'beena', defaultPass: '1234', name: 'นางสาวบีนา เหล็กกล้า', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_5', username: 'paphada', defaultPass: '1234', name: 'นางสาวปภาดา ประดับ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
     { id: 'day_6', username: 'phakapha', defaultPass: '1234', name: 'นางสาวผกาพา มณีจันทร์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
@@ -142,51 +142,31 @@ const INITIAL_ATTACHED_PDFS = [
     }
 ];
 
-let appState = {
-    currentUser: null, // เริ่มต้นแบบออกจากระบบ (Guest) ให้ผู้ใช้ล็อกอินเอง
-    currentSystemDay: 2, // วันที่จำลองของระบบ: 2 ต.ค. 2569 (วันศุกร์)
-    checkinActionType: 'checkin', // 'checkin' (เข้าเวร) หรือ 'checkout' (ออกเวร)
-    settings: { ...DEFAULT_SETTINGS },
-    attachedPdfs: [...INITIAL_ATTACHED_PDFS],
-    currentLoginTab: 'login', // 'login', 'change_pwd', 'directory'
-    currentCategory: 'all',
-    currentTab: 'dashboard', // เริ่มต้นที่หน้า Dashboard เสมอ!
-    selectedMonth: 9, // ต.ค. (index 9)
-    selectedYear: 2026,
-    schedules: [],
-    todayCheckins: {
-        'night_2_2026-10-02_night': {
-            staffId: 'night_2',
-            staffName: 'จ.ส.อ.เกียรติพล หาทรัพย์',
-            shift: 'night',
-            shiftTitle: 'กะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)',
-            date: '2026-10-02',
-            time: '16:25 น.',
-            checkinTime: '16:25 น.',
-            checkoutTime: null,
-            distance: 28,
-            verified: true,
-            photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80',
-            notes: 'รับมอบหน้าที่เรียบร้อย ประตูและหน้าต่างอาคาร อบต. ล็อกแน่นหนา',
-            inspector: 'นายวุฒิศักดิ์ บุตรสิงห์'
-        },
-        'night_2_2026-10-02': {
-            staffId: 'night_2',
-            staffName: 'จ.ส.อ.เกียรติพล หาทรัพย์',
-            shift: 'night',
-            shiftTitle: 'กะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)',
-            date: '2026-10-02',
-            time: '16:25 น.',
-            checkinTime: '16:25 น.',
-            checkoutTime: null,
-            distance: 28,
-            verified: true,
-            photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80',
-            notes: 'รับมอบหน้าที่เรียบร้อย ประตูและหน้าต่างอาคาร อบต. ล็อกแน่นหนา',
-            inspector: 'นายวุฒิศักดิ์ บุตรสิงห์'
-        }
-    },
-    inspections: [
+// -------------------------------------------------------------
+// ระบบจัดเก็บข้อมูลการลงเวลาและผลการตรวจเวร (LocalStorage)
+// -------------------------------------------------------------
+function getSavedCheckins() {
+    try {
+        const saved = localStorage.getItem('fangkham_checkins_v1');
+        return saved ? JSON.parse(saved) : {};
+    } catch(e) {
+        return {};
+    }
+}
+
+function saveCheckinRecord(recordKey, recordData) {
+    appState.todayCheckins[recordKey] = recordData;
+    try {
+        localStorage.setItem('fangkham_checkins_v1', JSON.stringify(appState.todayCheckins));
+    } catch(e) {}
+}
+
+function getSavedInspections() {
+    try {
+        const saved = localStorage.getItem('fangkham_inspections_v1');
+        if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return [
         {
             id: 'insp-1',
             inspector: 'นายวุฒิศักดิ์ บุตรสิงห์',
@@ -197,7 +177,38 @@ let appState = {
             remark: 'ตรวจตราอาคารที่ทำการ อบต.ฝางคำ พบ จ.ส.อ.เกียรติพล อยู่ปฏิบัติหน้าที่เรียบร้อย ไฟส่องสว่างเปิดครบถ้วน',
             hasSig: true
         }
-    ],
+    ];
+}
+
+function saveInspectionRecord(newInsp) {
+    appState.inspections.unshift(newInsp);
+    try {
+        localStorage.setItem('fangkham_inspections_v1', JSON.stringify(appState.inspections));
+    } catch(e) {}
+}
+
+// ฟังก์ชันหา "วันที่ตามเวลาจริงของเครื่อง" แบบอัตโนมัติ (1 - 31 ต.ค.)
+function getRealTodayDay() {
+    const now = new Date();
+    const day = now.getDate();
+    return Math.min(Math.max(day, 1), 31);
+}
+
+let appState = {
+    currentUser: null, // เริ่มต้นแบบออกจากระบบ (Guest) ให้ผู้ใช้ล็อกอินเอง
+    currentSystemDay: getRealTodayDay(), // วันที่ปัจจุบันตามเวลาจริงอัตโนมัติ (อัปเดตเองทุกวัน)
+    isRealtimeMode: true, // กำลังเกาะติดเวลาจริง Real-time (เปลี่ยนวันใหม่อัตโนมัติเมื่อข้ามเที่ยงคืน)
+    checkinActionType: 'checkin', // 'checkin' (เข้าเวร) หรือ 'checkout' (ออกเวร)
+    settings: { ...DEFAULT_SETTINGS },
+    attachedPdfs: [...INITIAL_ATTACHED_PDFS],
+    currentLoginTab: 'login', // 'login', 'change_pwd', 'directory'
+    currentCategory: 'all',
+    currentTab: 'dashboard', // เริ่มต้นที่หน้า Dashboard เสมอ!
+    selectedMonth: 9, // ต.ค. (index 9)
+    selectedYear: 2026,
+    schedules: [],
+    todayCheckins: getSavedCheckins(),
+    inspections: getSavedInspections(),
     swapRequests: [
         {
             id: 'sw-101',
@@ -755,28 +766,92 @@ function closeMobileDrawer() {
 // หน้า Dashboard (ภาพรวม & จอแสดงเวรวันนี้)
 // -------------------------------------------------------------
 function renderDashboard() {
-    const today = appState.currentSystemDay || 2; // วันที่ปัจจุบันของระบบ
+    const today = appState.currentSystemDay || getRealTodayDay();
     const todaySched = appState.schedules.find(s => s.day === today);
 
-    // 1. เวรกลางวัน (แสดงตามตารางจริง หากไม่มีเวรจะแสดงผลัดถัดไป)
+    // อัปเดตป้ายวันที่และสถานะเวลาจริง
+    updateDateBadges();
+
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+    const currentTimeVal = currentHour * 60 + currentMin; // จำนวนนาทีนับจาก 00:00
+
+    // 1. เวรกลางวัน (แสดงตามตารางจริง หากไม่มีเวรจะค้นหาผลัดวันหยุดถัดไปให้อัตโนมัติ)
     const dayStaffEl = document.getElementById('dash-day-staff');
     const dayInspEl = document.getElementById('dash-day-inspector');
     const dayStatusEl = document.getElementById('dash-day-status');
 
     if (dayStaffEl && dayInspEl && dayStatusEl) {
         if (todaySched && todaySched.dayDuty) {
-            dayStaffEl.innerHTML = todaySched.dayDuty.staff.map(s => `<div>• ${s}</div>`).join('');
+            // วันนี้เป็นวันหยุดที่มีเวรกลางวัน
+            const staffList = todaySched.dayDuty.staff;
+            dayStaffEl.innerHTML = staffList.map(s => {
+                const u = findUserByName(s);
+                const deptStr = u ? `<span class="text-xs font-normal text-slate-500">(${u.dept})</span>` : '';
+                return `<div class="flex items-center space-x-1.5"><span class="text-amber-500 font-bold">•</span> <span class="font-bold text-slate-900">${s}</span> ${deptStr}</div>`;
+            }).join('');
+            
             dayInspEl.textContent = todaySched.dayDuty.inspector;
-            dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">กำลังปฏิบัติหน้าที่</span>`;
+
+            // ตรวจสอบสถานะการลงเวลาเข้าเวร
+            const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
+            let hasCheckedIn = false;
+            let checkinTimeStr = '';
+            for (const s of staffList) {
+                const u = findUserByName(s);
+                if (u) {
+                    const key = `${u.id}_${dateStr}_day`;
+                    if (appState.todayCheckins[key]) {
+                        hasCheckedIn = true;
+                        checkinTimeStr = appState.todayCheckins[key].checkinTime || appState.todayCheckins[key].time;
+                        break;
+                    }
+                }
+            }
+
+            // คำนวณสถานะตามเวลาจริง (กะกลางวัน 08.00 - 16.30 น. -> 480 ถึง 990 นาที)
+            if (currentTimeVal < 480) {
+                dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">รอเข้าเวร 08.00 น.</span>`;
+            } else if (currentTimeVal <= 990) {
+                if (hasCheckedIn) {
+                    dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white animate-pulse">● ปฏิบัติหน้าที่ (ลงเวลา ${checkinTimeStr})</span>`;
+                } else {
+                    dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500 text-white animate-pulse">● ช่วงเวลาปฏิบัติหน้าที่ (08.00 - 16.30 น.)</span>`;
+                }
+            } else {
+                dayStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">ออกเวรแล้ว (ครบผลัด 16.30 น.)</span>`;
+            }
         } else {
+            // วันทำการปกติ ไม่มีเวรกลางวัน (ค้นหาผลัดวันหยุดถัดไปแบบอัตโนมัติ)
+            const nextDaySched = appState.schedules.find(s => s.day > today && s.dayDuty);
+            let nextInfoHtml = '';
+            if (nextDaySched) {
+                nextInfoHtml = `
+                    <div class="mt-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+                        <div class="font-bold text-amber-900 flex items-center space-x-1">
+                            <span>☀️</span>
+                            <span>ผลัดถัดไป (${getThaiDateLabel(nextDaySched.day)}):</span>
+                        </div>
+                        <div class="text-amber-800 mt-1 font-medium">${nextDaySched.dayDuty.staff.join(', ')}</div>
+                        <div class="text-amber-700 text-[11px] mt-0.5">ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}</div>
+                    </div>
+                `;
+                dayInspEl.textContent = `${nextDaySched.dayDuty.inspector} (${getThaiDateLabel(nextDaySched.day)})`;
+            } else {
+                dayInspEl.textContent = 'ไม่มีผลัดเวรกลางวันคงเหลือในเดือนนี้';
+            }
+
             dayStaffEl.innerHTML = `
-                <div class="text-slate-500 font-normal text-xs">
-                    วันนี้เป็นวันทำการปกติ (กะกลางวันปฏิบัติเฉพาะวันหยุดเสาร์-อาทิตย์)<br>
-                    <span class="text-amber-800 font-bold mt-1 inline-block">☀️ ผลัดถัดไป (เสาร์ ๓ ต.ค.):</span><br>
-                    นางสาวอำพร ทองสวัสดิ์, นางสาวธิดาลักษณ์ โสแก้ว, นางต้องตาประภา โพธิ์งาม
+                <div class="text-slate-600 font-normal text-xs space-y-1">
+                    <div class="flex items-center space-x-1.5 text-slate-700 font-medium">
+                        <span>🏢</span>
+                        <span>วันทำการปกติ (เจ้าหน้าที่ปฏิบัติงานตามเวลาราชการ 08.30 - 16.30 น.)</span>
+                    </div>
+                    <div class="text-slate-400 text-[11px]">กะกลางวันปฏิบัติเฉพาะวันหยุดเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์</div>
+                    ${nextInfoHtml}
                 </div>
             `;
-            dayInspEl.textContent = 'นางวาสนา สินทรัพย์ (เสาร์ ๓ ต.ค.)';
             dayStatusEl.innerHTML = `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-white/20 text-white">วันทำการปกติ</span>`;
         }
     }
@@ -786,18 +861,24 @@ function renderDashboard() {
     const nightInspEl = document.getElementById('dash-night-inspector');
     const nightStatusEl = document.getElementById('dash-night-status');
 
-    if (nightStaffEl && nightInspEl && nightStatusEl && todaySched) {
+    if (nightStaffEl && nightInspEl && nightStatusEl && todaySched && todaySched.nightDuty) {
         const nightStaffName = todaySched.nightDuty.staff[0];
-        nightStaffEl.innerHTML = `<div>• ${nightStaffName}</div>`;
+        const u = findUserByName(nightStaffName);
+        const deptStr = u ? `<span class="text-xs font-normal text-slate-400">(${u.dept})</span>` : '';
+        nightStaffEl.innerHTML = `<div class="flex items-center space-x-1.5"><span class="text-indigo-400 font-bold">•</span> <span class="font-bold text-slate-900">${nightStaffName}</span> ${deptStr}</div>`;
         nightInspEl.textContent = todaySched.nightDuty.inspector;
 
         const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
-        const nightUser = findUserByName(nightStaffName);
-        const nightKey = nightUser ? `${nightUser.id}_${dateStr}_night` : null;
-        const isChecked = (nightKey && appState.todayCheckins[nightKey]) || appState.todayCheckins[`${nightUser ? nightUser.id : 'night_2'}_${dateStr}`] || (today === 2 ? (appState.todayCheckins['night_2_2026-10-02_night'] || appState.todayCheckins['night_2_2026-10-02']) : null);
+        const nightKey = u ? `${u.id}_${dateStr}_night` : null;
+        const isChecked = (nightKey && appState.todayCheckins[nightKey]) || (u ? appState.todayCheckins[`${u.id}_${dateStr}`] : null);
+
+        // เวรกลางคืน 16:30 - 08:00 น. วันรุ่งขึ้น (นาที >= 990 หรือ < 480)
+        const isDuringNightShift = (currentTimeVal >= 990 || currentTimeVal < 480);
 
         if (isChecked) {
             nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white animate-pulse">● ลงเวลาแล้ว (${isChecked.checkinTime || isChecked.time})</span>`;
+        } else if (isDuringNightShift) {
+            nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-500 text-white animate-pulse">🌙 ช่วงเวลาปฏิบัติหน้าที่ (16.30 - 08.00 น.)</span>`;
         } else {
             nightStatusEl.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-400 text-slate-900">รอเข้าเวร 16.30 น.</span>`;
         }
@@ -1472,12 +1553,112 @@ function getUserDutySchedules(user) {
     return duties.sort((a, b) => a.day - b.day);
 }
 
-function setSystemDay(day) {
-    appState.currentSystemDay = day;
+function setSystemDay(day, isManual = true) {
+    const targetDay = parseInt(day, 10);
+    if (isNaN(targetDay) || targetDay < 1 || targetDay > 31) return;
+    
+    appState.currentSystemDay = targetDay;
+    const realDay = getRealTodayDay();
+    if (isManual) {
+        appState.isRealtimeMode = (targetDay === realDay);
+    }
+
     renderCheckinTab();
     renderDashboard();
     renderCalendar();
-    showToast('เปลี่ยนวันที่ระบบจำลอง', `เปลี่ยนวันที่เป็น ${getThaiDateLabel(day)} สำหรับทดสอบการลงเวลา`, 'info');
+    updateDateBadges();
+
+    if (isManual) {
+        if (targetDay === realDay) {
+            showToast('กลับสู่เวลาจริง ✅', `ระบบแสดงผลตามเวลาจริง: ${getThaiDateLabel(targetDay)}`, 'success');
+        } else {
+            showToast('เลือกดูตารางเวร 📅', `แสดงข้อมูลตารางเวรของ ${getThaiDateLabel(targetDay)}`, 'info');
+        }
+    }
+}
+
+function resetToRealtimeToday() {
+    appState.isRealtimeMode = true;
+    const realDay = getRealTodayDay();
+    setSystemDay(realDay, false);
+    showToast('กลับสู่เวลาจริง ✅', `ระบบกลับมาแสดงข้อมูลของ ${getThaiDateLabel(realDay)} ตามเวลาจริงเรียบร้อย`, 'success');
+}
+
+function updateDateBadges() {
+    const today = appState.currentSystemDay || getRealTodayDay();
+    const realToday = getRealTodayDay();
+    const isReal = (today === realToday && appState.isRealtimeMode);
+
+    // 1. Header / Navbar
+    const headerDate = document.getElementById('header-live-date');
+    if (headerDate) {
+        headerDate.textContent = getThaiDateLabel(realToday);
+    }
+
+    // 2. Dashboard badge
+    const dashTodayLabel = document.getElementById('dash-today-label');
+    if (dashTodayLabel) {
+        if (isReal) {
+            dashTodayLabel.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs';
+            dashTodayLabel.innerHTML = `<span class="w-2 h-2 rounded-full bg-white mr-1.5 animate-pulse"></span> ${getThaiDateLabel(today)} (ตามเวลาจริง)`;
+        } else {
+            dashTodayLabel.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-white shadow-xs';
+            dashTodayLabel.innerHTML = `⚠️ แสดงข้อมูลวันที่ ${today} ต.ค. (โหมดเลือกดู) <button type="button" onclick="resetToRealtimeToday()" class="ml-2 underline text-white font-bold hover:text-amber-100">↺ กลับสู่วันนี้</button>`;
+        }
+    }
+
+    // 3. Checkin badge & label
+    const checkinDateLabel = document.getElementById('checkin-system-date-label');
+    if (checkinDateLabel) {
+        checkinDateLabel.textContent = getThaiDateLabel(today);
+    }
+    const checkinRealtimeBadge = document.getElementById('checkin-realtime-badge');
+    if (checkinRealtimeBadge) {
+        if (isReal) {
+            checkinRealtimeBadge.className = 'inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+            checkinRealtimeBadge.innerHTML = '● เวลาจริง Real-time';
+        } else {
+            checkinRealtimeBadge.className = 'inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300';
+            checkinRealtimeBadge.innerHTML = '⚠️ โหมดเลือกดูวันที่';
+        }
+    }
+
+    // 4. Dropdown picker sync
+    const picker = document.getElementById('checkin-date-picker');
+    if (picker && picker.value !== String(today)) {
+        picker.value = String(today);
+    }
+
+    // 5. Reset button visibility
+    const btnReset = document.getElementById('btn-reset-realtime');
+    if (btnReset) {
+        if (isReal) {
+            btnReset.classList.add('hidden');
+        } else {
+            btnReset.classList.remove('hidden');
+        }
+    }
+}
+
+function initCheckinDatePicker() {
+    const picker = document.getElementById('checkin-date-picker');
+    if (!picker) return;
+
+    picker.innerHTML = '';
+    const realDay = getRealTodayDay();
+
+    for (let day = 1; day <= 31; day++) {
+        const dObj = new Date(2026, 9, day);
+        const dayName = THAI_DAY_NAMES[dObj.getDay()];
+        const isReal = (day === realDay);
+        const opt = document.createElement('option');
+        opt.value = String(day);
+        opt.textContent = `${day} ต.ค. ๒๕๖๙ (${dayName})${isReal ? ' ★ วันนี้' : ''}`;
+        if (day === (appState.currentSystemDay || realDay)) {
+            opt.selected = true;
+        }
+        picker.appendChild(opt);
+    }
 }
 
 function setCheckinActionType(type) {
@@ -1529,23 +1710,8 @@ function renderCheckinTab() {
     guestGate.classList.add('hidden');
     authContainer.classList.remove('hidden');
 
-    const currentDay = appState.currentSystemDay || 2;
-    const dateLabelEl = document.getElementById('checkin-system-date-label');
-    if (dateLabelEl) {
-        dateLabelEl.textContent = getThaiDateLabel(currentDay);
-    }
-
-    // อัปเดตสีปุ่มเปลี่ยนวันจำลอง
-    [2, 3, 4, 5].forEach(d => {
-        const btn = document.getElementById(`btn-day-sim-${d}`);
-        if (btn) {
-            if (d === currentDay) {
-                btn.className = 'text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-emerald-500 bg-emerald-50 text-emerald-700 shadow-2xs';
-            } else {
-                btn.className = 'text-[11px] px-2.5 py-1 rounded-lg font-bold transition border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100';
-            }
-        }
-    });
+    const currentDay = appState.currentSystemDay || getRealTodayDay();
+    updateDateBadges();
 
     const userDuties = getUserDutySchedules(user);
     const todayDuty = userDuties.find(d => d.day === currentDay);
@@ -1793,7 +1959,7 @@ function submitCheckin() {
     }
 
     const user = appState.currentUser;
-    const currentDay = appState.currentSystemDay || 2;
+    const currentDay = appState.currentSystemDay || getRealTodayDay();
     const userDuties = getUserDutySchedules(user);
     const todayDuty = userDuties.find(d => d.day === currentDay);
 
@@ -1818,7 +1984,7 @@ function submitCheckin() {
     const actionType = appState.checkinActionType || 'checkin';
 
     if (actionType === 'checkin') {
-        appState.todayCheckins[recordKey] = {
+        saveCheckinRecord(recordKey, {
             staffId: user.id,
             staffName: user.name,
             shift: todayDuty.shiftType,
@@ -1832,7 +1998,7 @@ function submitCheckin() {
             photo: appState.currentCheckinPhoto || user.avatar,
             notes: notes || 'ปฏิบัติหน้าที่เรียบร้อย ปิดล็อกประตูหน้าต่าง อาคาร อบต. ปกติ',
             inspector: todayDuty.inspector
-        };
+        });
 
         showToast('ลงเวลาเข้าเวรสำเร็จ! 🎉', `บันทึกเวลาเข้าเวร ${timeStr} ของ ${user.name} เรียบร้อยแล้ว`, 'success');
 
@@ -1861,7 +2027,7 @@ function submitCheckin() {
         if (appState.currentCheckinPhoto) {
             rec.checkoutPhoto = appState.currentCheckinPhoto;
         }
-        appState.todayCheckins[recordKey] = rec;
+        saveCheckinRecord(recordKey, rec);
 
         showToast('ลงเวลาออกเวรสำเร็จ! 🏁', `บันทึกการส่งมอบเวรและออกเวร ${timeStr} เรียบร้อยแล้ว`, 'success');
 
@@ -1949,11 +2115,13 @@ function submitInspection() {
     const remark = document.getElementById('inspect-remark').value.trim();
 
     const inspectorName = inspectorSelect ? inspectorSelect.value : appState.currentUser.name;
+    const currentDay = appState.currentSystemDay || getRealTodayDay();
+    const dateStr = `2026-10-${String(currentDay).padStart(2, '0')}`;
 
     const newInsp = {
         id: 'insp-' + Date.now(),
         inspector: inspectorName,
-        date: '2026-10-02',
+        date: dateStr,
         time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
         staffPresent,
         premiseNormal,
@@ -1961,7 +2129,7 @@ function submitInspection() {
         hasSig: true
     };
 
-    appState.inspections.unshift(newInsp);
+    saveInspectionRecord(newInsp);
     renderDashboard();
 
     showToast('บันทึกการตรวจเวรสำเร็จ', `บันทึกการตรวจของ ${inspectorName} เรียบร้อยแล้ว`, 'success');
@@ -2084,24 +2252,50 @@ function pushLineGroupMessage(senderName, avatar, text, badge, isSystem = false)
 // ฟังก์ชันจำลองการส่งแจ้งเตือนเข้ากลุ่ม LINE
 // หมายเหตุสำคัญ: navigateToChat เป็น false เป็นค่าเริ่มต้น เพื่อไม่ให้หน้าเว็บเด้งไปหน้าจำลองไลน์เวลาโหลดหน้าแรก
 function simulatePushNotification(shiftType, navigateToChat = false) {
+    const today = appState.currentSystemDay || getRealTodayDay();
+    const todaySched = appState.schedules.find(s => s.day === today);
+    const dateLabel = getThaiDateLabel(today);
+
     if (shiftType === 'night') {
+        const nightStaff = (todaySched && todaySched.nightDuty) ? todaySched.nightDuty.staff[0] : 'เจ้าหน้าที่เวรกลางคืน';
+        const nightInsp = (todaySched && todaySched.nightDuty) ? todaySched.nightDuty.inspector : 'ผู้ตรวจเวรประจำวัน';
         pushLineGroupMessage(
             '🤖 บอทเวรยาม อบต.ฝางคำ',
             'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=120&q=80',
-            `📢 [แจ้งเตือนเตรียมเข้าเวรกลางคืน]\nเรียน จ.ส.อ.เกียรติพล หาทรัพย์\nท่านมีหน้าที่เข้าเวรผลัดค่ำคืนนี้ (๒ ตุลาคม ๒๕๖๙)\n• เวลา: ๑๖.๓๐ - ๐๘.๐๐ น.\n• ผู้ตรวจเวร: นายวุฒิศักดิ์ บุตรสิงห์\nกรุณาลงเวลาและถ่ายรูปรายงานตัวภายในรัศมี ๑๕๐ ม.`,
+            `📢 [แจ้งเตือนเตรียมเข้าเวรกลางคืน]\nเรียน ${nightStaff}\nท่านมีหน้าที่เข้าเวรผลัดค่ำคืนนี้ (${dateLabel})\n• เวลา: ๑๖.๓๐ - ๐๘.๐๐ น.\n• ผู้ตรวจเวร: ${nightInsp}\nกรุณาลงเวลาและถ่ายรูปรายงานตัวภายในรัศมี ๑๕๐ ม.`,
             'LINE Bot',
             false
         );
-        showToast('ส่งแจ้งเตือนกะกลางคืนแล้ว', 'ส่งข้อความเตือน จ.ส.อ.เกียรติพล หาทรัพย์ เข้ากลุ่ม LINE แล้ว', 'info');
+        showToast('ส่งแจ้งเตือนกะกลางคืนแล้ว', `ส่งข้อความเตือน ${nightStaff} เข้ากลุ่ม LINE แล้ว`, 'info');
     } else {
-        pushLineGroupMessage(
-            '🤖 บอทเวรยาม อบต.ฝางคำ',
-            'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=120&q=80',
-            `📢 [แจ้งเตือนเตรียมเข้าเวรวันพรุ่งนี้]\nเรียน นางสาวอำพร ทองสวัสดิ์, นางสาวธิดาลักษณ์ โสแก้ว, นางต้องตาประภา โพธิ์งาม\nท่านมีหน้าที่เข้าเวรกลางวัน (เสาร์ ๓ ตุลาคม ๒๕๖๙)\n• เวลา: ๐๘.๐๐ - ๑๖.๓๐ น.\n• ผู้ตรวจเวร: นางวาสนา สินทรัพย์`,
-            'LINE Bot',
-            false
-        );
-        showToast('ส่งแจ้งเตือนกะกลางวันแล้ว', 'ส่งข้อความเตือนเจ้าหน้าที่เวรกลางวันเข้ากลุ่ม LINE แล้ว', 'info');
+        if (todaySched && todaySched.dayDuty) {
+            const dayStaffStr = todaySched.dayDuty.staff.join(', ');
+            const dayInsp = todaySched.dayDuty.inspector;
+            pushLineGroupMessage(
+                '🤖 บอทเวรยาม อบต.ฝางคำ',
+                'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=120&q=80',
+                `📢 [แจ้งเตือนเวรกลางวันวันนี้]\nเรียน ${dayStaffStr}\nท่านมีหน้าที่เข้าเวรกลางวัน (${dateLabel})\n• เวลา: ๐๘.๐๐ - ๑๖.๓๐ น.\n• ผู้ตรวจเวร: ${dayInsp}\nกรุณาลงเวลาปฏิบัติหน้าที่ ณ ที่ทำการ อบต.ฝางคำ`,
+                'LINE Bot',
+                false
+            );
+            showToast('ส่งแจ้งเตือนกะกลางวันแล้ว', `ส่งข้อความเตือน ${dayStaffStr} เข้ากลุ่ม LINE แล้ว`, 'info');
+        } else {
+            const nextDaySched = appState.schedules.find(s => s.day > today && s.dayDuty);
+            if (nextDaySched) {
+                const nextStaffStr = nextDaySched.dayDuty.staff.join(', ');
+                const nextInsp = nextDaySched.dayDuty.inspector;
+                pushLineGroupMessage(
+                    '🤖 บอทเวรยาม อบต.ฝางคำ',
+                    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=120&q=80',
+                    `📢 [แจ้งเตือนเตรียมเข้าเวรวันหยุดถัดไป]\nเรียน ${nextStaffStr}\nท่านมีหน้าที่เข้าเวรกลางวัน (${getThaiDateLabel(nextDaySched.day)})\n• เวลา: ๐๘.๐๐ - ๑๖.๓๐ น.\n• ผู้ตรวจเวร: ${nextInsp}`,
+                    'LINE Bot',
+                    false
+                );
+                showToast('ส่งแจ้งเตือนผลัดถัดไปแล้ว', `ส่งข้อความเตือน ${nextStaffStr} เข้ากลุ่ม LINE แล้ว`, 'info');
+            } else {
+                showToast('วันนี้ไม่มีเวรกลางวัน', 'วันนี้เป็นวันทำการปกติ ไม่มีเวรยามกะกลางวัน', 'info');
+            }
+        }
     }
 
     if (navigateToChat) {
@@ -2166,22 +2360,38 @@ function openNativeLineApp() {
 }
 
 function shareDutyToLineOpenChat() {
+    const today = appState.currentSystemDay || getRealTodayDay();
+    const sched = appState.schedules.find(s => s.day === today);
+    const dateLabel = getThaiDateLabel(today);
     const currentOrigin = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : 'http://localhost:8080';
-    const msg = `📢 [ประกาศตารางเวรยาม อบต.ฝางคำ ประจำวันศุกร์ที่ ๒ ต.ค. ๒๕๖๙]
-🏛️ ที่ทำการ อบต.ฝางคำ อ.สิรินธร จ.อุบลราชธานี
 
-🌙 เวรกลางคืน คืนนี้ (๑๖.๓๐ - ๐๘.๐๐ น.):
-• ผู้อยู่เวร: จ.ส.อ.เกียรติพล หาทรัพย์ (กองช่าง)
-• ผู้ตรวจเวร: นายวุฒิศักดิ์ บุตรสิงห์ (กองช่าง)
+    let msg = `📢 [ประกาศตารางเวรยาม อบต.ฝางคำ ประจำ${dateLabel}]\n`;
+    msg += `🏛️ ที่ทำการ อบต.ฝางคำ อ.สิรินธร จ.อุบลราชธานี\n\n`;
 
-☀️ ผลัดถัดไป เวรกลางวัน (เสาร์ ๓ ต.ค. ๒๕๖๙):
-• ผู้อยู่เวร: นางสาวอำพร ทองสวัสดิ์, นางสาวธิดาลักษณ์ โสแก้ว, นางต้องตาประภา โพธิ์งาม
-• ผู้ตรวจเวร: นางวาสนา สินทรัพย์
+    if (sched && sched.dayDuty) {
+        msg += `☀️ เวรกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.):\n`;
+        msg += `• ผู้อยู่เวร: ${sched.dayDuty.staff.join(', ')}\n`;
+        msg += `• ผู้ตรวจเวร: ${sched.dayDuty.inspector}\n\n`;
+    } else {
+        const nextDaySched = appState.schedules.find(s => s.day > today && s.dayDuty);
+        msg += `🏢 เวรกลางวัน: วันทำการปกติ (ปฏิบัติงานตามเวลาราชการ ๐๘.๓๐ - ๑๖.๓๐ น.)\n`;
+        if (nextDaySched) {
+            msg += `• ผลัดถัดไป (${getThaiDateLabel(nextDaySched.day)}): ${nextDaySched.dayDuty.staff.join(', ')}\n`;
+            msg += `• ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}\n\n`;
+        } else {
+            msg += `\n`;
+        }
+    }
 
-📍 เจ้าหน้าที่ลงเวลาเข้าเวร (GPS ในรัศมี ๑๕๐ ม.) และตรวจเวรได้ที่:
-${currentOrigin}/`;
+    if (sched && sched.nightDuty) {
+        msg += `🌙 เวรกลางคืน คืนนี้ (๑๖.๓๐ - ๐๘.๐๐ น.):\n`;
+        msg += `• ผู้อยู่เวร: ${sched.nightDuty.staff.join(', ')}\n`;
+        msg += `• ผู้ตรวจเวร: ${sched.nightDuty.inspector}\n\n`;
+    }
 
-    openLineShareModal('ประกาศตารางเวรยาม อบต.ฝางคำ', msg);
+    msg += `📍 เจ้าหน้าที่ลงเวลาเข้าเวร (GPS ในรัศมี ๑๕๐ ม.) และตรวจเวรได้ที่:\n${currentOrigin}/`;
+
+    openLineShareModal(`ประกาศตารางเวรประจำ${dateLabel}`, msg);
 }
 
 function shareCheckinToLineOpenChat() {
@@ -2191,7 +2401,7 @@ function shareCheckinToLineOpenChat() {
         return;
     }
 
-    const currentDay = appState.currentSystemDay || 2;
+    const currentDay = appState.currentSystemDay || getRealTodayDay();
     const userDuties = getUserDutySchedules(user);
     const todayDuty = userDuties.find(d => d.day === currentDay);
     const dateStr = `2026-10-${String(currentDay).padStart(2, '0')}`;
@@ -2573,23 +2783,55 @@ window.onload = function() {
     renderSwapList();
     initSignaturePad();
     initLineChatDefaultMessages();
+    initCheckinDatePicker();
+    updateDateBadges();
 
     // 4. แสดงผลข้อมูลผู้ใช้งานปัจจุบัน
     updateAuthUI();
 
-    // 5. ส่งแจ้งเตือนจำลองในระบบหลังบ้าน (ไม่สลับหน้าจอ)
-    simulatePushNotification('night', false);
-
-    // 6. บังคับเปิดหน้าแรกที่ "หน้า Dashboard" เสมอ!
+    // 5. บังคับเปิดหน้าแรกที่ "หน้า Dashboard" เสมอ!
     switchTab('dashboard');
 
-    // 7. นาฬิกา Real-time
+    // 6. นาฬิกา Real-time และระบบตรวจจับการข้ามวันอัตโนมัติ (Midnight Rollover)
+    let lastRolloverCheckDay = getRealTodayDay();
+
+    function checkMidnightRollover() {
+        const realDay = getRealTodayDay();
+        if (realDay !== lastRolloverCheckDay) {
+            lastRolloverCheckDay = realDay;
+            if (appState.isRealtimeMode) {
+                appState.currentSystemDay = realDay;
+                initCheckinDatePicker();
+                renderDashboard();
+                renderCalendar();
+                renderCheckinTab();
+                updateDateBadges();
+                showToast('🔔 วันใหม่เริ่มต้นแล้ว', `ระบบอัปเดตตารางเวรเป็น ${getThaiDateLabel(realDay)} อัตโนมัติแล้ว`, 'info');
+            }
+        }
+    }
+
     const updateClock = () => {
         const now = new Date();
-        const timeStr = now.toLocaleTimeString('th-TH');
-        const clockEl = document.getElementById('live-time-display');
-        if (clockEl) clockEl.textContent = timeStr;
+        const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        const clockElements = document.querySelectorAll('.live-time-display, #live-time-display, #dash-clock-time, #header-live-time');
+        clockElements.forEach(el => {
+            if (el.id === 'dash-clock-time') {
+                el.innerHTML = `⏰ ${timeStr} น.`;
+            } else {
+                el.textContent = `${timeStr} น.`;
+            }
+        });
+
+        const headerDate = document.getElementById('header-live-date');
+        if (headerDate) {
+            headerDate.textContent = getThaiDateLabel(now.getDate());
+        }
+
+        checkMidnightRollover();
     };
+
     updateClock();
     setInterval(updateClock, 1000);
 };
