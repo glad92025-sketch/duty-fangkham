@@ -83,7 +83,7 @@
                     <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
 
                     <!-- Current User Profile / Guest State -->
-                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200/80 cursor-pointer transition shrink-0" onclick="openLoginModal('login')" title="คลิกเพื่อจัดการบัญชี/เข้าสู่ระบบ">
+                    <div class="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 p-1 sm:px-2.5 sm:py-1 rounded-2xl border border-slate-200/80 cursor-pointer transition shrink-0" onclick="handleHeaderProfileClick()" title="คลิกเพื่อจัดการบัญชี/แก้ไขโปรไฟล์">
                         <img id="auth-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full border border-slate-300 object-cover shrink-0" alt="User Avatar">
                         <div class="text-left hidden xl:block leading-tight pr-1">
                             <div class="flex items-center space-x-1.5">
@@ -2128,8 +2128,11 @@
                             <div id="drawer-user-name" class="text-xs font-bold text-slate-800 truncate">ยังไม่ได้เข้าสู่ระบบ</div>
                             <div id="drawer-user-role" class="text-[10px] text-slate-500 truncate">ผู้เยี่ยมชม</div>
                             <div class="mt-1 flex space-x-1.5">
-                                <button type="button" onclick="closeMobileDrawer(); openLoginModal('login');" class="text-[10px] px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold shadow-2xs">
+                                <button type="button" id="drawer-btn-login" onclick="closeMobileDrawer(); handleHeaderProfileClick();" class="text-[10px] px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold shadow-2xs">
                                     🔑 เข้าสู่ระบบ
+                                </button>
+                                <button type="button" id="drawer-btn-edit" onclick="closeMobileDrawer(); handleHeaderProfileClick();" class="hidden text-[10px] px-2.5 py-1 rounded-lg bg-slate-200 text-slate-800 font-semibold hover:bg-slate-300">
+                                    ✏️ แก้ไขโปรไฟล์
                                 </button>
                                 <button type="button" id="drawer-btn-logout" onclick="closeMobileDrawer(); logoutUser();" class="hidden text-[10px] px-2 py-1 rounded-lg bg-rose-50 text-rose-700 font-semibold border border-rose-200">
                                     🚪 ออก

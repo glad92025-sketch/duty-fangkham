@@ -82,7 +82,10 @@ const INITIAL_SYSTEM_USERS = [
 
 function getSavedSystemUsers() {
     try {
-        const saved = localStorage.getItem('fangkham_system_users_v2');
+        let saved = localStorage.getItem('fangkham_system_users_v2');
+        if (!saved) {
+            saved = localStorage.getItem('fangkham_system_users_v1');
+        }
         if (saved) {
             const parsed = JSON.parse(saved);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -92,9 +95,37 @@ function getSavedSystemUsers() {
 }
 
 function saveSystemUsers(users) {
+    ALL_SYSTEM_USERS = users;
     try {
         localStorage.setItem('fangkham_system_users_v2', JSON.stringify(users));
+        localStorage.setItem('fangkham_system_users_v1', JSON.stringify(users));
     } catch(e) {}
+}
+
+function getSavedLoggedInUser() {
+    try {
+        const savedId = localStorage.getItem('fangkham_logged_user_id');
+        if (savedId) {
+            const users = getSavedSystemUsers();
+            const found = users.find(u => u.id === savedId || (u.username && u.username.toLowerCase() === savedId.toLowerCase()));
+            if (found) return found;
+        }
+    } catch(e) {}
+    return null;
+}
+
+function setLoggedInUserSession(user) {
+    if (!user) {
+        if (typeof appState !== 'undefined') appState.currentUser = null;
+        try {
+            localStorage.removeItem('fangkham_logged_user_id');
+        } catch(e) {}
+    } else {
+        if (typeof appState !== 'undefined') appState.currentUser = user;
+        try {
+            localStorage.setItem('fangkham_logged_user_id', user.id);
+        } catch(e) {}
+    }
 }
 
 let ALL_SYSTEM_USERS = getSavedSystemUsers();
@@ -436,7 +467,7 @@ function getRealTodayDay() {
 }
 
 let appState = {
-    currentUser: null, // เริ่มต้นแบบออกจากระบบ (Guest) ให้ผู้ใช้ล็อกอินเอง
+    currentUser: getSavedLoggedInUser(), // โหลดเซสชันเดิมอัตโนมัติหากเคยล็อกอินไว้ (ไม่หลุดเมื่อรีเฟรชหน้าเว็บ)
     currentSystemDay: getRealTodayDay(), // วันที่ปัจจุบันตามเวลาจริงอัตโนมัติ (อัปเดตเองทุกวัน)
     isRealtimeMode: true, // กำลังเกาะติดเวลาจริง Real-time (เปลี่ยนวันใหม่อัตโนมัติเมื่อข้ามเที่ยงคืน)
     checkinActionType: 'checkin', // 'checkin' (เข้าเวร) หรือ 'checkout' (ออกเวร)
@@ -584,10 +615,10 @@ function handleUsernamePasswordLogin(event) {
     const currentPass = getUserCurrentPassword(foundUser);
 
     if (passwordInput === currentPass || passwordInput === '1234') {
-        appState.currentUser = foundUser;
+        setLoggedInUserSession(foundUser);
         updateAuthUI();
         closeLoginModal();
-        showToast('เข้าสู่ระบบสำเร็จ', `ยินดีต้อนรับ: ${foundUser.name} (${foundUser.roleName})`, 'success');
+        showToast('เข้าสู่ระบบสำเร็จ', `ยินดีต้อนรับ: ${foundUser.name} (${foundUser.position || foundUser.roleName})`, 'success');
 
         if (foundUser.role === 'inspector') switchTab('inspection');
         else if (foundUser.role === 'staff') switchTab('checkin');
@@ -719,6 +750,8 @@ function updateAuthUI() {
     const drawerRole = document.getElementById('drawer-user-role');
     const drawerAvatar = document.getElementById('drawer-user-avatar');
     const drawerLogout = document.getElementById('drawer-btn-logout');
+    const drawerLogin = document.getElementById('drawer-btn-login');
+    const drawerEdit = document.getElementById('drawer-btn-edit');
 
     // กรณีที่ยังไม่ได้เข้าสู่ระบบ (Guest / ผู้เยี่ยมชม)
     if (!u) {
@@ -739,6 +772,8 @@ function updateAuthUI() {
         if (drawerRole) drawerRole.textContent = 'ผู้เยี่ยมชม (กรุณาล็อกอิน)';
         if (drawerAvatar) drawerAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80';
         if (drawerLogout) drawerLogout.classList.add('hidden');
+        if (drawerEdit) drawerEdit.classList.add('hidden');
+        if (drawerLogin) drawerLogin.classList.remove('hidden');
         if (personalBanner) personalBanner.classList.add('hidden');
         renderCheckinTab();
         return;
@@ -763,6 +798,8 @@ function updateAuthUI() {
     if (drawerRole) drawerRole.textContent = `${displayTitle} • ${u.dept}`;
     if (drawerAvatar) drawerAvatar.src = u.avatar;
     if (drawerLogout) drawerLogout.classList.remove('hidden');
+    if (drawerEdit) drawerEdit.classList.remove('hidden');
+    if (drawerLogin) drawerLogin.classList.add('hidden');
 
     if (personalBanner) {
         if (!u) {
@@ -833,14 +870,21 @@ function updateAuthUI() {
             }
         }
     }
-}
-
 function logoutUser() {
-    appState.currentUser = null;
+    setLoggedInUserSession(null);
     updateAuthUI();
     switchTab('dashboard');
     showToast('ออกจากระบบเรียบร้อย', 'ท่านออกจากระบบแล้ว สามารถดูตารางเวรยามได้ตามปกติ หรือกดเข้าสู่ระบบเมื่อต้องการลงเวลา', 'info');
 }
+
+function handleHeaderProfileClick() {
+    if (appState.currentUser) {
+        openEditUserModal(appState.currentUser.id);
+    } else {
+        openLoginModal('login');
+    }
+}
+
 
 // -------------------------------------------------------------
 // ระบบจัดเก็บข้อมูลการปรับเปลี่ยนเวรยาม (Custom Roster Storage)
@@ -4030,8 +4074,9 @@ function handleSaveUserSubmit(event) {
             }
 
             // Sync with current logged-in user if editing own profile
-            if (appState.currentUser && appState.currentUser.id === id) {
-                appState.currentUser = { ...ALL_SYSTEM_USERS[idx] };
+            if (appState.currentUser && (appState.currentUser.id === id || (appState.currentUser.username && appState.currentUser.username.toLowerCase() === username.toLowerCase()))) {
+                const updatedUser = { ...ALL_SYSTEM_USERS[idx] };
+                setLoggedInUserSession(updatedUser);
                 updateAuthUI();
             }
 
@@ -4096,8 +4141,8 @@ function handleDeleteUser() {
     saveSystemUsers(ALL_SYSTEM_USERS);
     closeUserEditModal();
 
-    if (appState.currentUser && appState.currentUser.id === id) {
-        handleLogout();
+    if (appState.currentUser && (appState.currentUser.id === id || (appState.currentUser.username && appState.currentUser.username.toLowerCase() === user.username.toLowerCase()))) {
+        logoutUser();
     }
 
     renderSettingsUserList();
@@ -4118,9 +4163,12 @@ function resetSystemUsersToDefault() {
     saveSystemUsers(ALL_SYSTEM_USERS);
 
     if (appState.currentUser) {
-        const found = ALL_SYSTEM_USERS.find(u => u.id === appState.currentUser.id);
+        const found = ALL_SYSTEM_USERS.find(u => u.id === appState.currentUser.id || (u.username && u.username.toLowerCase() === appState.currentUser.username.toLowerCase()));
         if (found) {
-            appState.currentUser = found;
+            setLoggedInUserSession(found);
+            updateAuthUI();
+        } else {
+            setLoggedInUserSession(null);
             updateAuthUI();
         }
     }
@@ -4176,6 +4224,10 @@ function populateSelectOptions() {
 // เริ่มการทำงานของระบบ (Initialize on Page Load)
 // -------------------------------------------------------------
 window.onload = function() {
+    // 0. ซิงค์รายชื่อบุคลากรและเซสชันผู้ใช้งานล่าสุดจาก LocalStorage (คงอยู่ตลอดแม้รีเฟรช F5 หรือปิดแท็บ)
+    ALL_SYSTEM_USERS = getSavedSystemUsers();
+    appState.currentUser = getSavedLoggedInUser();
+
     // 1. โหลดข้อมูลการตั้งค่าจาก LocalStorage (ถ้ามี)
     try {
         const savedSettings = localStorage.getItem('fangkham_settings_v1');
