@@ -2461,6 +2461,106 @@ function initLineChatDefaultMessages() {
 // ระบบส่งข้อความแชร์เข้ากลุ่ม LINE OpenChat ของ อบต.ฝางคำ
 // -------------------------------------------------------------
 let currentShareText = '';
+let currentShareDay = getRealTodayDay();
+
+function buildLineShareDutyText(targetDay) {
+    const day = parseInt(targetDay, 10) || (appState.currentSystemDay || getRealTodayDay());
+    const sched = appState.schedules.find(s => s.day === day);
+    const dateLabel = getThaiDateLabel(day);
+    const currentOrigin = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : 'http://localhost:8080';
+
+    let msg = `📢 [ประกาศตารางเวรยาม อบต.ฝางคำ ประจำ${dateLabel}]\n`;
+    msg += `🏛️ ที่ทำการ อบต.ฝางคำ อ.สิรินธร จ.อุบลราชธานี\n\n`;
+
+    if (sched && sched.dayDuty) {
+        msg += `☀️ เวรกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.):\n`;
+        msg += `• ผู้อยู่เวร: ${sched.dayDuty.staff.join(', ')}\n`;
+        msg += `• ผู้ตรวจเวร: ${sched.dayDuty.inspector}\n\n`;
+    } else {
+        const nextDaySched = appState.schedules.find(s => s.day > day && s.dayDuty);
+        msg += `🏢 เวรกลางวัน: วันทำการปกติ (ปฏิบัติงานตามเวลาราชการ ๐๘.๓๐ - ๑๖.๓๐ น.)\n`;
+        if (nextDaySched) {
+            msg += `• ผลัดถัดไป (${getThaiDateLabel(nextDaySched.day)}): ${nextDaySched.dayDuty.staff.join(', ')}\n`;
+            msg += `• ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}\n\n`;
+        } else {
+            msg += `\n`;
+        }
+    }
+
+    if (sched && sched.nightDuty) {
+        msg += `🌙 เวรกลางคืน คืนนี้ (๑๖.๓๐ - ๐๘.๐๐ น.):\n`;
+        msg += `• ผู้อยู่เวร: ${sched.nightDuty.staff.join(', ')}\n`;
+        msg += `• ผู้ตรวจเวร: ${sched.nightDuty.inspector}\n\n`;
+    }
+
+    msg += `📍 เจ้าหน้าที่ลงเวลาเข้าเวร (GPS ในรัศมี ๑๕๐ ม.) และตรวจเวรได้ที่:\n${currentOrigin}/`;
+    return msg;
+}
+
+function populateLineShareDayOptions(selectedDay) {
+    const select = document.getElementById('line-share-day-select');
+    if (!select) return;
+
+    const realToday = getRealTodayDay();
+    const currentSysDay = appState.currentSystemDay || realToday;
+    const tomorrow = Math.min(realToday + 1, 31);
+
+    let html = '';
+    for (let d = 1; d <= 31; d++) {
+        const sched = appState.schedules.find(s => s.day === d);
+        let tag = '';
+        if (d === currentSysDay) tag = ' ★ (วันนี้)';
+        else if (d === tomorrow) tag = ' (พรุ่งนี้)';
+        
+        let shiftTag = '';
+        if (sched && sched.dayDuty) {
+            shiftTag = ' [☀️ กะกลางวัน + 🌙 กลางคืน]';
+        } else {
+            shiftTag = ' [🌙 กะกลางคืน]';
+        }
+
+        const dateLabel = getThaiDateLabel(d);
+        html += `<option value="${d}" ${d === selectedDay ? 'selected' : ''}>${dateLabel}${tag}${shiftTag}</option>`;
+    }
+    select.innerHTML = html;
+}
+
+function changeLineShareDay(dayVal, autoCopy = true) {
+    const day = parseInt(dayVal, 10);
+    if (isNaN(day) || day < 1 || day > 31) return;
+
+    currentShareDay = day;
+    populateLineShareDayOptions(currentShareDay);
+
+    const text = buildLineShareDutyText(currentShareDay);
+    currentShareText = text;
+
+    const preview = document.getElementById('line-share-text-preview');
+    if (preview) preview.value = text;
+
+    if (autoCopy) {
+        try {
+            navigator.clipboard.writeText(text);
+        } catch(e) {}
+        showToast('อัปเดตข้อความแล้ว 📋', `เลือกตารางเวร ${getThaiDateLabel(day)} พร้อมกดวาง (Ctrl+V) ได้เลย`, 'success');
+    }
+}
+
+function stepLineShareDay(delta) {
+    let nextDay = (currentShareDay || (appState.currentSystemDay || getRealTodayDay())) + delta;
+    if (nextDay < 1) nextDay = 1;
+    if (nextDay > 31) nextDay = 31;
+    changeLineShareDay(nextDay);
+}
+
+function setLineShareQuickDay(type) {
+    const realToday = getRealTodayDay();
+    if (type === 'today') {
+        changeLineShareDay(realToday);
+    } else if (type === 'tomorrow') {
+        changeLineShareDay(Math.min(realToday + 1, 31));
+    }
+}
 
 function openLineShareModal(title, text) {
     currentShareText = text;
@@ -2468,6 +2568,9 @@ function openLineShareModal(title, text) {
     const preview = document.getElementById('line-share-text-preview');
     if (preview) preview.value = text;
     
+    // เติมตัวเลือกวันในดรอปดาวน์
+    populateLineShareDayOptions(currentShareDay || (appState.currentSystemDay || getRealTodayDay()));
+
     // คัดลอกลงคลิปบอร์ดให้อัตโนมัติทันที
     try {
         navigator.clipboard.writeText(text);
@@ -2500,39 +2603,13 @@ function openNativeLineApp() {
     showToast('เปิดแอป LINE', 'หากแอป LINE เปิดแล้ว ให้เข้าไปที่ห้อง OpenChat อบต.ฝางคำ แล้วกดวาง (Ctrl+V) ได้เลยครับ', 'info');
 }
 
-function shareDutyToLineOpenChat() {
-    const today = appState.currentSystemDay || getRealTodayDay();
-    const sched = appState.schedules.find(s => s.day === today);
-    const dateLabel = getThaiDateLabel(today);
-    const currentOrigin = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : 'http://localhost:8080';
+function shareDutyToLineOpenChat(targetDay) {
+    const day = targetDay ? parseInt(targetDay, 10) : (appState.currentSystemDay || getRealTodayDay());
+    currentShareDay = day;
+    populateLineShareDayOptions(day);
 
-    let msg = `📢 [ประกาศตารางเวรยาม อบต.ฝางคำ ประจำ${dateLabel}]\n`;
-    msg += `🏛️ ที่ทำการ อบต.ฝางคำ อ.สิรินธร จ.อุบลราชธานี\n\n`;
-
-    if (sched && sched.dayDuty) {
-        msg += `☀️ เวรกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.):\n`;
-        msg += `• ผู้อยู่เวร: ${sched.dayDuty.staff.join(', ')}\n`;
-        msg += `• ผู้ตรวจเวร: ${sched.dayDuty.inspector}\n\n`;
-    } else {
-        const nextDaySched = appState.schedules.find(s => s.day > today && s.dayDuty);
-        msg += `🏢 เวรกลางวัน: วันทำการปกติ (ปฏิบัติงานตามเวลาราชการ ๐๘.๓๐ - ๑๖.๓๐ น.)\n`;
-        if (nextDaySched) {
-            msg += `• ผลัดถัดไป (${getThaiDateLabel(nextDaySched.day)}): ${nextDaySched.dayDuty.staff.join(', ')}\n`;
-            msg += `• ผู้ตรวจเวร: ${nextDaySched.dayDuty.inspector}\n\n`;
-        } else {
-            msg += `\n`;
-        }
-    }
-
-    if (sched && sched.nightDuty) {
-        msg += `🌙 เวรกลางคืน คืนนี้ (๑๖.๓๐ - ๐๘.๐๐ น.):\n`;
-        msg += `• ผู้อยู่เวร: ${sched.nightDuty.staff.join(', ')}\n`;
-        msg += `• ผู้ตรวจเวร: ${sched.nightDuty.inspector}\n\n`;
-    }
-
-    msg += `📍 เจ้าหน้าที่ลงเวลาเข้าเวร (GPS ในรัศมี ๑๕๐ ม.) และตรวจเวรได้ที่:\n${currentOrigin}/`;
-
-    openLineShareModal(`ประกาศตารางเวรประจำ${dateLabel}`, msg);
+    const msg = buildLineShareDutyText(day);
+    openLineShareModal(`ประกาศตารางเวรประจำ${getThaiDateLabel(day)}`, msg);
 }
 
 function shareCheckinToLineOpenChat() {

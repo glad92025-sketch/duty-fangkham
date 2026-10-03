@@ -1392,6 +1392,35 @@
                     </div>
                 </div>
 
+                <!-- Date Selector (เลือกวันที่ต้องการแชร์) -->
+                <div class="bg-gradient-to-r from-emerald-50/70 via-slate-50 to-emerald-50/70 border border-emerald-200/90 rounded-2xl p-3 sm:p-3.5 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <label class="text-xs font-bold text-slate-800 flex items-center space-x-1.5 min-w-0">
+                            <span>📅</span>
+                            <span class="truncate">เลือกวันที่ต้องการแชร์ตารางเวร:</span>
+                        </label>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button type="button" onclick="setLineShareQuickDay('today')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition cursor-pointer shadow-2xs">
+                                วันนี้
+                            </button>
+                            <button type="button" onclick="setLineShareQuickDay('tomorrow')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold transition cursor-pointer">
+                                พรุ่งนี้
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <button type="button" onclick="stepLineShareDay(-1)" class="w-9 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition cursor-pointer shrink-0 shadow-2xs" title="วันก่อนหน้า">
+                            ◀
+                        </button>
+                        <select id="line-share-day-select" onchange="changeLineShareDay(this.value)" class="flex-1 bg-white border border-slate-300 rounded-xl px-2.5 sm:px-3 py-2 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#06C755] focus:outline-none cursor-pointer shadow-2xs">
+                            <!-- Populated with all days in October 2569 -->
+                        </select>
+                        <button type="button" onclick="stepLineShareDay(1)" class="w-9 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center transition cursor-pointer shrink-0 shadow-2xs" title="วันถัดไป">
+                            ▶
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Text Area / Preview -->
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
