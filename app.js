@@ -35,47 +35,81 @@ function getUserCurrentPassword(user) {
 }
 
 // -------------------------------------------------------------
-// บัญชีผู้ใช้งานระบบ อบต.ฝางคำ ทั้งหมด 30 ท่าน (อ้างอิงคำสั่ง ต.ค. 2569)
 // -------------------------------------------------------------
-const ALL_SYSTEM_USERS = [
+// บัญชีผู้ใช้งานระบบ อบต.ฝางคำ ทั้งหมด 30 ท่าน (อ้างอิงคำสั่ง ต.ค. 2569)
+// พร้อมตำแหน่งราชการ สังกัดกอง เบอร์โทรศัพท์ และสิทธิ์การใช้งาน
+// -------------------------------------------------------------
+const INITIAL_SYSTEM_USERS = [
     // 1. ผู้ดูแลระบบ & ผู้บริหาร
-    { id: 'admin', username: 'admin', defaultPass: '1234', name: 'นายชาญชัย อักโข (ผู้ดูแลระบบ/หน.สำนักปลัด)', role: 'admin', roleName: 'ผู้ดูแลระบบ (Admin)', category: 'admin', dept: 'สำนักปลัด อบต.ฝางคำ', gender: 'male', dutyDays: 'จัดการระบบ / ตรวจเวร', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80', badge: 'bg-purple-100 text-purple-800 border-purple-200' },
-    { id: 'exec', username: 'palad', defaultPass: '1234', name: 'ปลัด อบต.ฝางคำ (ผู้บริหาร)', role: 'executive', roleName: 'ผู้บริหาร (Executive)', category: 'admin', dept: 'ผู้บริหาร อบต.ฝางคำ', gender: 'male', dutyDays: 'อนุมัติคำสั่งราชการ', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-rose-100 text-rose-800 border-rose-200' },
+    { id: 'admin', username: 'admin', defaultPass: '1234', name: 'นายชาญชัย อักโข', position: 'หัวหน้าสำนักปลัด', role: 'admin', roleName: 'ผู้ดูแลระบบ (Admin) / หัวหน้าสำนักปลัด', category: 'admin', dept: 'สำนักปลัด', gender: 'male', phone: '089-111-2233', dutyDays: 'จัดการระบบ / ตรวจเวร', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80', badge: 'bg-purple-100 text-purple-800 border-purple-200' },
+    { id: 'exec', username: 'palad', defaultPass: '1234', name: 'ปลัด อบต.ฝางคำ', position: 'ปลัด อบต.ฝางคำ', role: 'executive', roleName: 'ผู้บริหาร (Executive)', category: 'admin', dept: 'ผู้บริหาร อบต.ฝางคำ', gender: 'male', phone: '081-999-8877', dutyDays: 'อนุมัติคำสั่งราชการ', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-rose-100 text-rose-800 border-rose-200' },
 
     // 2. ผู้ตรวจเวรยาม (4 ท่าน)
-    { id: 'insp_1', username: 'chanchai', defaultPass: '1234', name: 'นายชาญชัย อักโข', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
-    { id: 'insp_2', username: 'wuttisak', defaultPass: '1234', name: 'นายวุฒิศักดิ์ บุตรสิงห์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางคืน)', category: 'inspector', dept: 'กองช่าง', gender: 'male', dutyDays: 'ตรวจเวรวันที่ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
-    { id: 'insp_3', username: 'vasana', defaultPass: '1234', name: 'นางวาสนา สินทรัพย์', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองคลัง', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 3, 10, 13, 17, 23, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
-    { id: 'insp_4', username: 'arunrat', defaultPass: '1234', name: 'นางอรุณรัตน์ บุญกอ', role: 'inspector', roleName: 'ผู้ตรวจเวร (กะกลางวัน)', category: 'inspector', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'ตรวจเวรวันที่ 4, 11, 18, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_1', username: 'chanchai', defaultPass: '1234', name: 'นายชาญชัย อักโข', position: 'หัวหน้าสำนักปลัด', role: 'inspector', roleName: 'ผู้ตรวจเวร / หัวหน้าสำนักปลัด', category: 'inspector', dept: 'สำนักปลัด', gender: 'male', phone: '089-111-2233', dutyDays: 'ตรวจเวรวันที่ 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_2', username: 'wuttisak', defaultPass: '1234', name: 'นายวุฒิศักดิ์ บุตรสิงห์', position: 'ผู้อำนวยการกองช่าง', role: 'inspector', roleName: 'ผู้ตรวจเวร / ผอ.กองช่าง', category: 'inspector', dept: 'กองช่าง', gender: 'male', phone: '084-222-3344', dutyDays: 'ตรวจเวรวันที่ 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_3', username: 'vasana', defaultPass: '1234', name: 'นางวาสนา สินทรัพย์', position: 'ผู้อำนวยการกองคลัง', role: 'inspector', roleName: 'ผู้ตรวจเวร / ผอ.กองคลัง', category: 'inspector', dept: 'กองคลัง', gender: 'female', phone: '086-333-4455', dutyDays: 'ตรวจเวรวันที่ 3, 10, 13, 17, 23, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { id: 'insp_4', username: 'arunrat', defaultPass: '1234', name: 'นางอรุณรัตน์ บุญกอ', position: 'ผู้อำนวยการกองการศึกษา', role: 'inspector', roleName: 'ผู้ตรวจเวร / ผอ.กองการศึกษา', category: 'inspector', dept: 'กองการศึกษา', gender: 'female', phone: '087-444-5566', dutyDays: 'ตรวจเวรวันที่ 4, 11, 18, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-blue-100 text-blue-800 border-blue-200' },
 
     // 3. ผู้อยู่เวรยามกะกลางคืน (ชาย - 14 ท่าน)
-    { id: 'night_1', username: 'manit', defaultPass: '1234', name: 'จ.ส.ท.มานิต ทองดวง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 1, 15, 29 ต.ค.', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_2', username: 'kiattiphon', defaultPass: '1234', name: 'จ.ส.อ.เกียรติพล หาทรัพย์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 2, 16, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_3', username: 'singha', defaultPass: '1234', name: 'นายสิงหา ชุมชัย', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 3, 17, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_4', username: 'thosapol', defaultPass: '1234', name: 'นายทศพล โลมรัตน์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_5', username: 'veerawat', defaultPass: '1234', name: 'นายวีระวัฒน์ จันทรคล', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 5, 19 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_6', username: 'kiattisak', defaultPass: '1234', name: 'จ่าเอกเกียรติศักดิ์ เพ็ญเนตร', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 6, 20 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_7', username: 'suphamongkol', defaultPass: '1234', name: 'นายศุภมงคล ธรรมพิทักษ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 7, 21 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_8', username: 'anuchit', defaultPass: '1234', name: 'นายอนุชิต ดวงเนตร', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองคลัง', gender: 'male', dutyDays: 'วันที่ 8, 22 ต.ค.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_9', username: 'autthachai', defaultPass: '1234', name: 'นายอรรถชัย สุทธิรัตน์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 9, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_10', username: 'wuttichart', defaultPass: '1234', name: 'นายวุฒิชาติ เชื้อโชติ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 10, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_11', username: 'klahan', defaultPass: '1234', name: 'นายกล้าหาญ พรพรม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 11, 25 ต.ค.', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_12', username: 'chaisit', defaultPass: '1234', name: 'นายชัยสิทธิ์ วงษ์วิชัย', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 12, 26 ต.ค.', avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_13', username: 'wittaya', defaultPass: '1234', name: 'นายวิทยา ฝางคำ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'สำนักปลัด', gender: 'male', dutyDays: 'วันที่ 13, 27 ต.ค.', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
-    { id: 'night_14', username: 'wattrajira', defaultPass: '1234', name: 'นายวัตรจิระ ใสขาว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางคืน)', category: 'night', dept: 'กองช่าง', gender: 'male', dutyDays: 'วันที่ 14, 28 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_1', username: 'manit', defaultPass: '1234', name: 'จ.ส.ท.มานิต ทองดวง', position: 'เจ้าพนักงานป้องกันและบรรเทาสาธารณภัย', role: 'staff', roleName: 'เจ้าพนักงานป้องกันฯ', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0001', dutyDays: 'วันที่ 1, 15, 29 ต.ค.', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_2', username: 'kiattiphon', defaultPass: '1234', name: 'จ.ส.อ.เกียรติพล หาทรัพย์', position: 'นายช่างโยธาชำนาญงาน', role: 'staff', roleName: 'นายช่างโยธาชำนาญงาน', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0002', dutyDays: 'วันที่ 2, 16, 30 ต.ค.', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_3', username: 'singha', defaultPass: '1234', name: 'นายสิงหา ชุมชัย', position: 'เจ้าพนักงานธุรการ', role: 'staff', roleName: 'เจ้าพนักงานธุรการ', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0003', dutyDays: 'วันที่ 3, 17, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_4', username: 'thosapol', defaultPass: '1234', name: 'นายทศพล โลมรัตน์', position: 'นายช่างไฟฟ้า', role: 'staff', roleName: 'นายช่างไฟฟ้า', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0004', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_5', username: 'veerawat', defaultPass: '1234', name: 'นายวีระวัฒน์ จันทรคล', position: 'เจ้าพนักงานเทศกิจ', role: 'staff', roleName: 'เจ้าพนักงานเทศกิจ', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0005', dutyDays: 'วันที่ 5, 19 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_6', username: 'kiattisak', defaultPass: '1234', name: 'จ่าเอกเกียรติศักดิ์ เพ็ญเนตร', position: 'เจ้าพนักงานป้องกันและบรรเทาสาธารณภัย', role: 'staff', roleName: 'เจ้าพนักงานป้องกันฯ', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0006', dutyDays: 'วันที่ 6, 20 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_7', username: 'suphamongkol', defaultPass: '1234', name: 'นายศุภมงคล ธรรมพิทักษ์', position: 'นายช่างเครื่องกล', role: 'staff', roleName: 'นายช่างเครื่องกล', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0007', dutyDays: 'วันที่ 7, 21 ต.ค.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_8', username: 'anuchit', defaultPass: '1234', name: 'นายอนุชิต ดวงเนตร', position: 'นักวิชาการเงินและบัญชี', role: 'staff', roleName: 'นักวิชาการเงินและบัญชี', category: 'night', dept: 'กองคลัง', gender: 'male', phone: '081-101-0008', dutyDays: 'วันที่ 8, 22 ต.ค.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_9', username: 'autthachai', defaultPass: '1234', name: 'นายอรรถชัย สุทธิรัตน์', position: 'นิติกรปฏิบัติการ', role: 'staff', roleName: 'นิติกรปฏิบัติการ', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0009', dutyDays: 'วันที่ 9, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_10', username: 'wuttichart', defaultPass: '1234', name: 'นายวุฒิชาติ เชื้อโชติ', position: 'นายช่างสำรวจ', role: 'staff', roleName: 'นายช่างสำรวจ', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0010', dutyDays: 'วันที่ 10, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_11', username: 'klahan', defaultPass: '1234', name: 'นายกล้าหาญ พรพรม', position: 'พนักงานขับรถยนต์', role: 'staff', roleName: 'พนักงานขับรถยนต์', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0011', dutyDays: 'วันที่ 11, 25 ต.ค.', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_12', username: 'chaisit', defaultPass: '1234', name: 'นายชัยสิทธิ์ วงษ์วิชัย', position: 'นายช่างโยธา', role: 'staff', roleName: 'นายช่างโยธา', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0012', dutyDays: 'วันที่ 12, 26 ต.ค.', avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_13', username: 'wittaya', defaultPass: '1234', name: 'นายวิทยา ฝางคำ', position: 'เจ้าพนักงานพัฒนาชุมชน', role: 'staff', roleName: 'เจ้าพนักงานพัฒนาชุมชน', category: 'night', dept: 'สำนักปลัด', gender: 'male', phone: '081-101-0013', dutyDays: 'วันที่ 13, 27 ต.ค.', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
+    { id: 'night_14', username: 'wattrajira', defaultPass: '1234', name: 'นายวัตรจิระ ใสขาว', position: 'ผู้ช่วยนายช่างโยธา', role: 'staff', roleName: 'ผู้ช่วยนายช่างโยธา', category: 'night', dept: 'กองช่าง', gender: 'male', phone: '081-101-0014', dutyDays: 'วันที่ 14, 28 ต.ค.', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=120&q=80', badge: 'bg-slate-900 text-white' },
 
     // 4. ผู้อยู่เวรยามกะกลางวัน (หญิง - 11 ท่าน)
-    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_4', username: 'beena', defaultPass: '1234', name: 'นางสาวบีนา เหล็กกล้า', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_5', username: 'paphada', defaultPass: '1234', name: 'นางสาวปภาดา ประดับ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_6', username: 'phakapha', defaultPass: '1234', name: 'นางสาวผกาพา มณีจันทร์', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองการศึกษา', gender: 'female', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_7', username: 'sudarat', defaultPass: '1234', name: 'นางสาวสุดารัตน์ ริมทอง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_8', username: 'niphaporn', defaultPass: '1234', name: 'นางสาวนิภาพร เที่ยงตรง', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_9', username: 'nittaya', defaultPass: '1234', name: 'นางสาวนิตยา ชุมชัย', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองสาธารณสุข', gender: 'female', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_10', username: 'ratchanee', defaultPass: '1234', name: 'นางรัชนี สร้อยคำ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'กองคลัง', gender: 'female', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
-    { id: 'day_11', username: 'massupha', defaultPass: '1234', name: 'นางสาวมาสศุภา ดวงคำ', role: 'staff', roleName: 'ผู้อยู่เวรยาม (กะกลางวัน)', category: 'day', dept: 'สำนักปลัด', gender: 'female', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' }
+    { id: 'day_1', username: 'amporn', defaultPass: '1234', name: 'นางสาวอำพร ทองสวัสดิ์', position: 'นักวิชาการพัสดุชำนาญการ', role: 'staff', roleName: 'นักวิชาการพัสดุ', category: 'day', dept: 'กองคลัง', gender: 'female', phone: '082-202-0001', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_2', username: 'thidalak', defaultPass: '1234', name: 'นางสาวธิดาลักษณ์ โสแก้ว', position: 'เจ้าพนักงานธุรการชำนาญงาน', role: 'staff', roleName: 'เจ้าพนักงานธุรการ', category: 'day', dept: 'สำนักปลัด', gender: 'female', phone: '082-202-0002', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_3', username: 'tongtaprapha', defaultPass: '1234', name: 'นางต้องตาประภา โพธิ์งาม', position: 'นักสังคมสงเคราะห์ปฏิบัติการ', role: 'staff', roleName: 'นักสังคมสงเคราะห์', category: 'day', dept: 'กองสวัสดิการสังคม', gender: 'female', phone: '082-202-0003', dutyDays: 'วันที่ 3, 17 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_4', username: 'beena', defaultPass: '1234', name: 'นางสาวบีนา เหล็กกล้า', position: 'เจ้าพนักงานจัดเก็บรายได้', role: 'staff', roleName: 'เจ้าพนักงานจัดเก็บรายได้', category: 'day', dept: 'กองคลัง', gender: 'female', phone: '082-202-0004', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_5', username: 'paphada', defaultPass: '1234', name: 'นางสาวปภาดา ประดับ', position: 'นักจัดการงานทั่วไปปฏิบัติการ', role: 'staff', roleName: 'นักจัดการงานทั่วไป', category: 'day', dept: 'สำนักปลัด', gender: 'female', phone: '082-202-0005', dutyDays: 'วันที่ 4, 18 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_6', username: 'phakapha', defaultPass: '1234', name: 'นางสาวผกาพา มณีจันทร์', position: 'นักวิชาการศึกษาปฏิบัติการ', role: 'staff', roleName: 'นักวิชาการศึกษา', category: 'day', dept: 'กองการศึกษา', gender: 'female', phone: '082-202-0006', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_7', username: 'sudarat', defaultPass: '1234', name: 'นางสาวสุดารัตน์ ริมทอง', position: 'เจ้าพนักงานการเงินและบัญชี', role: 'staff', roleName: 'เจ้าพนักงานการเงินฯ', category: 'day', dept: 'กองคลัง', gender: 'female', phone: '082-202-0007', dutyDays: 'วันที่ 13, 31 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_8', username: 'niphaporn', defaultPass: '1234', name: 'นางสาวนิภาพร เที่ยงตรง', position: 'เจ้าพนักงานธุรการ', role: 'staff', roleName: 'เจ้าพนักงานธุรการ', category: 'day', dept: 'สำนักปลัด', gender: 'female', phone: '082-202-0008', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_9', username: 'nittaya', defaultPass: '1234', name: 'นางสาวนิตยา ชุมชัย', position: 'นักวิชาการสาธารณสุขปฏิบัติการ', role: 'staff', roleName: 'นักวิชาการสาธารณสุข', category: 'day', dept: 'กองสาธารณสุข', gender: 'female', phone: '082-202-0009', dutyDays: 'วันที่ 10, 23 ต.ค.', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_10', username: 'ratchanee', defaultPass: '1234', name: 'นางรัชนี สร้อยคำ', position: 'นักวิชาการคลังชำนาญการ', role: 'staff', roleName: 'นักวิชาการคลัง', category: 'day', dept: 'กองคลัง', gender: 'female', phone: '082-202-0010', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' },
+    { id: 'day_11', username: 'massupha', defaultPass: '1234', name: 'นางสาวมาสศุภา ดวงคำ', position: 'นักวิเคราะห์นโยบายและแผน', role: 'staff', roleName: 'นักวิเคราะห์นโยบายฯ', category: 'day', dept: 'สำนักปลัด', gender: 'female', phone: '082-202-0011', dutyDays: 'วันที่ 11, 24 ต.ค.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80', badge: 'bg-amber-100 text-amber-900' }
+];
+
+function getSavedSystemUsers() {
+    try {
+        const saved = localStorage.getItem('fangkham_system_users_v2');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch(e) {}
+    return JSON.parse(JSON.stringify(INITIAL_SYSTEM_USERS));
+}
+
+function saveSystemUsers(users) {
+    try {
+        localStorage.setItem('fangkham_system_users_v2', JSON.stringify(users));
+    } catch(e) {}
+}
+
+let ALL_SYSTEM_USERS = getSavedSystemUsers();
+
+const PRESET_AVATARS = [
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80'
 ];
 
 // ข้อมูลตารางเวรตามคำสั่งจริง ต.ค. 2569 (แก้ไขใหม่ล่าสุด 10 ผลัดวันหยุด)
@@ -419,7 +453,7 @@ function renderDirectoryUserList(category = 'all', searchQuery = '') {
                     <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-200 flex-shrink-0" alt="${u.name}">
                     <div class="min-w-0">
                         <div class="font-bold text-xs text-slate-900 truncate">${u.name}</div>
-                        <div class="text-[10px] text-slate-500">Username: <span class="font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded">${u.username}</span></div>
+                        <div class="text-[10px] text-slate-500 truncate">${u.position || u.roleName} • <span class="font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded">@${u.username}</span></div>
                     </div>
                 </div>
                 <button onclick="pickUserToLogin('${u.username}')" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-[11px] font-bold transition flex-shrink-0">
@@ -499,21 +533,22 @@ function updateAuthUI() {
     }
 
     // กรณีเข้าสู่ระบบแล้ว
+    const displayTitle = u.position || u.roleName || 'เจ้าหน้าที่';
     if (nameEl) nameEl.textContent = u.name;
-    if (posEl) posEl.textContent = `User: ${u.username} • ${u.dept}`;
+    if (posEl) posEl.textContent = `${displayTitle} • @${u.username}`;
     if (roleEl) {
-        roleEl.textContent = u.roleName;
-        roleEl.className = `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${u.badge}`;
+        roleEl.textContent = displayTitle;
+        roleEl.className = `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${u.badge || 'bg-emerald-50 text-emerald-800 border-emerald-200'}`;
     }
     if (avatarEl) avatarEl.src = u.avatar;
     if (btnLogout) btnLogout.classList.remove('hidden');
     if (btnChangePwd) btnChangePwd.classList.remove('hidden');
     if (btnLoginHeader) {
         btnLoginHeader.innerHTML = `<span>🔄 สลับบัญชี</span>`;
-        btnLoginHeader.className = 'text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1 border border-emerald-200 shadow-xs';
+        btnLoginHeader.className = 'text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition flex items-center space-x-1 border border-emerald-200 shadow-xs cursor-pointer';
     }
     if (drawerName) drawerName.textContent = u.name;
-    if (drawerRole) drawerRole.textContent = `${u.roleName} • ${u.dept}`;
+    if (drawerRole) drawerRole.textContent = `${displayTitle} • ${u.dept}`;
     if (drawerAvatar) drawerAvatar.src = u.avatar;
     if (drawerLogout) drawerLogout.classList.remove('hidden');
 
@@ -693,11 +728,15 @@ function buildOctober2569Schedules() {
 // ระบบสลับหน้าเว็บ (Tab Navigation)
 // -------------------------------------------------------------
 function switchTab(tabId) {
-    // หากเข้าหน้าลงเวลา, ตรวจเวร, สลับเวร, หรือตั้งค่า แต่ยังไม่ได้เข้าสู่ระบบ ให้แจ้งเตือนและเปิดหน้าต่างล็อกอิน
-    if (!appState.currentUser && (tabId === 'checkin' || tabId === 'inspection' || tabId === 'swap' || tabId === 'settings')) {
+    // หากเข้าหน้าลงเวลา, ตรวจเวร หรือสลับเวร แต่ยังไม่ได้เข้าสู่ระบบ ให้แจ้งเตือนและเปิดหน้าต่างล็อกอิน
+    if (!appState.currentUser && (tabId === 'checkin' || tabId === 'inspection' || tabId === 'swap')) {
         openLoginModal('login');
         showToast('กรุณาเข้าสู่ระบบก่อน', 'กรุณาระบุ Username และ Password ของท่านเพื่อดำเนินการ', 'info');
         return;
+    }
+
+    if (tabId === 'settings') {
+        renderSettingsUserList();
     }
 
     appState.currentTab = tabId;
@@ -810,7 +849,7 @@ function renderDashboard() {
             dayStaffEl.innerHTML = staffList.map(s => {
                 const u = findUserByName(s);
                 const avatar = u && u.avatar ? u.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
-                const dept = u ? u.dept : 'อบต.ฝางคำ';
+                const dept = u ? (u.position ? `${u.position} • ${u.dept}` : u.dept) : 'อบต.ฝางคำ';
                 const key = u ? `${u.id}_${dateStr}_day` : null;
                 const checkData = (key && appState.todayCheckins[key]) || (u ? appState.todayCheckins[`${u.id}_${dateStr}`] : null);
 
@@ -921,7 +960,7 @@ function renderDashboard() {
         const nightStaffName = todaySched.nightDuty.staff[0];
         const u = findUserByName(nightStaffName);
         const avatar = u && u.avatar ? u.avatar : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80';
-        const dept = u ? u.dept : 'อบต.ฝางคำ';
+        const dept = u ? (u.position ? `${u.position} • ${u.dept}` : u.dept) : 'อบต.ฝางคำ';
 
         const dateStr = `2026-10-${String(today).padStart(2, '0')}`;
         const nightKey = u ? `${u.id}_${dateStr}_night` : null;
@@ -2825,6 +2864,414 @@ function resetSettingsToDefault() {
 }
 
 // -------------------------------------------------------------
+// ระบบจัดการข้อมูลผู้ใช้งานและบุคลากร (User & Personnel Settings)
+// -------------------------------------------------------------
+let settingsUserFilterCat = 'all';
+let settingsUserSearchQuery = '';
+
+function switchSettingsSubTab(subTab) {
+    const btnUsers = document.getElementById('btn-setting-sub-users');
+    const btnSystem = document.getElementById('btn-setting-sub-system');
+    const tabUsers = document.getElementById('settings-subtab-users');
+    const tabSystem = document.getElementById('settings-subtab-system');
+
+    if (subTab === 'users') {
+        if (btnUsers) {
+            btnUsers.className = 'setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap';
+        }
+        if (btnSystem) {
+            btnSystem.className = 'setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-semibold text-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap';
+        }
+        if (tabUsers) tabUsers.classList.remove('hidden');
+        if (tabSystem) tabSystem.classList.add('hidden');
+        renderSettingsUserList();
+    } else {
+        if (btnUsers) {
+            btnUsers.className = 'setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-semibold text-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap';
+        }
+        if (btnSystem) {
+            btnSystem.className = 'setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap';
+        }
+        if (tabUsers) tabUsers.classList.add('hidden');
+        if (tabSystem) tabSystem.classList.remove('hidden');
+        loadSettingsToForm();
+    }
+}
+
+function filterSettingsUsers(cat) {
+    settingsUserFilterCat = cat;
+    document.querySelectorAll('.usercat-btn').forEach(btn => {
+        btn.className = 'usercat-btn px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer';
+    });
+    const activeBtn = document.getElementById(`btn-usercat-${cat}`);
+    if (activeBtn) {
+        activeBtn.className = 'usercat-btn px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold transition cursor-pointer';
+    }
+    renderSettingsUserList();
+}
+
+function handleSettingsUserSearch(query) {
+    settingsUserSearchQuery = (query || '').trim().toLowerCase();
+    renderSettingsUserList();
+}
+
+function renderSettingsUserList() {
+    const grid = document.getElementById('settings-users-grid');
+    if (!grid) return;
+
+    // Update counts
+    const countAll = document.getElementById('user-count-all');
+    const countNight = document.getElementById('user-count-night');
+    const countDay = document.getElementById('user-count-day');
+    const countInsp = document.getElementById('user-count-inspector');
+    const countAdmin = document.getElementById('user-count-admin');
+
+    if (countAll) countAll.textContent = ALL_SYSTEM_USERS.length;
+    if (countNight) countNight.textContent = ALL_SYSTEM_USERS.filter(u => u.category === 'night').length;
+    if (countDay) countDay.textContent = ALL_SYSTEM_USERS.filter(u => u.category === 'day').length;
+    if (countInsp) countInsp.textContent = ALL_SYSTEM_USERS.filter(u => u.category === 'inspector').length;
+    if (countAdmin) countAdmin.textContent = ALL_SYSTEM_USERS.filter(u => u.category === 'admin').length;
+
+    let filtered = ALL_SYSTEM_USERS;
+    if (settingsUserFilterCat !== 'all') {
+        filtered = filtered.filter(u => u.category === settingsUserFilterCat);
+    }
+    if (settingsUserSearchQuery) {
+        const q = settingsUserSearchQuery;
+        filtered = filtered.filter(u => 
+            (u.name && u.name.toLowerCase().includes(q)) ||
+            (u.username && u.username.toLowerCase().includes(q)) ||
+            (u.position && u.position.toLowerCase().includes(q)) ||
+            (u.roleName && u.roleName.toLowerCase().includes(q)) ||
+            (u.dept && u.dept.toLowerCase().includes(q)) ||
+            (u.phone && u.phone.includes(q))
+        );
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full py-12 text-center bg-slate-50 rounded-3xl border border-slate-200">
+                <span class="text-3xl block mb-2">🔍</span>
+                <p class="text-sm font-bold text-slate-700">ไม่พบบุคลากรที่ตรงกับคำค้นหา</p>
+                <p class="text-xs text-slate-400 mt-1">ลองพิมพ์คำค้นหาอื่น หรือเลือกหมวดหมู่ "ทั้งหมด"</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(u => {
+        const categoryBadge = {
+            night: '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-white">🌙 กะกลางคืน</span>',
+            day: '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">☀️ กะกลางวัน</span>',
+            inspector: '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">🛡️ ผู้ตรวจเวร</span>',
+            admin: '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">👑 แอดมิน/บริหาร</span>'
+        }[u.category] || '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">ทั่วไป</span>';
+
+        const roleTitle = u.position || u.roleName || 'เจ้าหน้าที่';
+
+        return `
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition flex flex-col justify-between gap-3">
+                <div class="flex items-start space-x-3 min-w-0">
+                    <img src="${u.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80'}" class="w-12 h-12 rounded-2xl object-cover border-2 border-slate-100 shrink-0 shadow-2xs" alt="${u.name}">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                            <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${u.name}</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 mt-1 flex-wrap gap-y-1">
+                            <span class="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 font-mono font-bold text-[10px] border border-emerald-200">@${u.username}</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md font-medium">${u.dept}</span>
+                        </div>
+                        <div class="text-xs text-slate-600 font-medium mt-1 truncate" title="${roleTitle}">
+                            💼 ${roleTitle}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div class="flex items-center space-x-1.5 min-w-0">
+                        ${categoryBadge}
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        ${u.phone ? `<a href="tel:${u.phone}" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition text-xs" title="โทร ${u.phone}">📞</a>` : ''}
+                        <button type="button" onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-xs font-bold transition flex items-center space-x-1 cursor-pointer whitespace-nowrap">
+                            <span>✏️</span>
+                            <span>แก้ไข</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openEditUserModal(userId) {
+    const user = ALL_SYSTEM_USERS.find(u => u.id === userId);
+    if (!user) return;
+
+    const modal = document.getElementById('user-edit-modal');
+    if (!modal) return;
+
+    document.getElementById('user-modal-title').textContent = `✏️ แก้ไขข้อมูลบุคลากร: ${user.name}`;
+    document.getElementById('user-modal-subtitle').textContent = `แก้ไข Username, ตำแหน่ง, สังกัดกอง และรหัสผ่าน`;
+
+    document.getElementById('user-form-id').value = user.id;
+    document.getElementById('user-form-username').value = user.username;
+    document.getElementById('user-form-password').value = '';
+    document.getElementById('user-form-name').value = user.name;
+    document.getElementById('user-form-role-name').value = user.position || user.roleName || '';
+    document.getElementById('user-form-dept').value = user.dept || 'สำนักปลัด';
+    document.getElementById('user-form-category').value = user.category || 'night';
+    document.getElementById('user-form-role').value = user.role || 'staff';
+    document.getElementById('user-form-gender').value = user.gender || 'male';
+    document.getElementById('user-form-phone').value = user.phone || '';
+    document.getElementById('user-form-duty-days').value = user.dutyDays || '';
+    document.getElementById('user-form-avatar').value = user.avatar || '';
+
+    const preview = document.getElementById('user-form-avatar-preview');
+    if (preview) {
+        preview.src = user.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80';
+    }
+
+    renderPresetAvatars();
+
+    const deleteBtn = document.getElementById('btn-user-form-delete');
+    if (deleteBtn) {
+        if (user.id === 'admin' || user.id === 'exec') {
+            deleteBtn.classList.add('hidden');
+        } else {
+            deleteBtn.classList.remove('hidden');
+        }
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function openAddUserModal() {
+    const modal = document.getElementById('user-edit-modal');
+    if (!modal) return;
+
+    document.getElementById('user-modal-title').textContent = '➕ เพิ่มเจ้าหน้าที่/ผู้ใช้งานใหม่';
+    document.getElementById('user-modal-subtitle').textContent = 'กำหนด Username, ตำแหน่ง, สังกัดกอง และรหัสผ่าน';
+
+    document.getElementById('user-form-id').value = '';
+    document.getElementById('user-form-username').value = '';
+    document.getElementById('user-form-password').value = '1234';
+    document.getElementById('user-form-name').value = '';
+    document.getElementById('user-form-role-name').value = '';
+    document.getElementById('user-form-dept').value = 'สำนักปลัด';
+    document.getElementById('user-form-category').value = 'night';
+    document.getElementById('user-form-role').value = 'staff';
+    document.getElementById('user-form-gender').value = 'male';
+    document.getElementById('user-form-phone').value = '';
+    document.getElementById('user-form-duty-days').value = '';
+    
+    const defaultAvatar = PRESET_AVATARS[0];
+    document.getElementById('user-form-avatar').value = defaultAvatar;
+    const preview = document.getElementById('user-form-avatar-preview');
+    if (preview) preview.src = defaultAvatar;
+
+    renderPresetAvatars();
+
+    const deleteBtn = document.getElementById('btn-user-form-delete');
+    if (deleteBtn) deleteBtn.classList.add('hidden');
+
+    modal.classList.remove('hidden');
+    document.getElementById('user-form-username').focus();
+}
+
+function closeUserEditModal() {
+    const modal = document.getElementById('user-edit-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function previewUserAvatar(url) {
+    const preview = document.getElementById('user-form-avatar-preview');
+    if (preview && url) {
+        preview.src = url;
+    }
+}
+
+function selectPresetAvatar(url) {
+    document.getElementById('user-form-avatar').value = url;
+    previewUserAvatar(url);
+}
+
+function renderPresetAvatars() {
+    const container = document.getElementById('user-avatar-presets');
+    if (!container) return;
+
+    container.innerHTML = PRESET_AVATARS.map((url, i) => `
+        <button type="button" onclick="selectPresetAvatar('${url}')" class="w-7 h-7 rounded-full overflow-hidden border border-slate-200 hover:scale-110 hover:border-emerald-500 transition cursor-pointer shrink-0">
+            <img src="${url}" class="w-full h-full object-cover" alt="Preset ${i+1}">
+        </button>
+    `).join('');
+}
+
+function handleSaveUserSubmit(event) {
+    if (event) event.preventDefault();
+
+    const id = document.getElementById('user-form-id').value.trim();
+    const username = document.getElementById('user-form-username').value.trim().toLowerCase();
+    const password = document.getElementById('user-form-password').value.trim();
+    const name = document.getElementById('user-form-name').value.trim();
+    const roleName = document.getElementById('user-form-role-name').value.trim();
+    const dept = document.getElementById('user-form-dept').value;
+    const category = document.getElementById('user-form-category').value;
+    const role = document.getElementById('user-form-role').value;
+    const gender = document.getElementById('user-form-gender').value;
+    const phone = document.getElementById('user-form-phone').value.trim();
+    const dutyDays = document.getElementById('user-form-duty-days').value.trim();
+    const avatar = document.getElementById('user-form-avatar').value.trim() || PRESET_AVATARS[0];
+
+    if (!username) {
+        showToast('กรุณากรอก Username', 'Username ต้องไม่เว้นว่าง', 'warning');
+        return;
+    }
+    if (!name) {
+        showToast('กรุณากรอกชื่อ-สกุล', 'ชื่อเจ้าหน้าที่ต้องไม่เว้นว่าง', 'warning');
+        return;
+    }
+    if (!roleName) {
+        showToast('กรุณากรอกตำแหน่ง', 'โปรดระบุตำแหน่งราชการหรือบทบาท', 'warning');
+        return;
+    }
+
+    // Check duplicate username with other users
+    const duplicate = ALL_SYSTEM_USERS.find(u => u.username.toLowerCase() === username && u.id !== id);
+    if (duplicate) {
+        showToast('Username ซ้ำ', `Username "${username}" ถูกใช้งานโดย ${duplicate.name} แล้ว`, 'error');
+        return;
+    }
+
+    if (id) {
+        // Edit existing
+        const idx = ALL_SYSTEM_USERS.findIndex(u => u.id === id);
+        if (idx !== -1) {
+            ALL_SYSTEM_USERS[idx] = {
+                ...ALL_SYSTEM_USERS[idx],
+                username,
+                name,
+                position: roleName,
+                roleName,
+                dept,
+                category,
+                role,
+                gender,
+                phone,
+                dutyDays: dutyDays || ALL_SYSTEM_USERS[idx].dutyDays,
+                avatar
+            };
+
+            if (password) {
+                savePasswordForUser(username, password);
+            }
+
+            // Sync with current logged-in user if editing own profile
+            if (appState.currentUser && appState.currentUser.id === id) {
+                appState.currentUser = { ...ALL_SYSTEM_USERS[idx] };
+                updateAuthUI();
+            }
+
+            showToast('บันทึกข้อมูลเรียบร้อย 🎉', `อัปเดตข้อมูลของ ${name} สำเร็จแล้ว`, 'success');
+        }
+    } else {
+        // Add new user
+        const newId = 'user_' + Date.now();
+        const newUser = {
+            id: newId,
+            username,
+            defaultPass: password || '1234',
+            name,
+            position: roleName,
+            roleName,
+            dept,
+            category,
+            role,
+            gender,
+            phone,
+            dutyDays: dutyDays || 'ตามคำสั่งมอบหมาย',
+            avatar,
+            badge: category === 'night' ? 'bg-slate-900 text-white' : 'bg-emerald-100 text-emerald-800'
+        };
+
+        if (password) {
+            savePasswordForUser(username, password);
+        }
+
+        ALL_SYSTEM_USERS.push(newUser);
+        showToast('เพิ่มผู้ใช้งานสำเร็จ 🎉', `เพิ่ม ${name} (${username}) เข้าสู่ระบบแล้ว`, 'success');
+    }
+
+    saveSystemUsers(ALL_SYSTEM_USERS);
+    closeUserEditModal();
+
+    // Re-render related UI components
+    renderSettingsUserList();
+    renderDirectoryUserList(appState.currentCategory || 'all', '');
+    populateSelectOptions();
+    renderDashboard();
+    renderCalendar();
+}
+
+function handleDeleteUser() {
+    const id = document.getElementById('user-form-id').value.trim();
+    if (!id) return;
+
+    const user = ALL_SYSTEM_USERS.find(u => u.id === id);
+    if (!user) return;
+
+    if (user.id === 'admin' || user.id === 'exec') {
+        showToast('ไม่สามารถลบได้', 'ไม่สามารถลบบัญชีผู้ดูแลระบบหลักได้', 'error');
+        return;
+    }
+
+    if (!confirm(`ต้องการลบผู้ใช้งาน "${user.name}" (@${user.username}) ออกจากระบบใช่หรือไม่?`)) {
+        return;
+    }
+
+    ALL_SYSTEM_USERS = ALL_SYSTEM_USERS.filter(u => u.id !== id);
+    saveSystemUsers(ALL_SYSTEM_USERS);
+    closeUserEditModal();
+
+    if (appState.currentUser && appState.currentUser.id === id) {
+        handleLogout();
+    }
+
+    renderSettingsUserList();
+    renderDirectoryUserList(appState.currentCategory || 'all', '');
+    populateSelectOptions();
+    renderDashboard();
+    renderCalendar();
+
+    showToast('ลบผู้ใช้งานเรียบร้อย', `ลบบัญชี ${user.name} ออกจากระบบแล้ว`, 'info');
+}
+
+function resetSystemUsersToDefault() {
+    if (!confirm('ต้องการคืนค่ารายชื่อบุคลากรทั้งหมด 30 ท่านกลับเป็นค่าเริ่มต้นตามคำสั่งราชการเดิมใช่หรือไม่? (ข้อมูลที่แก้ไขหรือเพิ่มใหม่จะถูกรีเซ็ต)')) {
+        return;
+    }
+
+    ALL_SYSTEM_USERS = JSON.parse(JSON.stringify(INITIAL_SYSTEM_USERS));
+    saveSystemUsers(ALL_SYSTEM_USERS);
+
+    if (appState.currentUser) {
+        const found = ALL_SYSTEM_USERS.find(u => u.id === appState.currentUser.id);
+        if (found) {
+            appState.currentUser = found;
+            updateAuthUI();
+        }
+    }
+
+    renderSettingsUserList();
+    renderDirectoryUserList(appState.currentCategory || 'all', '');
+    populateSelectOptions();
+    renderDashboard();
+    renderCalendar();
+
+    showToast('คืนค่าเริ่มต้น 30 ท่านเรียบร้อย', 'ข้อมูลรายชื่อบุคลากรถูกรีเซ็ตกลับเป็นค่าเริ่มต้นแล้ว', 'success');
+}
+
+// -------------------------------------------------------------
 // ระบบสารบรรณคู่มือการใช้งาน (Saraban TOC Scroll)
 // -------------------------------------------------------------
 function scrollToSection(secId) {
@@ -2880,6 +3327,7 @@ window.onload = function() {
     // 3. เติมตัวเลือกและข้อมูลลงฟอร์ม
     populateSelectOptions();
     loadSettingsToForm();
+    renderSettingsUserList();
     renderPrintDocument();
     renderAttachedPdfList();
     renderSwapList();

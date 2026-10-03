@@ -165,7 +165,7 @@
 
                 <button id="btn-nav-settings" onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
                     <span class="text-base">⚙️</span>
-                    <span>ตั้งค่าระบบต่างๆ</span>
+                    <span>ตั้งค่าผู้ใช้ & ระบบ</span>
                 </button>
             </div>
 
@@ -947,139 +947,227 @@
                 </div>
             </div>
 
-            <!-- TAB 9: SYSTEM SETTINGS (ตั้งค่าระบบต่างๆ) -->
+            <!-- TAB 9: SYSTEM & USER SETTINGS (ตั้งค่าผู้ใช้ บุคลากร และระบบ) -->
             <div id="tab-settings" class="tab-content hidden space-y-6">
-                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-5">
+                    
+                    <!-- Sub-nav Tabs Header -->
                     <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-2xl">⚙️</span>
-                                <h2 class="text-xl font-bold text-slate-900">ตั้งค่าระบบเวรยาม อบต.ฝางคำ</h2>
+                                <h2 class="text-lg sm:text-xl font-bold text-slate-900">การตั้งค่าระบบ & จัดการบุคลากร</h2>
                             </div>
-                            <p class="text-xs text-slate-500 mt-1">กำหนดข้อมูลหน่วยงาน พิกัด GPS Geofencing เวลาผลัดเวร และการเชื่อมต่อ LINE Bot</p>
+                            <p class="text-xs text-slate-500 mt-1">ตั้งค่า Username, ตำแหน่ง, สังกัดกอง, ข้อมูลเวรยาม, GPS Geofencing และ LINE Bot</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-                                🔄 คืนค่าเริ่มต้น
+
+                        <!-- Sub-tab Pills Switcher -->
+                        <div class="inline-flex p-1 bg-slate-100 rounded-2xl self-start sm:self-auto shrink-0 border border-slate-200/80">
+                            <button type="button" id="btn-setting-sub-users" onclick="switchSettingsSubTab('users')" class="setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                                <span>👥</span>
+                                <span>จัดการบุคลากร & ผู้ใช้งาน</span>
                             </button>
-                            <button onclick="saveSettingsFromForm(event)" class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition flex items-center space-x-1.5">
-                                <span>💾 บันทึกการตั้งค่า</span>
+                            <button type="button" id="btn-setting-sub-system" onclick="switchSettingsSubTab('system')" class="setting-subtab-btn px-3.5 sm:px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-semibold text-xs transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                                <span>🏛️</span>
+                                <span>ข้อมูลหน่วยงาน & ระบบ</span>
                             </button>
                         </div>
                     </div>
 
-                    <form onsubmit="saveSettingsFromForm(event)" class="space-y-6">
-                        <!-- Group 1: Organization Info -->
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
-                                <span>🏛️</span>
-                                <span>ข้อมูลหน่วยงานและผู้บริหาร</span>
-                            </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อหน่วยงาน</label>
-                                    <input type="text" id="setting-org-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="องค์การบริหารส่วนตำบลฝางคำ">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ตำบล / อำเภอ / จังหวัด</label>
-                                    <div class="grid grid-cols-3 gap-1">
-                                        <input type="text" id="setting-subdistrict" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="ตำบลฝางคำ">
-                                        <input type="text" id="setting-district" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="อำเภอสิรินธร">
-                                        <input type="text" id="setting-province" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="จังหวัดอุบลราชธานี">
+                    <!-- ======================================================== -->
+                    <!-- SUBTAB 1: USER & PERSONNEL MANAGEMENT (จัดการผู้ใช้งาน) -->
+                    <!-- ======================================================== -->
+                    <div id="settings-subtab-users" class="space-y-5">
+                        <!-- Top Banner / Quick Action Bar -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/80 via-teal-50/50 to-emerald-50/80 p-4 rounded-2xl border border-emerald-100">
+                            <div class="min-w-0">
+                                <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                                    <span class="text-emerald-700">📋</span>
+                                    <span>บัญชีรายชื่อเจ้าหน้าที่ผู้ปฏิบัติงาน อบต.ฝางคำ</span>
+                                </h3>
+                                <p class="text-xs text-slate-600 mt-0.5">สามารถแก้ไข Username, ตำแหน่งราชการ, สังกัดกอง, สิทธิ์เวรยาม, รหัสผ่าน หรือเพิ่มเจ้าหน้าที่ใหม่ได้ที่นี่</p>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <button type="button" onclick="resetSystemUsersToDefault()" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap" title="คืนค่ารายชื่อเริ่มต้น 30 ท่าน">
+                                    <span>🔄</span>
+                                    <span>คืนค่าเริ่มต้น 30 ท่าน</span>
+                                </button>
+                                <button type="button" onclick="openAddUserModal()" class="px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                                    <span>➕</span>
+                                    <span>เพิ่มผู้ใช้ใหม่</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search & Filter Controls -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1">
+                            <!-- Search Bar -->
+                            <div class="relative flex-1 max-w-lg">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm">🔍</span>
+                                <input type="text" id="settings-user-search" oninput="handleSettingsUserSearch(this.value)" placeholder="ค้นหาชื่อ, Username, ตำแหน่ง, หรือกอง..." class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                            </div>
+
+                            <!-- Category Filter Pills -->
+                            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                                <button onclick="filterSettingsUsers('all')" id="btn-usercat-all" class="usercat-btn px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold transition cursor-pointer">
+                                    ทั้งหมด (<span id="user-count-all">0</span>)
+                                </button>
+                                <button onclick="filterSettingsUsers('night')" id="btn-usercat-night" class="usercat-btn px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer">
+                                    🌙 กะกลางคืน (<span id="user-count-night">0</span>)
+                                </button>
+                                <button onclick="filterSettingsUsers('day')" id="btn-usercat-day" class="usercat-btn px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer">
+                                    ☀️ กะกลางวัน (<span id="user-count-day">0</span>)
+                                </button>
+                                <button onclick="filterSettingsUsers('inspector')" id="btn-usercat-inspector" class="usercat-btn px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer">
+                                    🛡️ ผู้ตรวจเวร (<span id="user-count-inspector">0</span>)
+                                </button>
+                                <button onclick="filterSettingsUsers('admin')" id="btn-usercat-admin" class="usercat-btn px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition cursor-pointer">
+                                    👑 แอดมิน/ผู้บริหาร (<span id="user-count-admin">0</span>)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Personnel Cards Grid -->
+                        <div id="settings-users-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 pt-2">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- SUBTAB 2: SYSTEM & ORGANIZATION SETTINGS (ระบบ & อบต.) -->
+                    <!-- ======================================================== -->
+                    <div id="settings-subtab-system" class="hidden space-y-6">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                                    <span>🏛️</span>
+                                    <span>ข้อมูลหน่วยงานและพารามิเตอร์ระบบ</span>
+                                </h3>
+                                <p class="text-xs text-slate-500">กำหนดพิกัด GPS Geofencing, ข้อมูลผู้ลงนามคำสั่ง และการเชื่อมต่อ LINE</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button type="button" onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer">
+                                    🔄 คืนค่าเริ่มต้น
+                                </button>
+                                <button type="button" onclick="saveSettingsFromForm(event)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+                                    <span>💾 บันทึกการตั้งค่า</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <form onsubmit="saveSettingsFromForm(event)" class="space-y-6">
+                            <!-- Group 1: Organization Info -->
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                    <span>🏛️</span>
+                                    <span>ข้อมูลหน่วยงานและผู้บริหาร</span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ชื่อหน่วยงาน</label>
+                                        <input type="text" id="setting-org-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="องค์การบริหารส่วนตำบลฝางคำ">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ตำบล / อำเภอ / จังหวัด</label>
+                                        <div class="grid grid-cols-3 gap-1">
+                                            <input type="text" id="setting-subdistrict" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="ตำบลฝางคำ">
+                                            <input type="text" id="setting-district" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="อำเภอสิรินธร">
+                                            <input type="text" id="setting-province" class="settings-input p-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-[11px]" value="จังหวัดอุบลราชธานี">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ที่ทำการ</label>
+                                        <input type="text" id="setting-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-123">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">สายด่วนฉุกเฉิน / กู้ชีพ</label>
+                                        <input type="text" id="setting-emergency-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-199">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ชื่อนายก อบต. (ผู้ลงนามคำสั่ง)</label>
+                                        <input type="text" id="setting-mayor-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="นายกองค์การบริหารส่วนตำบลฝางคำ">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ชื่อปลัด อบต.</label>
+                                        <input type="text" id="setting-clerk-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="ปลัดองค์การบริหารส่วนตำบลฝางคำ">
                                     </div>
                                 </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ที่ทำการ</label>
-                                    <input type="text" id="setting-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-123">
+                            </div>
+
+                            <!-- Group 2: Geofencing GPS -->
+                            <div class="pt-4 border-t border-slate-100">
+                                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                    <span>📍</span>
+                                    <span>พิกัด GPS Geofencing (ตรวจสอบการลงเวลา)</span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ละติจูด (Latitude)</label>
+                                        <input type="number" step="0.000001" id="setting-lat" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="15.228500">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">ลองจิจูด (Longitude)</label>
+                                        <input type="number" step="0.000001" id="setting-lng" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="104.387100">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">รัศมีที่อนุญาตให้ลงเวลา (เมตร)</label>
+                                        <input type="number" id="setting-radius" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="150">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">สายด่วนฉุกเฉิน / กู้ชีพ</label>
-                                    <input type="text" id="setting-emergency-phone" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="045-789-199">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อนายก อบต. (ผู้ลงนามคำสั่ง)</label>
-                                    <input type="text" id="setting-mayor-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="นายกองค์การบริหารส่วนตำบลฝางคำ">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ชื่อปลัด อบต.</label>
-                                    <input type="text" id="setting-clerk-name" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="ปลัดองค์การบริหารส่วนตำบลฝางคำ">
+                                <p class="text-[11px] text-slate-500 mt-2">พิกัดนี้ใช้สำหรับคำนวณระยะห่างระหว่างจุดที่เจ้าหน้าที่กดเช็กอิน กับอาคารที่ทำการ อบต.ฝางคำ</p>
+                            </div>
+
+                            <!-- Group 3: Shift Hours -->
+                            <div class="pt-4 border-t border-slate-100">
+                                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                    <span>⏰</span>
+                                    <span>กำหนดช่วงเวลาผลัดเวร</span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div class="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
+                                        <label class="block font-bold text-amber-900 mb-1">☀️ กะกลางวัน (ผู้หญิง - วันหยุด)</label>
+                                        <input type="text" id="setting-day-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="08.00 - 16.30 น.">
+                                    </div>
+                                    <div class="p-3.5 rounded-2xl bg-slate-900/5 border border-slate-300">
+                                        <label class="block font-bold text-slate-900 mb-1">🌙 กะกลางคืน (ผู้ชาย - ทุกวัน)</label>
+                                        <input type="text" id="setting-night-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="16.30 - 08.00 น.">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Group 2: Geofencing GPS -->
-                        <div class="pt-4 border-t border-slate-100">
-                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
-                                <span>📍</span>
-                                <span>พิกัด GPS Geofencing (ตรวจสอบการลงเวลา)</span>
-                            </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ละติจูด (Latitude)</label>
-                                    <input type="number" step="0.000001" id="setting-lat" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="15.228500">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">ลองจิจูด (Longitude)</label>
-                                    <input type="number" step="0.000001" id="setting-lng" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="104.387100">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">รัศมีที่อนุญาตให้ลงเวลา (เมตร)</label>
-                                    <input type="number" id="setting-radius" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="150">
+                            <!-- Group 4: LINE Messaging API Bot -->
+                            <div class="pt-4 border-t border-slate-100">
+                                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                                    <span>💬</span>
+                                    <span>การเชื่อมต่อ LINE Messaging API (กลุ่ม อบต.ฝางคำ)</span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">Channel Access Token</label>
+                                        <input type="password" id="setting-line-token" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">LINE Group ID</label>
+                                        <input type="text" id="setting-line-group-id" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="C894a73129fbc923847192837419">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรเช้า</label>
+                                        <input type="time" id="setting-line-morning-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="07:30">
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรค่ำ</label>
+                                        <input type="time" id="setting-line-evening-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="16:00">
+                                    </div>
                                 </div>
                             </div>
-                            <p class="text-[11px] text-slate-500 mt-2">พิกัดนี้ใช้สำหรับคำนวณระยะห่างระหว่างจุดที่เจ้าหน้าที่กดเช็กอิน กับอาคารที่ทำการ อบต.ฝางคำ</p>
-                        </div>
 
-                        <!-- Group 3: Shift Hours -->
-                        <div class="pt-4 border-t border-slate-100">
-                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
-                                <span>⏰</span>
-                                <span>กำหนดช่วงเวลาผลัดเวร</span>
-                            </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                <div class="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
-                                    <label class="block font-bold text-amber-900 mb-1">☀️ กะกลางวัน (ผู้หญิง - วันหยุด)</label>
-                                    <input type="text" id="setting-day-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="08.00 - 16.30 น.">
-                                </div>
-                                <div class="p-3.5 rounded-2xl bg-slate-900/5 border border-slate-300">
-                                    <label class="block font-bold text-slate-900 mb-1">🌙 กะกลางคืน (ผู้ชาย - ทุกวัน)</label>
-                                    <input type="text" id="setting-night-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-white" value="16.30 - 08.00 น.">
-                                </div>
+                            <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
+                                <button type="submit" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition cursor-pointer">
+                                    💾 บันทึกการเปลี่ยนแปลงทั้งหมด
+                                </button>
                             </div>
-                        </div>
-
-                        <!-- Group 4: LINE Messaging API Bot -->
-                        <div class="pt-4 border-t border-slate-100">
-                            <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
-                                <span>💬</span>
-                                <span>การเชื่อมต่อ LINE Messaging API (กลุ่ม อบต.ฝางคำ)</span>
-                            </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">Channel Access Token</label>
-                                    <input type="password" id="setting-line-token" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">LINE Group ID</label>
-                                    <input type="text" id="setting-line-group-id" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="C894a73129fbc923847192837419">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรเช้า</label>
-                                    <input type="time" id="setting-line-morning-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="07:30">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 mb-1">เวลาส่งแจ้งเตือนเวรค่ำ</label>
-                                    <input type="time" id="setting-line-evening-time" class="settings-input w-full p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white" value="16:00">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
-                            <button type="submit" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">
-                                💾 บันทึกการเปลี่ยนแปลงทั้งหมด
-                            </button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1596,6 +1684,176 @@
     </div>
 
     <!-- ============================================================= -->
+    <!-- USER & PERSONNEL EDIT/ADD MODAL (หน้าต่างแก้ไข/เพิ่มข้อมูลบุคลากร) -->
+    <!-- ============================================================= -->
+    <div id="user-edit-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto no-print">
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] my-auto">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 px-5 sm:px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-xl shrink-0">
+                        👤
+                    </div>
+                    <div class="min-w-0">
+                        <h3 id="user-modal-title" class="text-base sm:text-lg font-bold leading-tight truncate">แก้ไขข้อมูลบุคลากร อบต.ฝางคำ</h3>
+                        <p id="user-modal-subtitle" class="text-xs text-white/90 truncate">กำหนด Username, ตำแหน่ง, สังกัดกอง และสิทธิ์การใช้งาน</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeUserEditModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-sm font-bold transition shrink-0 cursor-pointer">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Form Body -->
+            <form id="user-edit-form" onsubmit="handleSaveUserSubmit(event)" class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs">
+                <input type="hidden" id="user-form-id" value="">
+
+                <!-- Section 1: Username & Password -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/80">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            Username สำหรับเข้าสู่ระบบ <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-mono">@</span>
+                            <input type="text" id="user-form-username" required placeholder="เช่น manit, kiattiphon" class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-300 bg-white font-mono text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">ใช้ตัวอักษรภาษาอังกฤษตัวพิมพ์เล็กหรือตัวเลข</p>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            รหัสผ่าน (Password)
+                        </label>
+                        <input type="text" id="user-form-password" placeholder="เว้นว่างหากไม่เปลี่ยน (ค่าเริ่มต้น 1234)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <p class="text-[10px] text-slate-400 mt-1">กำหนดรหัสผ่านใหม่ หรือเว้นว่างไว้เพื่อคงรหัสเดิม</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Name & Official Title -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            ชื่อ - สกุล (พร้อมคำนำหน้า) <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="user-form-name" required placeholder="เช่น นายชาญชัย อักโข, นางสาวอำพร ทองสวัสดิ์" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            ตำแหน่งราชการ / หน้าที่ <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="user-form-role-name" required placeholder="เช่น หัวหน้าสำนักปลัด, นายช่างโยธา, นักวิชาการเงินฯ" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Section 3: Department, Gender & Category -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            สังกัด / สำนัก / กอง <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="user-form-dept" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="สำนักปลัด">สำนักปลัด</option>
+                            <option value="กองคลัง">กองคลัง</option>
+                            <option value="กองช่าง">กองช่าง</option>
+                            <option value="กองการศึกษา">กองการศึกษา</option>
+                            <option value="กองสาธารณสุข">กองสาธารณสุข</option>
+                            <option value="กองสวัสดิการสังคม">กองสวัสดิการสังคม</option>
+                            <option value="ผู้บริหาร อบต.ฝางคำ">ผู้บริหาร อบต.ฝางคำ</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            หมวดหมู่เวรยาม <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="user-form-category" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="night">🌙 กะกลางคืน (ชาย)</option>
+                            <option value="day">☀️ กะกลางวัน (หญิง)</option>
+                            <option value="inspector">🛡️ ผู้ตรวจเวรยาม</option>
+                            <option value="admin">👑 ผู้บริหาร / แอดมิน</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            สิทธิ์ในระบบ (Role) <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="user-form-role" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="staff">ผู้อยู่เวรยามทั่วไป (Staff)</option>
+                            <option value="inspector">ผู้ตรวจเวรยาม (Inspector)</option>
+                            <option value="executive">ผู้บริหาร (Executive)</option>
+                            <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 4: Phone & Duty Notes -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            เบอร์โทรศัพท์ติดต่อ
+                        </label>
+                        <input type="tel" id="user-form-phone" placeholder="เช่น 081-234-5678" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">
+                            เพศ
+                        </label>
+                        <select id="user-form-gender" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="male">👨 ชาย</option>
+                            <option value="female">👩 หญิง</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 5: Duty Days Note -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">
+                        หมายเหตุวันเข้าเวรตามคำสั่ง
+                    </label>
+                    <input type="text" id="user-form-duty-days" placeholder="เช่น วันที่ 1, 15, 29 ต.ค. หรือ ตรวจเวรทุกวันคี่" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <!-- Section 6: Avatar Photo & Presets -->
+                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2.5">
+                    <label class="block font-bold text-slate-700">
+                        รูปภาพโปรไฟล์ (URL หรือเลือกภาพตัวอย่าง)
+                    </label>
+                    <div class="flex items-center space-x-3">
+                        <img id="user-form-avatar-preview" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shrink-0 shadow-xs" alt="Preview">
+                        <input type="url" id="user-form-avatar" oninput="previewUserAvatar(this.value)" placeholder="https://..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+
+                    <!-- Quick Preset Avatars -->
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-semibold mb-1">กดเลือกรูปตัวอย่างได้ทันที:</div>
+                        <div class="flex flex-wrap items-center gap-1.5" id="user-avatar-presets">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Actions Footer -->
+                <div class="pt-3 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-between items-center gap-2">
+                    <button type="button" id="btn-user-form-delete" onclick="handleDeleteUser()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition cursor-pointer">
+                        🗑️ ลบผู้ใช้งานนี้
+                    </button>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button type="button" onclick="closeUserEditModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition cursor-pointer">
+                            ✕ ยกเลิก
+                        </button>
+                        <button type="submit" class="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-1.5">
+                            <span>💾</span>
+                            <span>บันทึกข้อมูล</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
     <!-- MOBILE BOTTOM NAVIGATION BAR (แถบเมนูด้านล่างบนมือถือ สไตล์แอป) -->
     <!-- ============================================================= -->
     <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1 shadow-lg no-print">
@@ -1747,7 +2005,7 @@
 
                     <button type="button" id="btn-mnav-settings" onclick="switchTab('settings')" class="mnav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
                         <span class="text-base">⚙️</span>
-                        <span>ตั้งค่าระบบ อบต.ฝางคำ</span>
+                        <span>ตั้งค่าผู้ใช้ & ระบบ</span>
                     </button>
                 </div>
 
