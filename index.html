@@ -123,9 +123,9 @@
                     <span>ปฏิทินตารางเวร</span>
                 </button>
 
-                <button type="button" onclick="openEditRosterModal()" class="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-semibold text-purple-700 bg-purple-50/70 hover:bg-purple-100 border border-purple-200/80 transition" title="ปรับแก้คำสั่งและตารางเวรยาม">
+                <button id="btn-nav-edit-roster" type="button" onclick="openEditRosterModal()" class="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-semibold text-purple-700 bg-purple-50/70 hover:bg-purple-100 border border-purple-200/80 transition" title="ปรับแก้คำสั่งและตารางเวรยาม">
                     <span class="text-base">✏️</span>
-                    <span>แก้ไข/ปรับเปลี่ยนเวร</span>
+                    <span id="btn-nav-edit-roster-label">แก้ไข/ปรับเปลี่ยนเวร</span>
                 </button>
 
                 <button id="btn-nav-checkin" onclick="switchTab('checkin')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
@@ -171,9 +171,12 @@
                     <span>สารบัญคู่มือการใช้งาน</span>
                 </button>
 
-                <button id="btn-nav-settings" onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
-                    <span class="text-base">⚙️</span>
-                    <span>ตั้งค่าผู้ใช้ & ระบบ</span>
+                <button id="btn-nav-settings" onclick="switchTab('settings')" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-base">⚙️</span>
+                        <span id="btn-nav-settings-label">ตั้งค่าผู้ใช้ & ระบบ</span>
+                    </div>
+                    <span id="btn-nav-settings-badge" class="hidden text-[10px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded"></span>
                 </button>
             </div>
 
@@ -227,9 +230,9 @@
                                 <span class="text-sm">💬</span>
                                 <span>แชร์เข้า OpenChat</span>
                             </button>
-                            <button onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="w-full sm:w-auto px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้">
+                            <button id="btn-dash-edit-roster" onclick="openEditRosterModal(appState.currentSystemDay || getRealTodayDay())" class="w-full sm:w-auto px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap" title="ปรับเปลี่ยนรายชื่อผู้เข้าเวรวันนี้ (เฉพาะแอดมิน)">
                                 <span>✏️</span>
-                                <span>แก้ไขเวรวันนี้</span>
+                                <span id="btn-dash-edit-roster-label">แก้ไขเวรวันนี้</span>
                             </button>
                         </div>
                         
@@ -1158,11 +1161,11 @@
                                 <p class="text-xs text-slate-600 mt-0.5">สามารถแก้ไข Username, ตำแหน่งราชการ, สังกัดกอง, สิทธิ์เวรยาม, รหัสผ่าน หรือเพิ่มเจ้าหน้าที่ใหม่ได้ที่นี่</p>
                             </div>
                             <div class="flex items-center space-x-2 shrink-0">
-                                <button type="button" onclick="resetSystemUsersToDefault()" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap" title="คืนค่ารายชื่อเริ่มต้น 30 ท่าน">
+                                <button type="button" id="btn-settings-reset-30" onclick="resetSystemUsersToDefault()" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap" title="คืนค่ารายชื่อเริ่มต้น 30 ท่าน (เฉพาะแอดมิน)">
                                     <span>🔄</span>
                                     <span>คืนค่าเริ่มต้น 30 ท่าน</span>
                                 </button>
-                                <button type="button" onclick="openAddUserModal()" class="px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                                <button type="button" id="btn-settings-add-user" onclick="openAddUserModal()" class="px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs flex items-center space-x-1.5 cursor-pointer whitespace-nowrap" title="เพิ่มเจ้าหน้าที่ใหม่ (เฉพาะแอดมิน)">
                                     <span>➕</span>
                                     <span>เพิ่มผู้ใช้ใหม่</span>
                                 </button>
@@ -1908,6 +1911,12 @@
             <form id="user-edit-form" onsubmit="handleSaveUserSubmit(event)" class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs">
                 <input type="hidden" id="user-form-id" value="">
 
+                <!-- Admin vs Staff Notice Banner -->
+                <div id="user-form-role-alert" class="hidden p-3 rounded-2xl text-xs flex items-center space-x-2.5">
+                    <span id="user-form-role-alert-icon" class="text-base">ℹ️</span>
+                    <span id="user-form-role-alert-text"></span>
+                </div>
+
                 <!-- Section 1: Username & Password -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/80">
                     <div>
@@ -2156,9 +2165,9 @@
                         <span>ปฏิทินตารางเวร ๓๑ วัน</span>
                     </button>
 
-                    <button type="button" onclick="closeMobileDrawer(); openEditRosterModal();" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition">
+                    <button id="btn-mnav-edit-roster" type="button" onclick="closeMobileDrawer(); openEditRosterModal();" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition">
                         <span class="text-base">✏️</span>
-                        <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
+                        <span id="btn-mnav-edit-roster-label">แก้ไข/ปรับเปลี่ยนตารางเวร</span>
                     </button>
 
                     <button type="button" id="btn-mnav-checkin" onclick="switchTab('checkin')" class="mnav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
@@ -2213,9 +2222,12 @@
                         <span class="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">คู่มือ</span>
                     </button>
 
-                    <button type="button" id="btn-mnav-settings" onclick="switchTab('settings')" class="mnav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
-                        <span class="text-base">⚙️</span>
-                        <span>ตั้งค่าผู้ใช้ & ระบบ</span>
+                    <button type="button" id="btn-mnav-settings" onclick="switchTab('settings')" class="mnav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-base">⚙️</span>
+                            <span id="btn-mnav-settings-label">ตั้งค่าผู้ใช้ & ระบบ</span>
+                        </div>
+                        <span id="btn-mnav-settings-badge" class="hidden text-[10px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded"></span>
                     </button>
                 </div>
 

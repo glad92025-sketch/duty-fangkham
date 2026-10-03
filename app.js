@@ -128,6 +128,15 @@ function setLoggedInUserSession(user) {
     }
 }
 
+function isCurrentUserAdmin() {
+    if (!appState || !appState.currentUser) return false;
+    const u = appState.currentUser;
+    return u.role === 'admin' || 
+           u.role === 'executive' || 
+           u.category === 'admin' ||
+           (u.username && (u.username.toLowerCase() === 'admin' || u.username.toLowerCase() === 'palad'));
+}
+
 let ALL_SYSTEM_USERS = getSavedSystemUsers();
 
 const PRESET_AVATARS = [
@@ -690,16 +699,26 @@ function renderDirectoryUserList(category = 'all', searchQuery = '') {
     }
 
     container.innerHTML = filtered.map(u => {
+        const isAdminUser = (u.category === 'admin' || u.role === 'admin' || u.role === 'executive');
+        const rolePill = isAdminUser 
+            ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded-md text-[9px] font-bold bg-purple-100 text-purple-800 border border-purple-200">👑 แอดมิน</span>`
+            : (u.category === 'inspector' 
+                ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded-md text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-200">🛡️ ผู้ตรวจ</span>`
+                : `<span class="inline-flex items-center px-1.5 py-0.2 rounded-md text-[9px] font-medium bg-slate-100 text-slate-600">เจ้าหน้าที่</span>`);
+
         return `
-            <div class="p-3 bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 shadow-xs flex items-center justify-between gap-2">
+            <div class="p-3 bg-white rounded-2xl border ${isAdminUser ? 'border-purple-200 bg-purple-50/20' : 'border-slate-200'} hover:border-emerald-300 shadow-xs flex items-center justify-between gap-2">
                 <div class="flex items-center space-x-2.5 min-w-0">
                     <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-200 flex-shrink-0" alt="${u.name}">
                     <div class="min-w-0">
-                        <div class="font-bold text-xs text-slate-900 truncate">${u.name}</div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="font-bold text-xs text-slate-900 truncate">${u.name}</span>
+                            ${rolePill}
+                        </div>
                         <div class="text-[10px] text-slate-500 truncate">${u.position || u.roleName} • <span class="font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded">@${u.username}</span></div>
                     </div>
                 </div>
-                <button onclick="pickUserToLogin('${u.username}')" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-[11px] font-bold transition flex-shrink-0">
+                <button onclick="pickUserToLogin('${u.username}')" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-[11px] font-bold transition flex-shrink-0 cursor-pointer">
                     เลือก ➔
                 </button>
             </div>
@@ -753,6 +772,40 @@ function updateAuthUI() {
     const drawerLogin = document.getElementById('drawer-btn-login');
     const drawerEdit = document.getElementById('drawer-btn-edit');
 
+    const isAdmin = isCurrentUserAdmin();
+
+    // 1. Sidebar & Drawer Settings Badges (Lock for non-admin)
+    const navSettingsBadge = document.getElementById('btn-nav-settings-badge');
+    const mnavSettingsBadge = document.getElementById('btn-mnav-settings-badge');
+    if (navSettingsBadge) {
+        navSettingsBadge.classList.remove('hidden');
+        navSettingsBadge.textContent = isAdmin ? '👑 Admin' : '🔒 ล็อค';
+        navSettingsBadge.className = isAdmin 
+            ? 'text-[10px] bg-purple-100 text-purple-800 font-bold px-1.5 py-0.5 rounded border border-purple-200' 
+            : 'text-[10px] bg-slate-100 text-slate-500 font-bold px-1.5 py-0.5 rounded border border-slate-200';
+    }
+    if (mnavSettingsBadge) {
+        mnavSettingsBadge.classList.remove('hidden');
+        mnavSettingsBadge.textContent = isAdmin ? '👑 Admin' : '🔒 ล็อค';
+        mnavSettingsBadge.className = isAdmin 
+            ? 'text-[10px] bg-purple-100 text-purple-800 font-bold px-1.5 py-0.5 rounded border border-purple-200' 
+            : 'text-[10px] bg-slate-100 text-slate-500 font-bold px-1.5 py-0.5 rounded border border-slate-200';
+    }
+
+    // 2. Edit Roster Buttons Labels (Indicate Admin Only)
+    const navEditRosterLabel = document.getElementById('btn-nav-edit-roster-label');
+    const dashEditRosterLabel = document.getElementById('btn-dash-edit-roster-label');
+    const mnavEditRosterLabel = document.getElementById('btn-mnav-edit-roster-label');
+    const dayDetailEditBtn = document.getElementById('day-detail-btn-edit');
+
+    if (navEditRosterLabel) navEditRosterLabel.textContent = isAdmin ? 'แก้ไข/ปรับเปลี่ยนเวร' : 'ปรับเปลี่ยนเวร (Admin)';
+    if (dashEditRosterLabel) dashEditRosterLabel.textContent = isAdmin ? 'แก้ไขเวรวันนี้' : '🔒 แก้ไขเวร (Admin)';
+    if (mnavEditRosterLabel) mnavEditRosterLabel.textContent = isAdmin ? 'แก้ไข/ปรับเปลี่ยนตารางเวร' : 'ปรับเปลี่ยนตารางเวร (Admin)';
+    if (dayDetailEditBtn) {
+        if (isAdmin) dayDetailEditBtn.classList.remove('hidden');
+        else dayDetailEditBtn.classList.add('hidden');
+    }
+
     // กรณีที่ยังไม่ได้เข้าสู่ระบบ (Guest / ผู้เยี่ยมชม)
     if (!u) {
         if (nameEl) nameEl.textContent = 'ยังไม่ได้เข้าสู่ระบบ';
@@ -784,8 +837,8 @@ function updateAuthUI() {
     if (nameEl) nameEl.textContent = u.name;
     if (posEl) posEl.textContent = `${displayTitle} • @${u.username}`;
     if (roleEl) {
-        roleEl.textContent = displayTitle;
-        roleEl.className = `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${u.badge || 'bg-emerald-50 text-emerald-800 border-emerald-200'}`;
+        roleEl.textContent = isAdmin ? `👑 ${displayTitle}` : displayTitle;
+        roleEl.className = `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${u.badge || (isAdmin ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200')}`;
     }
     if (avatarEl) avatarEl.src = u.avatar;
     if (btnLogout) btnLogout.classList.remove('hidden');
@@ -992,6 +1045,11 @@ function switchTab(tabId) {
     }
 
     if (tabId === 'settings') {
+        if (!isCurrentUserAdmin()) {
+            showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'หน้าตั้งค่าระบบและจัดการบุคลากร อนุญาตให้เฉพาะผู้ดูแลระบบ (Admin: @admin) หรือผู้บริหาร (@palad) เท่านั้น', 'warning');
+            openLoginModal('login');
+            return;
+        }
         renderSettingsUserList();
     }
     if (tabId === 'report') {
@@ -1499,6 +1557,11 @@ function jumpToCurrentDayCheckin() {
 // ระบบแก้ไขและปรับปรุงตารางเวรยาม (Roster Editor Modal)
 // -------------------------------------------------------------
 function openEditRosterModal(day) {
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'การแก้ไขและปรับเปลี่ยนตารางเวรยามราชการ อนุญาตเฉพาะผู้ดูแลระบบ (Admin: @admin) หรือผู้บริหาร (@palad) เท่านั้น', 'warning');
+        openLoginModal('login');
+        return;
+    }
     currentEditingDay = typeof day === 'number' ? day : (appState.currentSystemDay || 2);
     const modal = document.getElementById('edit-roster-modal');
     if (!modal) return;
@@ -1705,6 +1768,10 @@ function handleDayShiftToggle(isChecked) {
 }
 
 function saveRosterEditSubmit() {
+    if (!isCurrentUserAdmin()) {
+        showToast('ปฏิเสธการดำเนินการ 🔒', 'เฉพาะผู้ดูแลระบบ (Admin) หรือผู้บริหารเท่านั้นที่สามารถบันทึกตารางเวรได้', 'error');
+        return;
+    }
     const day = currentEditingDay;
     const sched = appState.schedules.find(s => s.day === day);
     if (!sched) return;
@@ -1800,6 +1867,10 @@ function saveRosterEditSubmit() {
 }
 
 function resetCurrentDayRoster() {
+    if (!isCurrentUserAdmin()) {
+        showToast('ปฏิเสธการดำเนินการ 🔒', 'เฉพาะผู้ดูแลระบบ (Admin) หรือผู้บริหารเท่านั้นที่สามารถคืนค่าตารางเวรได้', 'error');
+        return;
+    }
     const day = currentEditingDay;
     const customRoster = getCustomRoster();
     if (!customRoster[day]) {
@@ -1821,6 +1892,10 @@ function resetCurrentDayRoster() {
 }
 
 function confirmResetAllRoster() {
+    if (!isCurrentUserAdmin()) {
+        showToast('ปฏิเสธการดำเนินการ 🔒', 'เฉพาะผู้ดูแลระบบ (Admin) หรือผู้บริหารเท่านั้นที่สามารถคืนค่าตารางเวรทั้งหมดได้', 'error');
+        return;
+    }
     if (confirm('ท่านต้องการคืนค่าเริ่มต้นทั้งหมด 31 วัน ใช่หรือไม่? ข้อมูลการแก้ไขทั้งหมดจะถูกล้างกลับไปเป็นคำสั่งเดิมของ อบต.ฝางคำ')) {
         localStorage.removeItem('fangkham_custom_roster_v2');
         localStorage.removeItem('fangkham_custom_roster_v1');
@@ -2513,6 +2588,16 @@ function clearSignature() {
 }
 
 function submitInspection() {
+    if (!appState.currentUser) {
+        showToast('กรุณาเข้าสู่ระบบก่อน', 'กรุณาล็อกอินด้วยบัญชีผู้ตรวจเวรหรือผู้ดูแลระบบเพื่อบันทึกการตรวจเวร', 'warning');
+        openLoginModal('login');
+        return;
+    }
+    if (appState.currentUser.role !== 'inspector' && !isCurrentUserAdmin()) {
+        showToast('สิทธิ์ไม่ถูกต้อง 🔒', 'เฉพาะผู้ตรวจเวรประจำผลัด หรือผู้ดูแลระบบ/ผู้บริหารเท่านั้น ที่สามารถบันทึกสมุดตรวจเวรยามได้', 'error');
+        return;
+    }
+
     const inspectorSelect = document.getElementById('inspect-inspector-select');
     const staffPresent = document.getElementById('inspect-staff-present').checked;
     const premiseNormal = document.getElementById('inspect-premise-normal').checked;
@@ -3730,6 +3815,10 @@ function loadSettingsToForm() {
 
 function saveSettingsFromForm(event) {
     if (event) event.preventDefault();
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'เฉพาะผู้ดูแลระบบ (Admin) หรือผู้บริหารเท่านั้นที่สามารถบันทึกการตั้งค่าระบบได้', 'error');
+        return;
+    }
 
     const getVal = (id) => {
         const el = document.getElementById(id);
@@ -3764,6 +3853,10 @@ function saveSettingsFromForm(event) {
 }
 
 function resetSettingsToDefault() {
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'เฉพาะผู้ดูแลระบบ (Admin) หรือผู้บริหารเท่านั้นที่สามารถคืนค่าเริ่มต้นได้', 'error');
+        return;
+    }
     if (!confirm('ต้องการคืนค่าการตั้งค่าเริ่มต้นใช่หรือไม่?')) return;
     appState.settings = { ...DEFAULT_SETTINGS };
     loadSettingsToForm();
@@ -3826,6 +3919,12 @@ function renderSettingsUserList() {
     const grid = document.getElementById('settings-users-grid');
     if (!grid) return;
 
+    const isAdmin = isCurrentUserAdmin();
+    const btnReset30 = document.getElementById('btn-settings-reset-30');
+    const btnAddUser = document.getElementById('btn-settings-add-user');
+    if (btnReset30) btnReset30.style.display = isAdmin ? 'inline-flex' : 'none';
+    if (btnAddUser) btnAddUser.style.display = isAdmin ? 'inline-flex' : 'none';
+
     // Update counts
     const countAll = document.getElementById('user-count-all');
     const countNight = document.getElementById('user-count-night');
@@ -3875,6 +3974,28 @@ function renderSettingsUserList() {
         }[u.category] || '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">ทั่วไป</span>';
 
         const roleTitle = u.position || u.roleName || 'เจ้าหน้าที่';
+        const isOwn = appState.currentUser && (appState.currentUser.id === u.id || (appState.currentUser.username && appState.currentUser.username.toLowerCase() === u.username.toLowerCase()));
+
+        let editBtnHtml = '';
+        if (isAdmin) {
+            editBtnHtml = `
+                <button type="button" onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-xs font-bold transition flex items-center space-x-1 cursor-pointer whitespace-nowrap">
+                    <span>✏️</span>
+                    <span>แก้ไข (Admin)</span>
+                </button>
+            `;
+        } else if (isOwn) {
+            editBtnHtml = `
+                <button type="button" onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-800 text-xs font-bold transition flex items-center space-x-1 cursor-pointer whitespace-nowrap">
+                    <span>👤</span>
+                    <span>โปรไฟล์ฉัน</span>
+                </button>
+            `;
+        } else {
+            editBtnHtml = `
+                <span class="text-[10px] text-slate-400 font-semibold px-2 py-1 bg-slate-50 rounded-lg border border-slate-200" title="เฉพาะผู้ดูแลระบบ">🔒 สงวนสิทธิ์</span>
+            `;
+        }
 
         return `
             <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition flex flex-col justify-between gap-3">
@@ -3900,10 +4021,7 @@ function renderSettingsUserList() {
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
                         ${u.phone ? `<a href="tel:${u.phone}" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition text-xs" title="โทร ${u.phone}">📞</a>` : ''}
-                        <button type="button" onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-xs font-bold transition flex items-center space-x-1 cursor-pointer whitespace-nowrap">
-                            <span>✏️</span>
-                            <span>แก้ไข</span>
-                        </button>
+                        ${editBtnHtml}
                     </div>
                 </div>
             </div>
@@ -3918,20 +4036,69 @@ function openEditUserModal(userId) {
     const modal = document.getElementById('user-edit-modal');
     if (!modal) return;
 
-    document.getElementById('user-modal-title').textContent = `✏️ แก้ไขข้อมูลบุคลากร: ${user.name}`;
-    document.getElementById('user-modal-subtitle').textContent = `แก้ไข Username, ตำแหน่ง, สังกัดกอง และรหัสผ่าน`;
+    const isAdmin = isCurrentUserAdmin();
+    const isOwnProfile = appState.currentUser && (appState.currentUser.id === user.id || (appState.currentUser.username && appState.currentUser.username.toLowerCase() === user.username.toLowerCase()));
+
+    // หากไม่ใช่แอดมิน และไม่ใช่โปรไฟล์ของตนเอง ห้ามแก้ไขเด็ดขาด!
+    if (!isAdmin && !isOwnProfile) {
+        showToast('ไม่มีสิทธิ์เข้าถึง 🔒', 'ท่านไม่สามารถแก้ไขข้อมูลของเจ้าหน้าที่ท่านอื่นได้ เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น', 'error');
+        return;
+    }
+
+    const titleEl = document.getElementById('user-modal-title');
+    const subTitleEl = document.getElementById('user-modal-subtitle');
+    const alertBox = document.getElementById('user-form-role-alert');
+    const alertText = document.getElementById('user-form-role-alert-text');
+
+    if (isAdmin) {
+        if (titleEl) titleEl.textContent = `👑 จัดการข้อมูลบุคลากร (สิทธิ์แอดมิน): ${user.name}`;
+        if (subTitleEl) subTitleEl.textContent = `กำหนด Username, ตำแหน่งราชการ, สังกัดกอง, สิทธิ์ในระบบ และรหัสผ่าน`;
+        if (alertBox) {
+            alertBox.className = 'p-3 rounded-2xl text-xs flex items-center space-x-2.5 bg-purple-50 text-purple-900 border border-purple-200';
+            alertBox.classList.remove('hidden');
+            if (alertText) alertText.textContent = '👑 สิทธิ์แอดมินระดับสูงสุด: ท่านสามารถแก้ไขข้อมูล กำหนดตำแหน่ง สังกัด และสิทธิ์ระบบของเจ้าหน้าที่ท่านนี้ได้อย่างสมบูรณ์';
+        }
+    } else {
+        if (titleEl) titleEl.textContent = `👤 โปรไฟล์ส่วนตัว: ${user.name}`;
+        if (subTitleEl) subTitleEl.textContent = `แก้ไขเบอร์โทรศัพท์ รูปโปรไฟล์ และรหัสผ่านส่วนตัว`;
+        if (alertBox) {
+            alertBox.className = 'p-3 rounded-2xl text-xs flex items-center space-x-2.5 bg-amber-50 text-amber-900 border border-amber-200';
+            alertBox.classList.remove('hidden');
+            if (alertText) alertText.textContent = '🔒 บัญชีเจ้าหน้าที่ทั่วไป: สามารถเปลี่ยนเบอร์โทรศัพท์ รูปโปรไฟล์ และรหัสผ่านได้ (การเปลี่ยนตำแหน่งราชการและสิทธิ์ระบบต้องให้แอดมินเป็นผู้ดำเนินการ)';
+        }
+    }
 
     document.getElementById('user-form-id').value = user.id;
-    document.getElementById('user-form-username').value = user.username;
+
+    // Fields that regular staff cannot edit
+    const usernameEl = document.getElementById('user-form-username');
+    const roleNameEl = document.getElementById('user-form-role-name');
+    const deptEl = document.getElementById('user-form-dept');
+    const categoryEl = document.getElementById('user-form-category');
+    const roleEl = document.getElementById('user-form-role');
+    const dutyDaysEl = document.getElementById('user-form-duty-days');
+
+    usernameEl.value = user.username;
+    roleNameEl.value = user.position || user.roleName || '';
+    deptEl.value = user.dept || 'สำนักปลัด';
+    categoryEl.value = user.category || 'night';
+    roleEl.value = user.role || 'staff';
+    dutyDaysEl.value = user.dutyDays || '';
+
+    // Lock/Unlock fields according to admin status
+    [usernameEl, roleNameEl, deptEl, categoryEl, roleEl, dutyDaysEl].forEach(el => {
+        if (el) {
+            el.disabled = !isAdmin;
+            el.classList.toggle('bg-slate-100', !isAdmin);
+            el.classList.toggle('cursor-not-allowed', !isAdmin);
+        }
+    });
+
+    // Personal fields (can be edited by user or admin)
     document.getElementById('user-form-password').value = '';
     document.getElementById('user-form-name').value = user.name;
-    document.getElementById('user-form-role-name').value = user.position || user.roleName || '';
-    document.getElementById('user-form-dept').value = user.dept || 'สำนักปลัด';
-    document.getElementById('user-form-category').value = user.category || 'night';
-    document.getElementById('user-form-role').value = user.role || 'staff';
     document.getElementById('user-form-gender').value = user.gender || 'male';
     document.getElementById('user-form-phone').value = user.phone || '';
-    document.getElementById('user-form-duty-days').value = user.dutyDays || '';
     document.getElementById('user-form-avatar').value = user.avatar || '';
 
     const preview = document.getElementById('user-form-avatar-preview');
@@ -3943,7 +4110,7 @@ function openEditUserModal(userId) {
 
     const deleteBtn = document.getElementById('btn-user-form-delete');
     if (deleteBtn) {
-        if (user.id === 'admin' || user.id === 'exec') {
+        if (!isAdmin || user.id === 'admin' || user.id === 'exec') {
             deleteBtn.classList.add('hidden');
         } else {
             deleteBtn.classList.remove('hidden');
@@ -3954,11 +4121,41 @@ function openEditUserModal(userId) {
 }
 
 function openAddUserModal() {
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'การเพิ่มเจ้าหน้าที่ใหม่ สงวนสิทธิ์เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น', 'warning');
+        return;
+    }
+
     const modal = document.getElementById('user-edit-modal');
     if (!modal) return;
 
-    document.getElementById('user-modal-title').textContent = '➕ เพิ่มเจ้าหน้าที่/ผู้ใช้งานใหม่';
-    document.getElementById('user-modal-subtitle').textContent = 'กำหนด Username, ตำแหน่ง, สังกัดกอง และรหัสผ่าน';
+    const titleEl = document.getElementById('user-modal-title');
+    const subTitleEl = document.getElementById('user-modal-subtitle');
+    const alertBox = document.getElementById('user-form-role-alert');
+    const alertText = document.getElementById('user-form-role-alert-text');
+
+    if (titleEl) titleEl.textContent = '➕ เพิ่มเจ้าหน้าที่/ผู้ใช้งานใหม่ (สิทธิ์แอดมิน)';
+    if (subTitleEl) subTitleEl.textContent = 'กำหนด Username, ตำแหน่งราชการ, สังกัดกอง, สิทธิ์ในระบบ และรหัสผ่าน';
+    if (alertBox) {
+        alertBox.className = 'p-3 rounded-2xl text-xs flex items-center space-x-2.5 bg-purple-50 text-purple-900 border border-purple-200';
+        alertBox.classList.remove('hidden');
+        if (alertText) alertText.textContent = '👑 สร้างบัญชีผู้ใช้งานใหม่ กำหนดสิทธิ์และมอบหมายภารกิจเวรยาม';
+    }
+
+    // Enable all fields
+    const usernameEl = document.getElementById('user-form-username');
+    const roleNameEl = document.getElementById('user-form-role-name');
+    const deptEl = document.getElementById('user-form-dept');
+    const categoryEl = document.getElementById('user-form-category');
+    const roleEl = document.getElementById('user-form-role');
+    const dutyDaysEl = document.getElementById('user-form-duty-days');
+
+    [usernameEl, roleNameEl, deptEl, categoryEl, roleEl, dutyDaysEl].forEach(el => {
+        if (el) {
+            el.disabled = false;
+            el.classList.remove('bg-slate-100', 'cursor-not-allowed');
+        }
+    });
 
     document.getElementById('user-form-id').value = '';
     document.getElementById('user-form-username').value = '';
@@ -4017,18 +4214,39 @@ function renderPresetAvatars() {
 function handleSaveUserSubmit(event) {
     if (event) event.preventDefault();
 
+    const isAdmin = isCurrentUserAdmin();
     const id = document.getElementById('user-form-id').value.trim();
-    const username = document.getElementById('user-form-username').value.trim().toLowerCase();
+    let username = document.getElementById('user-form-username').value.trim().toLowerCase();
     const password = document.getElementById('user-form-password').value.trim();
     const name = document.getElementById('user-form-name').value.trim();
-    const roleName = document.getElementById('user-form-role-name').value.trim();
-    const dept = document.getElementById('user-form-dept').value;
-    const category = document.getElementById('user-form-category').value;
-    const role = document.getElementById('user-form-role').value;
+    let roleName = document.getElementById('user-form-role-name').value.trim();
+    let dept = document.getElementById('user-form-dept').value;
+    let category = document.getElementById('user-form-category').value;
+    let role = document.getElementById('user-form-role').value;
     const gender = document.getElementById('user-form-gender').value;
     const phone = document.getElementById('user-form-phone').value.trim();
-    const dutyDays = document.getElementById('user-form-duty-days').value.trim();
+    let dutyDays = document.getElementById('user-form-duty-days').value.trim();
     const avatar = document.getElementById('user-form-avatar').value.trim() || PRESET_AVATARS[0];
+
+    // Non-admin security validation
+    if (!isAdmin) {
+        const isOwn = appState.currentUser && (appState.currentUser.id === id || (appState.currentUser.username && appState.currentUser.username.toLowerCase() === username.toLowerCase()));
+        if (!id || !isOwn) {
+            showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'คุณไม่มีสิทธิ์เพิ่มผู้ใช้งานหรือแก้ไขข้อมูลของผู้อื่น', 'error');
+            return;
+        }
+
+        // Lock critical system fields so regular users cannot elevate privileges
+        const existing = ALL_SYSTEM_USERS.find(u => u.id === id);
+        if (existing) {
+            username = existing.username;
+            roleName = existing.roleName || existing.position;
+            dept = existing.dept;
+            category = existing.category;
+            role = existing.role;
+            dutyDays = existing.dutyDays;
+        }
+    }
 
     if (!username) {
         showToast('กรุณากรอก Username', 'Username ต้องไม่เว้นว่าง', 'warning');
@@ -4083,6 +4301,11 @@ function handleSaveUserSubmit(event) {
             showToast('บันทึกข้อมูลเรียบร้อย 🎉', `อัปเดตข้อมูลของ ${name} สำเร็จแล้ว`, 'success');
         }
     } else {
+        if (!isAdmin) {
+            showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'การเพิ่มบัญชีผู้ใช้งานใหม่ สงวนสิทธิ์เฉพาะผู้ดูแลระบบเท่านั้น', 'error');
+            return;
+        }
+
         // Add new user
         const newId = 'user_' + Date.now();
         const newUser = {
@@ -4122,6 +4345,11 @@ function handleSaveUserSubmit(event) {
 }
 
 function handleDeleteUser() {
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'การลบบัญชีผู้ใช้งาน สงวนสิทธิ์เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น', 'error');
+        return;
+    }
+
     const id = document.getElementById('user-form-id').value.trim();
     if (!id) return;
 
@@ -4155,6 +4383,11 @@ function handleDeleteUser() {
 }
 
 function resetSystemUsersToDefault() {
+    if (!isCurrentUserAdmin()) {
+        showToast('สงวนสิทธิ์เฉพาะแอดมิน 🔒', 'การคืนค่ารายชื่อเริ่มต้น 30 ท่าน สงวนสิทธิ์เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น', 'error');
+        return;
+    }
+
     if (!confirm('ต้องการคืนค่ารายชื่อบุคลากรทั้งหมด 30 ท่านกลับเป็นค่าเริ่มต้นตามคำสั่งราชการเดิมใช่หรือไม่? (ข้อมูลที่แก้ไขหรือเพิ่มใหม่จะถูกรีเซ็ต)')) {
         return;
     }
