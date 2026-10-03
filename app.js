@@ -8,6 +8,142 @@
 const FANGKHAM_COORDS = { lat: 15.22850, lng: 104.38710 }; // พิกัด ที่ทำการ อบต.ฝางคำ อ.สิรินธร จ.อุบลราชธานี
 const GEOFENCE_RADIUS = 150; // เมตร
 
+// =============================================================
+// ระบบเชื่อมต่อ Cloud Realtime Database (Firebase)
+// ซิงค์ข้อมูลข้ามคอมพิวเตอร์และมือถือทุกเครื่องแบบ Real-time
+// =============================================================
+const FIREBASE_DB_URL = 'https://duty-fangkham-default-rtdb.asia-southeast1.firebasedatabase.app';
+let isCloudSyncing = false;
+let lastCloudSyncTime = null;
+
+function updateCloudStatusBadge(status) {
+    const badge = document.getElementById('cloud-sync-status');
+    const textEl = document.getElementById('cloud-sync-status-text');
+    const dot = document.getElementById('cloud-sync-status-dot');
+    if (!badge || !textEl) return;
+
+    if (status === 'syncing') {
+        badge.className = 'inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 cursor-pointer shadow-2xs';
+        textEl.textContent = '☁️ กำลังซิงค์...';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
+    } else if (status === true) {
+        const timeStr = lastCloudSyncTime ? lastCloudSyncTime.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '';
+        badge.className = 'inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-pointer shadow-2xs hover:bg-emerald-100 transition whitespace-nowrap';
+        textEl.textContent = timeStr ? `☁️ คลาวด์ซิงค์ ${timeStr} น.` : '☁️ คลาวด์เชื่อมต่อแล้ว';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+    } else {
+        badge.className = 'inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-300 cursor-pointer shadow-2xs';
+        textEl.textContent = '☁️ โหมดออฟไลน์';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-slate-400';
+    }
+}
+
+async function syncToCloud(path, data) {
+    if (!FIREBASE_DB_URL) return;
+    try {
+        await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        lastCloudSyncTime = new Date();
+        updateCloudStatusBadge(true);
+    } catch(err) {
+        console.warn(`[CloudSync] Error saving ${path}:`, err);
+        updateCloudStatusBadge(false);
+    }
+}
+
+async function syncFromCloud(silent = true) {
+    if (!FIREBASE_DB_URL || isCloudSyncing) return;
+    isCloudSyncing = true;
+    updateCloudStatusBadge('syncing');
+
+    try {
+        // 1. Fetch Users
+        const resUsers = await fetch(`${FIREBASE_DB_URL}/users.json`);
+        if (resUsers.ok) {
+            const cloudUsers = await resUsers.json();
+            if (Array.isArray(cloudUsers) && cloudUsers.length > 0) {
+                ALL_SYSTEM_USERS = cloudUsers;
+                try {
+                    localStorage.setItem('fangkham_system_users_v2', JSON.stringify(cloudUsers));
+                    localStorage.setItem('fangkham_system_users_v1', JSON.stringify(cloudUsers));
+                } catch(e) {}
+
+                // If logged in, update session with latest profile from cloud
+                if (appState && appState.currentUser) {
+                    const fresh = cloudUsers.find(u => u.id === appState.currentUser.id || (u.username && u.username.toLowerCase() === appState.currentUser.username.toLowerCase()));
+                    if (fresh) {
+                        setLoggedInUserSession(fresh);
+                    }
+                }
+            } else if (!cloudUsers) {
+                // If cloud is empty, seed it
+                syncToCloud('users', ALL_SYSTEM_USERS);
+            }
+        }
+
+        // 2. Fetch Custom Roster
+        const resRoster = await fetch(`${FIREBASE_DB_URL}/roster.json`);
+        if (resRoster.ok) {
+            const cloudRoster = await resRoster.json();
+            if (cloudRoster && typeof cloudRoster === 'object') {
+                try {
+                    localStorage.setItem('fangkham_custom_roster_v2', JSON.stringify(cloudRoster));
+                } catch(e) {}
+            }
+        }
+
+        // 3. Fetch Checkins
+        const resCheckins = await fetch(`${FIREBASE_DB_URL}/checkins.json`);
+        if (resCheckins.ok) {
+            const cloudCheckins = await resCheckins.json();
+            if (cloudCheckins && typeof cloudCheckins === 'object') {
+                appState.todayCheckins = { ...appState.todayCheckins, ...cloudCheckins };
+                try {
+                    localStorage.setItem('fangkham_checkins_v1', JSON.stringify(appState.todayCheckins));
+                } catch(e) {}
+            }
+        }
+
+        // 4. Fetch Settings
+        const resSettings = await fetch(`${FIREBASE_DB_URL}/settings.json`);
+        if (resSettings.ok) {
+            const cloudSettings = await resSettings.json();
+            if (cloudSettings && typeof cloudSettings === 'object' && cloudSettings.orgName) {
+                appState.settings = { ...DEFAULT_SETTINGS, ...cloudSettings };
+                try {
+                    localStorage.setItem('fangkham_settings_v1', JSON.stringify(appState.settings));
+                } catch(e) {}
+            }
+        }
+
+        lastCloudSyncTime = new Date();
+        updateCloudStatusBadge(true);
+
+        // Re-render components with latest cloud data
+        if (typeof buildOctober2569Schedules === 'function') buildOctober2569Schedules();
+        if (typeof renderDashboard === 'function') renderDashboard();
+        if (typeof updateAuthUI === 'function') updateAuthUI();
+        if (typeof renderSettingsUserList === 'function' && appState && appState.currentTab === 'settings') renderSettingsUserList();
+        if (typeof renderCalendar === 'function' && appState && appState.currentTab === 'calendar') renderCalendar();
+        if (typeof renderAttendanceReport === 'function' && appState && appState.currentTab === 'report') renderAttendanceReport();
+
+        if (!silent) {
+            showToast('ซิงค์ข้อมูลสำเร็จ ☁️', 'ดึงข้อมูลบุคลากร ตำแหน่ง ตารางเวร และผลการลงเวลาล่าสุดจากคลาวด์เรียบร้อยแล้ว', 'success');
+        }
+    } catch(err) {
+        console.warn('[CloudSync] Fetch failed:', err);
+        updateCloudStatusBadge(false);
+        if (!silent) {
+            showToast('เชื่อมต่อคลาวด์ขัดข้อง', 'ไม่สามารถเชื่อมต่อ Firebase ได้ในขณะนี้ ใช้งานข้อมูลออฟไลน์ในเครื่องชั่วคราว', 'warning');
+        }
+    } finally {
+        isCloudSyncing = false;
+    }
+}
+
 // -------------------------------------------------------------
 // ระบบจัดเก็บรหัสผ่าน (LocalStorage)
 // -------------------------------------------------------------
@@ -100,6 +236,7 @@ function saveSystemUsers(users) {
         localStorage.setItem('fangkham_system_users_v2', JSON.stringify(users));
         localStorage.setItem('fangkham_system_users_v1', JSON.stringify(users));
     } catch(e) {}
+    syncToCloud('users', users);
 }
 
 function getSavedLoggedInUser() {
@@ -440,6 +577,7 @@ function saveCheckinRecord(recordKey, recordData) {
     try {
         localStorage.setItem('fangkham_checkins_v1', JSON.stringify(appState.todayCheckins));
     } catch(e) {}
+    syncToCloud(`checkins/${recordKey}`, recordData);
 }
 
 function getSavedInspections() {
@@ -963,6 +1101,7 @@ function saveCustomRoster(customData) {
     } catch(e) {
         console.error('Failed to save custom roster', e);
     }
+    syncToCloud('roster', customData);
 }
 
 // -------------------------------------------------------------
@@ -3850,8 +3989,9 @@ function saveSettingsFromForm(event) {
     try {
         localStorage.setItem('fangkham_settings_v1', JSON.stringify(appState.settings));
     } catch(e) {}
+    syncToCloud('settings', appState.settings);
 
-    showToast('บันทึกการตั้งค่าสำเร็จ! 💾', 'การตั้งค่าระบบ พิกัด GPS และการเชื่อมต่อ LINE ถูกบันทึกแล้ว', 'success');
+    showToast('บันทึกการตั้งค่าสำเร็จ! 💾', 'การตั้งค่าระบบ พิกัด GPS และการเชื่อมต่อ LINE ถูกบันทึกและซิงค์คลาวด์แล้ว', 'success');
 }
 
 function resetSettingsToDefault() {
@@ -3861,8 +4001,12 @@ function resetSettingsToDefault() {
     }
     if (!confirm('ต้องการคืนค่าการตั้งค่าเริ่มต้นใช่หรือไม่?')) return;
     appState.settings = { ...DEFAULT_SETTINGS };
+    try {
+        localStorage.setItem('fangkham_settings_v1', JSON.stringify(appState.settings));
+    } catch(e) {}
+    syncToCloud('settings', appState.settings);
     loadSettingsToForm();
-    showToast('คืนค่าเริ่มต้นเรียบร้อย', 'ข้อมูลการตั้งค่าถูกรีเซ็ตกลับเป็นค่ามาตรฐาน อบต.ฝางคำ', 'info');
+    showToast('คืนค่าเริ่มต้นเรียบร้อย', 'ข้อมูลการตั้งค่าถูกรีเซ็ตกลับเป็นค่ามาตรฐาน อบต.ฝางคำ และซิงค์ขึ้นคลาวด์แล้ว', 'info');
 }
 
 // -------------------------------------------------------------
@@ -4554,6 +4698,15 @@ function initializeApp() {
 
     safeRun(updateClock, 'updateClock');
     setInterval(updateClock, 1000);
+
+    // 7. ซิงค์ข้อมูลกับ Firebase Realtime Database อัตโนมัติข้ามเครื่อง
+    safeRun(() => syncFromCloud(true), 'syncFromCloud');
+    setInterval(() => {
+        syncFromCloud(true);
+    }, 15000);
+    window.addEventListener('focus', () => {
+        syncFromCloud(true);
+    });
 }
 
 // Support all browser loading phases (instant if already interactive/complete)

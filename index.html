@@ -60,6 +60,12 @@
                         <span id="header-live-time" class="font-mono font-bold text-emerald-700">--:--:-- น.</span>
                     </div>
 
+                    <!-- Cloud Sync Indicator (Firebase Realtime Database) -->
+                    <button id="cloud-sync-status" type="button" onclick="syncFromCloud(false)" class="hidden md:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-pointer shadow-2xs hover:bg-emerald-100 transition whitespace-nowrap" title="เชื่อมต่อ Firebase Realtime Database (คลิกเพื่อซิงค์ด่วน)">
+                        <span id="cloud-sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="cloud-sync-status-text">☁️ ซิงค์คลาวด์ Realtime</span>
+                    </button>
+
                     <button type="button" onclick="switchTab('saraban')" class="hidden xl:flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition items-center space-x-1.5 border border-slate-200">
                         <span>📖 คู่มือ</span>
                     </button>
@@ -1161,6 +1167,10 @@
                                 <p class="text-xs text-slate-600 mt-0.5">สามารถแก้ไข Username, ตำแหน่งราชการ, สังกัดกอง, สิทธิ์เวรยาม, รหัสผ่าน หรือเพิ่มเจ้าหน้าที่ใหม่ได้ที่นี่</p>
                             </div>
                             <div class="flex items-center space-x-2 shrink-0">
+                                <button type="button" onclick="syncFromCloud(false)" class="px-3 py-2 rounded-xl bg-white border border-sky-200 text-sky-700 hover:bg-sky-50 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap" title="ดึงข้อมูลตำแหน่งและบุคลากรล่าสุดจากคลาวด์">
+                                    <span>☁️</span>
+                                    <span>ซิงค์คลาวด์ Realtime</span>
+                                </button>
                                 <button type="button" id="btn-settings-reset-30" onclick="resetSystemUsersToDefault()" class="px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap" title="คืนค่ารายชื่อเริ่มต้น 30 ท่าน (เฉพาะแอดมิน)">
                                     <span>🔄</span>
                                     <span>คืนค่าเริ่มต้น 30 ท่าน</span>
