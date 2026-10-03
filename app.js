@@ -4458,44 +4458,59 @@ function populateSelectOptions() {
 // -------------------------------------------------------------
 // เริ่มการทำงานของระบบ (Initialize on Page Load)
 // -------------------------------------------------------------
-window.onload = function() {
+// เริ่มการทำงานของระบบ (Robust Initialization with Safe Execution)
+// -------------------------------------------------------------
+function initializeApp() {
+    function safeRun(fn, name) {
+        try {
+            fn();
+        } catch(err) {
+            console.warn(`[SafeInit] ${name} warning:`, err);
+        }
+    }
+
     // 0. ซิงค์รายชื่อบุคลากรและเซสชันผู้ใช้งานล่าสุดจาก LocalStorage (คงอยู่ตลอดแม้รีเฟรช F5 หรือปิดแท็บ)
-    ALL_SYSTEM_USERS = getSavedSystemUsers();
-    appState.currentUser = getSavedLoggedInUser();
+    safeRun(() => {
+        ALL_SYSTEM_USERS = getSavedSystemUsers();
+        appState.currentUser = getSavedLoggedInUser();
+    }, 'SyncUsersAndSession');
 
     // 1. โหลดข้อมูลการตั้งค่าจาก LocalStorage (ถ้ามี)
-    try {
+    safeRun(() => {
         const savedSettings = localStorage.getItem('fangkham_settings_v1');
         if (savedSettings) {
             appState.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
         }
-    } catch(e) {}
+    }, 'LoadSettings');
 
     // 2. สร้างโครงสร้างข้อมูลตารางเวร 31 วัน
-    buildOctober2569Schedules();
+    safeRun(buildOctober2569Schedules, 'buildOctober2569Schedules');
 
     // 3. เติมตัวเลือกและข้อมูลลงฟอร์ม
-    populateSelectOptions();
-    loadSettingsToForm();
-    renderSettingsUserList();
-    renderPrintDocument();
-    renderAttachedPdfList();
-    renderSwapList();
-    initSignaturePad();
-    initLineChatDefaultMessages();
-    initCheckinDatePicker();
-    initReportTab();
-    renderAttendanceReport();
-    updateDateBadges();
+    safeRun(populateSelectOptions, 'populateSelectOptions');
+    safeRun(loadSettingsToForm, 'loadSettingsToForm');
+    safeRun(renderSettingsUserList, 'renderSettingsUserList');
+    safeRun(renderPrintDocument, 'renderPrintDocument');
+    safeRun(renderAttachedPdfList, 'renderAttachedPdfList');
+    safeRun(renderSwapList, 'renderSwapList');
+    safeRun(initSignaturePad, 'initSignaturePad');
+    safeRun(initLineChatDefaultMessages, 'initLineChatDefaultMessages');
+    safeRun(initCheckinDatePicker, 'initCheckinDatePicker');
+    safeRun(initReportTab, 'initReportTab');
+    safeRun(renderAttendanceReport, 'renderAttendanceReport');
+    safeRun(updateDateBadges, 'updateDateBadges');
+    safeRun(renderDashboard, 'renderDashboard');
 
     // 4. แสดงผลข้อมูลผู้ใช้งานปัจจุบัน
-    updateAuthUI();
+    safeRun(updateAuthUI, 'updateAuthUI');
 
     // 5. บังคับเปิดหน้าแรกที่ "หน้า Dashboard" เสมอ (หรือตาม URL hash ถ้ามี)
-    const initialTab = (window.location.hash && window.location.hash.length > 1) 
-        ? window.location.hash.replace('#', '') 
-        : 'dashboard';
-    switchTab(document.getElementById(`tab-${initialTab}`) ? initialTab : 'dashboard');
+    safeRun(() => {
+        const initialTab = (window.location.hash && window.location.hash.length > 1) 
+            ? window.location.hash.replace('#', '') 
+            : 'dashboard';
+        switchTab(document.getElementById(`tab-${initialTab}`) ? initialTab : 'dashboard');
+    }, 'switchTab');
 
     // 6. นาฬิกา Real-time และระบบตรวจจับการข้ามวันอัตโนมัติ (Midnight Rollover)
     let lastRolloverCheckDay = getRealTodayDay();
@@ -4537,6 +4552,14 @@ window.onload = function() {
         checkMidnightRollover();
     };
 
-    updateClock();
+    safeRun(updateClock, 'updateClock');
     setInterval(updateClock, 1000);
-};
+}
+
+// Support all browser loading phases (instant if already interactive/complete)
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initializeApp();
+} else {
+    window.addEventListener('DOMContentLoaded', initializeApp);
+    window.addEventListener('load', initializeApp);
+}
