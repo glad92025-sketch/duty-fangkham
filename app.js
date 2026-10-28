@@ -354,7 +354,38 @@ const ROSTER_NOV_2569 = {
         { staff: 'นายสิงหา ชุมชัย', inspector: 'นายชาญชัย อักโข' }
     ]
 };
-const ROSTER_OCT_2569 = ROSTER_NOV_2569;
+// ข้อมูลตารางเวรตามคำสั่งแต่งตั้ง ประจำเดือน ตุลาคม ๒๕๖๙ (อบต.ฝางคำ)
+const ROSTER_OCT_2569 = {
+    day: {
+        3:  { staff: ['นางสาวอำพร ทองสวัสดิ์', 'นางสาวธิดาลักษณ์ โสแก้ว', 'นางต้องตาประภา โพธิ์งาม'], inspector: 'นางวาสนา สินทรัพย์' },
+        4:  { staff: ['นางสาวบีนา เหล็กกล้า', 'นางสาวปภาดา ประดับ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
+        10: { staff: ['นางสาวนิภาพร เที่ยงตรง', 'นางสาวนิตยา ชุมชัย'], inspector: 'นางวาสนา สินทรัพย์' },
+        11: { staff: ['นางรัชนี สร้อยคำ', 'นางสาวมาสศุภา ดวงคำ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
+        13: { staff: ['นางสาวผกาพา มณีจันทร์', 'นางสาวสุดารัตน์ ริมทอง'], inspector: 'นางวาสนา สินทรัพย์' },
+        17: { staff: ['นางสาวอำพร ทองสวัสดิ์', 'นางสาวธิดาลักษณ์ โสแก้ว', 'นางต้องตาประภา โพธิ์งาม'], inspector: 'นางวาสนา สินทรัพย์' },
+        18: { staff: ['นางสาวบีนา เหล็กกล้า', 'นางสาวปภาดา ประดับ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
+        23: { staff: ['นางสาวนิภาพร เที่ยงตรง', 'นางสาวนิตยา ชุมชัย'], inspector: 'นางวาสนา สินทรัพย์' },
+        24: { staff: ['นางรัชนี สร้อยคำ', 'นางสาวมาสศุภา ดวงคำ'], inspector: 'นางอรุณรัตน์ บุญกอ' },
+        31: { staff: ['นางสาวผกาพา มณีจันทร์', 'นางสาวสุดารัตน์ ริมทอง'], inspector: 'นางวาสนา สินทรัพย์' }
+    },
+    nightCycle: [
+        { staff: 'จ.ส.ท.มานิต ทองดวง', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'จ.ส.อ.เกียรติพล หาทรัพย์', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายสิงหา ชุมชัย', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'นายทศพล โลมรัตน์', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายวีระวัฒน์ จันทรคล', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'จ่าเอกเกียรติศักดิ์ เพ็ญเนตร', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายศุภมงคล ธรรมพิทักษ์', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'นายอนุชิต ดวงเนตร', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายอรรถชัย สุทธิรัตน์', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'นายวุฒิชาติ เชื้อโชติ', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายกล้าหาญ พรพรม', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'นายชัยสิทธิ์ วงษ์วิชัย', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' },
+        { staff: 'นายวิทยา ฝางคำ', inspector: 'นายชาญชัย อักโข' },
+        { staff: 'นายวัตรจิระ ใสขาว', inspector: 'นายวุฒิศักดิ์ บุตรสิงห์' }
+    ]
+};
+
 
 const DEFAULT_SETTINGS = {
     orgName: 'องค์การบริหารส่วนตำบลฝางคำ',
@@ -704,8 +735,8 @@ let appState = {
     currentLoginTab: 'login', // 'login', 'change_pwd', 'directory'
     currentCategory: 'all',
     currentTab: 'dashboard', // เริ่มต้นที่หน้า Dashboard เสมอ!
-    selectedMonth: 10, // พ.ย. (index 10)
-    selectedYear: 2026,
+    selectedMonth: new Date().getMonth(), // เดือนปัจจุบันตามเวลาจริง (ต.ค. = 9, พ.ย. = 10)
+    selectedYear: new Date().getFullYear(),
     schedules: [],
     todayCheckins: getSavedCheckins(),
     inspections: getSavedInspections(),
@@ -1228,9 +1259,10 @@ function saveCustomRoster(customData) {
 // -------------------------------------------------------------
 function buildNovember2569Schedules() {
     const schedules = [];
-    const targetYear = (typeof appState !== 'undefined' && appState.selectedYear) ? appState.selectedYear : 2026;
-    const targetMonth = (typeof appState !== 'undefined' && appState.selectedMonth !== undefined) ? appState.selectedMonth : 10;
+    const targetYear = (typeof appState !== 'undefined' && appState.selectedYear) ? appState.selectedYear : new Date().getFullYear();
+    const targetMonth = (typeof appState !== 'undefined' && appState.selectedMonth !== undefined) ? appState.selectedMonth : new Date().getMonth();
     const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate(); // คำนวณจำนวนวันตามเดือนและปีจริง (28, 29, 30, 31 วัน)
+    const isOct2569 = (targetYear === 2026 && targetMonth === 9);
     const isNov2569 = (targetYear === 2026 && targetMonth === 10);
     const customRoster = getCustomRoster();
 
@@ -1250,13 +1282,37 @@ function buildNovember2569Schedules() {
         const dateObj = new Date(targetYear, targetMonth, day);
         const dayOfWeek = dateObj.getDay(); // 0 = Sun, 6 = Sat
         const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-        const isHoliday = isWeekend;
+        let isHoliday = isWeekend;
 
         let dayDuty = null;
         let nightDuty = null;
 
-        if (isNov2569) {
-            // 1. เดือน พ.ย. ๒๕๖๙: ดึงตรงตามคำสั่งแต่งตั้งราชการจริง
+        if (isOct2569) {
+            // 1. เดือน ต.ค. ๒๕๖๙: ตารางเวรเดิมที่ใช้งานอยู่ปัจจุบัน (31 วัน)
+            if (day === 13 || day === 23) isHoliday = true; // วันหยุดนักขัตฤกษ์ประจำเดือน ต.ค.
+
+            if (ROSTER_OCT_2569.day && ROSTER_OCT_2569.day[day]) {
+                dayDuty = {
+                    shift: 'day',
+                    shiftName: 'กะกลางวัน (๐๘.๐๐ - ๑๖.๓๐ น.)',
+                    staff: [...ROSTER_OCT_2569.day[day].staff],
+                    inspector: ROSTER_OCT_2569.day[day].inspector,
+                    isHoliday: true
+                };
+            }
+
+            const cycle = ROSTER_OCT_2569.nightCycle;
+            const nightIdx = (day - 1) % cycle.length;
+            const nightItem = cycle[nightIdx];
+            nightDuty = {
+                shift: 'night',
+                shiftName: 'กะกลางคืน (๑๖.๓๐ - ๐๘.๐๐ น.)',
+                staff: [nightItem.staff],
+                inspector: nightItem.inspector,
+                isHoliday: isHoliday
+            };
+        } else if (isNov2569) {
+            // 2. เดือน พ.ย. ๒๕๖๙: คำสั่งแต่งตั้งทางการใหม่ (30 วัน)
             if (ROSTER_NOV_2569.day && ROSTER_NOV_2569.day[day]) {
                 dayDuty = {
                     shift: 'day',
@@ -1287,7 +1343,7 @@ function buildNovember2569Schedules() {
                 };
             }
         } else {
-            // 2. เดือนอื่นๆ: คำนวณหมุนเวียนอัตโนมัติตามระเบียบ อบต.ฝางคำ
+            // 3. เดือนอื่นๆ: คำนวณหมุนเวียนอัตโนมัติตามระเบียบ อบต.ฝางคำ
             if (isWeekend) {
                 const team = DAY_SHIFT_TEAMS[weekendCount % DAY_SHIFT_TEAMS.length];
                 dayDuty = {
@@ -1316,7 +1372,7 @@ function buildNovember2569Schedules() {
         // นำข้อมูล Custom Roster มาทับค่าเริ่มต้น (ถ้ามี)
         let isCustomized = false;
         let customReason = null;
-        if (isNov2569 && customRoster[day]) {
+        if (customRoster[day]) {
             isCustomized = true;
             const c = customRoster[day];
             if (c.dayDuty !== undefined) dayDuty = c.dayDuty;
@@ -1690,6 +1746,14 @@ function renderCalendar() {
         titleEl.textContent = `ปฏิทินเวรยาม: ${THAI_MONTH_NAMES[targetMonth]} ๒๕${toThaiNum(yThai % 100)}`;
     }
 
+    const curMonthBtnText = document.getElementById('btn-current-month-text');
+    if (curMonthBtnText) {
+        const now = new Date();
+        const nowMonthShort = THAI_MONTH_SHORT[now.getMonth()];
+        const nowYearThai = String(now.getFullYear() + 543).slice(-2);
+        curMonthBtnText.textContent = `เดือนปัจจุบัน (${nowMonthShort} ${toThaiNum(nowYearThai)})`;
+    }
+
     // 2. คำนวณวันแรกของเดือนตรงกับวันอะไรในสัปดาห์ (0 = วันอาทิตย์, ..., 6 = วันเสาร์)
     const firstDayDate = new Date(targetYear, targetMonth, 1);
     const emptySlots = firstDayDate.getDay();
@@ -1830,15 +1894,18 @@ function onCalendarMonthYearChange() {
 }
 
 function goToDefaultMonth() {
-    appState.selectedMonth = 10; // พฤศจิกายน
-    appState.selectedYear = 2026;
+    const now = new Date();
+    appState.selectedMonth = now.getMonth(); // เดือนตามเวลาจริงของเครื่อง (เช่น ต.ค. = 9)
+    appState.selectedYear = now.getFullYear(); // 2026
     appState.currentSystemDay = getRealTodayDay();
     appState.isRealtimeMode = true;
 
     buildNovember2569Schedules();
     renderCalendar();
     updateDateBadges();
-    showToast('กลับสู่เดือนปัจจุบัน 🎯', 'แสดงตารางเวร พฤศจิกายน ๒๕๖๙', 'success');
+    const curMonthName = THAI_MONTH_NAMES[appState.selectedMonth];
+    const curYearThai = appState.selectedYear + 543;
+    showToast('กลับสู่เดือนปัจจุบัน 🎯', `แสดงตารางเวร ${curMonthName} พ.ศ. ${curYearThai}`, 'success');
 }
 
 // -------------------------------------------------------------
