@@ -55,7 +55,7 @@
                     <!-- Real-time Live Clock Badge (Desktop) -->
                     <div class="hidden lg:flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-2xl bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span id="header-live-date" class="font-medium text-slate-800">วันเสาร์ที่ 3 ต.ค. 2569</span>
+                        <span id="header-live-date" class="font-medium text-slate-800">วันอาทิตย์ที่ 1 พ.ย. 2569</span>
                         <span class="text-slate-300">|</span>
                         <span id="header-live-time" class="font-mono font-bold text-emerald-700">--:--:-- น.</span>
                     </div>
@@ -371,7 +371,7 @@
                             <span class="text-base">📋</span>
                         </div>
                         <div id="stat-total-shifts" class="text-2xl font-bold text-slate-900 mt-1.5">0</div>
-                        <div class="text-[10px] text-slate-400 mt-0.5">ตารางเวรประจำเดือน ต.ค.</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">ตารางเวรประจำเดือน พ.ย.</div>
                     </div>
                     <div class="bg-white p-4 rounded-3xl border border-amber-200/80 shadow-2xs">
                         <div class="flex items-center justify-between text-amber-600">
@@ -402,19 +402,77 @@
 
             <!-- TAB 2: CALENDAR -->
             <div id="tab-calendar" class="tab-content hidden space-y-5">
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900">ปฏิทินเวรยามประจำเดือน</h2>
-                        <p class="text-xs text-slate-500">จัดตามกฎระเบียบ อบต.ฝางคำ: ผู้หญิง (กะกลางวัน) และ ผู้ชาย (กะกลางคืน)</p>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4">
+                    <!-- แถวที่ 1: หัวข้อปฏิทิน และปุ่มจัดการตารางเวร -->
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-2xl">📅</span>
+                                <h2 id="calendar-title-display" class="text-xl font-bold text-slate-900">ปฏิทินเวรยาม: พฤศจิกายน ๒๕๖๙</h2>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">จัดตามกฎระเบียบ อบต.ฝางคำ: ผู้หญิง (กะกลางวัน) และ ผู้ชาย (กะกลางคืน)</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" onclick="openEditRosterModal()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                                <span>✏️</span>
+                                <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
+                            </button>
+                            <div class="grid grid-cols-2 sm:flex sm:items-center gap-1.5 w-full sm:w-auto">
+                                <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">☀️ กลางวัน (หญิง)</span>
+                                <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white whitespace-nowrap">🌙 กลางคืน (ชาย)</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-                        <button type="button" onclick="openEditRosterModal()" class="w-full sm:w-auto px-3.5 py-2 sm:py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap">
-                            <span>✏️</span>
-                            <span>แก้ไข/ปรับเปลี่ยนตารางเวร</span>
-                        </button>
-                        <div class="grid grid-cols-2 sm:flex sm:items-center gap-1.5 w-full sm:w-auto">
-                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">☀️ กลางวัน (หญิง)</span>
-                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white whitespace-nowrap">🌙 กลางคืน (ชาย)</span>
+
+                    <!-- แถวที่ 2: ปุ่มเลื่อนดูเดือนก่อนหน้า-ถัดไป และช่องเลือกเดือน/ปี -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                        <!-- ปุ่มลัดเลื่อนเดือน -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" onclick="navigateMonth(-1)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-2xs">
+                                <span>◀</span>
+                                <span>เดือนก่อนหน้า</span>
+                            </button>
+                            <button type="button" onclick="navigateMonth(1)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-2xs">
+                                <span>เดือนถัดไป</span>
+                                <span>▶</span>
+                            </button>
+                            <button type="button" onclick="goToDefaultMonth()" class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-2xs">
+                                <span>🎯</span>
+                                <span>เดือนปัจจุบัน (พ.ย. ๖๙)</span>
+                            </button>
+                        </div>
+
+                        <!-- ตัวเลือก Dropdown เลือกเดือน และ เลือกปี -->
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                            <div class="flex items-center space-x-1.5">
+                                <label for="calendar-select-month" class="text-xs font-bold text-slate-600 whitespace-nowrap">เลือกเดือน:</label>
+                                <select id="calendar-select-month" onchange="onCalendarMonthYearChange()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden cursor-pointer shadow-2xs">
+                                    <option value="0">มกราคม (ม.ค.)</option>
+                                    <option value="1">กุมภาพันธ์ (ก.พ.)</option>
+                                    <option value="2">มีนาคม (มี.ค.)</option>
+                                    <option value="3">เมษายน (เม.ย.)</option>
+                                    <option value="4">พฤษภาคม (พ.ค.)</option>
+                                    <option value="5">มิถุนายน (มิ.ย.)</option>
+                                    <option value="6">กรกฎาคม (ก.ค.)</option>
+                                    <option value="7">สิงหาคม (ส.ค.)</option>
+                                    <option value="8">กันยายน (ก.ย.)</option>
+                                    <option value="9">ตุลาคม (ต.ค.)</option>
+                                    <option value="10" selected>พฤศจิกายน (พ.ย.)</option>
+                                    <option value="11">ธันวาคม (ธ.ค.)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center space-x-1.5">
+                                <label for="calendar-select-year" class="text-xs font-bold text-slate-600 whitespace-nowrap">เลือกปี พ.ศ.:</label>
+                                <select id="calendar-select-year" onchange="onCalendarMonthYearChange()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden cursor-pointer shadow-2xs">
+                                    <option value="2024">๒๕๖๗ (2024)</option>
+                                    <option value="2025">๒๕๖๘ (2025)</option>
+                                    <option value="2026" selected>๒๕๖๙ (2026)</option>
+                                    <option value="2027">๒๕๗๐ (2027)</option>
+                                    <option value="2028">๒๕๗๑ (2028)</option>
+                                    <option value="2029">๒๕๗๒ (2029)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -462,13 +520,13 @@
                                     <div class="text-[11px] text-slate-400 font-semibold uppercase">วันที่ของระบบ (System Date)</div>
                                     <span id="checkin-realtime-badge" class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">● เวลาจริง Real-time</span>
                                 </div>
-                                <div id="checkin-system-date-label" class="text-sm sm:text-base font-bold text-slate-800 mt-0.5">วันเสาร์ที่ ๓ ตุลาคม ๒๕๖๙</div>
+                                <div id="checkin-system-date-label" class="text-sm sm:text-base font-bold text-slate-800 mt-0.5">วันอาทิตย์ที่ ๑ พฤศจิกายน ๒๕๖๙</div>
                             </div>
                         </div>
                         <div class="flex items-center space-x-2 flex-wrap">
                             <label for="checkin-date-picker" class="text-[11px] text-slate-500 font-medium whitespace-nowrap">เลือกดูวันที่:</label>
                             <select id="checkin-date-picker" onchange="setSystemDay(this.value, true)" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden">
-                                <!-- Populated dynamically 1-31 Oct 2569 -->
+                                <!-- Populated dynamically 1-30 Nov 2569 -->
                             </select>
                             <button type="button" id="btn-reset-realtime" onclick="resetToRealtimeToday()" class="hidden text-xs font-bold px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1 shadow-2xs" title="กลับสู่วันนี้ตามเวลาจริง">
                                 <span>↺ กลับสู่วันนี้</span>
@@ -523,7 +581,7 @@
                                         ✓ ตรวจสอบสิทธิ์แล้ว
                                     </span>
                                 </div>
-                                <select id="checkin-select-schedule" class="w-full text-sm rounded-xl border-slate-300 shadow-xs py-2.5 px-3 bg-white border">
+                                <select id="checkin-select-schedule" onchange="onCheckinScheduleSelectChange(this.value)" class="w-full text-sm rounded-xl border-slate-300 shadow-xs py-2.5 px-3 bg-white border">
                                 </select>
                                 <p id="shift-select-hint" class="text-[11px] text-slate-500 mt-1">ระบบจำกัดให้ลงเวลาได้เฉพาะวันที่ท่านมีรายชื่อเข้าเวรจริงเท่านั้น</p>
                             </div>
@@ -567,7 +625,7 @@
                                 <span class="text-xl">📋</span>
                                 <div>
                                     <h4 class="text-sm font-bold text-slate-900">ตารางเวรและประวัติการลงเวลาของท่านในเดือนนี้</h4>
-                                    <p class="text-[11px] text-slate-500">อ้างอิงคำสั่งแต่งตั้งเวรยาม ประจำเดือน ตุลาคม ๒๕๖๙</p>
+                                    <p class="text-[11px] text-slate-500">อ้างอิงคำสั่งแต่งตั้งเวรยาม ประจำเดือน พฤศจิกายน ๒๕๖๙</p>
                                 </div>
                             </div>
                             <span id="user-duty-total-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
@@ -828,7 +886,7 @@
                                     เฉพาะวันที่เลือก
                                 </button>
                                 <button id="report-mode-month" onclick="setReportPeriodMode('month')" class="px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition">
-                                    สรุปทั้งเดือน ต.ค. ๖๙
+                                    สรุปทั้งเดือน พ.ย. ๖๙
                                 </button>
                             </div>
                         </div>
@@ -839,7 +897,7 @@
                                 ◀ ก่อนหน้า
                             </button>
                             <select id="report-select-day" onchange="onReportDayChange(this.value)" class="text-xs font-bold text-slate-800 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-emerald-500">
-                                <!-- Populated dynamically with 1-31 Oct 2569 -->
+                                <!-- Populated dynamically with 1-30 Nov 2569 -->
                             </select>
                             <button onclick="changeReportDay(1)" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-600 transition" title="วันถัดไป">
                                 ถัดไป ▶
@@ -1511,7 +1569,7 @@
 
             <!-- Modal Footer -->
             <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 flex-shrink-0">
-                <span>องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือน ตุลาคม ๒๕๖๙</span>
+                <span>องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือน พฤศจิกายน ๒๕๖๙</span>
                 <button onclick="closeLoginModal()" class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition">
                     ปิดหน้าต่าง
                 </button>
@@ -1661,7 +1719,7 @@
                     <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-xl backdrop-blur-xs">📅</div>
                     <div>
                         <h3 id="day-detail-title" class="text-base font-bold">ข้อมูลเวรยามประจำวัน</h3>
-                        <p id="day-detail-subtitle" class="text-xs text-emerald-300">ประจำเดือนตุลาคม ๒๕๖๙</p>
+                        <p id="day-detail-subtitle" class="text-xs text-emerald-300">ประจำเดือนพฤศจิกายน ๒๕๖๙</p>
                     </div>
                 </div>
                 <button onclick="closeDayDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition cursor-pointer">✕</button>
@@ -1736,7 +1794,7 @@
                     <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-xl backdrop-blur-xs">✏️</div>
                     <div>
                         <h3 class="text-base font-bold">แก้ไขและปรับเปลี่ยนตารางเวรยาม</h3>
-                        <p class="text-xs text-purple-200">องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือนตุลาคม ๒๕๖๙</p>
+                        <p class="text-xs text-purple-200">องค์การบริหารส่วนตำบลฝางคำ • ประจำเดือนพฤศจิกายน ๒๕๖๙</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeEditRosterModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition cursor-pointer">✕</button>
@@ -2030,7 +2088,7 @@
                     <label class="block font-bold text-slate-700 mb-1">
                         หมายเหตุวันเข้าเวรตามคำสั่ง
                     </label>
-                    <input type="text" id="user-form-duty-days" placeholder="เช่น วันที่ 1, 15, 29 ต.ค. หรือ ตรวจเวรทุกวันคี่" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="user-form-duty-days" placeholder="เช่น วันที่ 1, 15, 29 พ.ย. หรือ ตรวจเวรทุกวันคี่" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
 
                 <!-- Section 6: Avatar Photo & Presets -->
